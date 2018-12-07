@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <Version>1.0.0-alpha</Version>
+    <Authors>Winnster.io</Authors>
+    <Product>OpenRas</Product>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetOperatingSystem>WIN10</TargetOperatingSystem>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputPath>bin\$(Configuration)\$(TargetOperatingSystem)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="PublicKey.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="PublicKey.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

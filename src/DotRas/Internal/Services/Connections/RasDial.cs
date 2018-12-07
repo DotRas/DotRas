@@ -1,0 +1,151 @@
+﻿using System;
+using System.Threading.Tasks;
+using DotRas.Internal.Abstractions.Factories;
+using DotRas.Internal.Abstractions.Policies;
+using DotRas.Internal.Abstractions.Services;
+using DotRas.Internal.Abstractions.Threading;
+using DotRas.Internal.Threading;
+using DotRas.Win32;
+using DotRas.Win32.SafeHandles;
+using static DotRas.Win32.NativeMethods;
+using static DotRas.Win32.Ras;
+using static DotRas.Win32.WinError;
+
+namespace DotRas.Internal.Services.Connections
+{
+    internal class RasDial : DisposableObject, IRasDial
+    {
+        private readonly object syncRoot = new object();
+
+        private readonly IRasApi32 api;
+        private readonly IStructFactory structFactory;
+        private readonly IExceptionPolicy exceptionPolicy;
+        private readonly IRasDialCallbackHandler callbackHandler;
+        private readonly RasDialFunc2 callback;
+
+        public bool IsBusy { get; private set; }
+
+        public RasDial(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
+        {
+            this.api = api ?? throw new ArgumentNullException(nameof(api));
+            this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
+            this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
+            this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
+
+            callback = callbackHandler.OnCallback;
+        }
+
+        public Task<Connection> DialAsync(RasDialContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            GuardMustNotAlreadyBeBusy();
+
+            lock (syncRoot)
+            {
+                GuardMustNotAlreadyBeBusy();
+
+                var completionSource = CreateCompletionSource();
+                if (completionSource == null)
+                {
+                    throw new InvalidOperationException("The completion source was not created.");
+                }
+
+                InitializeCallbackHandler(completionSource, context);
+                BeginDial(context);
+
+                return completionSource.Task;
+            }
+        }
+
+        protected virtual ITaskCompletionSource<Connection> CreateCompletionSource()
+        {
+            return new TaskCompletionSourceWrapper<Connection>(
+                new TaskCompletionSource<Connection>());
+        }
+
+        private void InitializeCallbackHandler(ITaskCompletionSource<Connection> completionSource, RasDialContext context)
+        {
+            callbackHandler.Initialize(completionSource, context.OnStateChangedCallback, SetNotBusy, context.CancellationToken);
+        }   
+
+        private void BeginDial(RasDialContext context)
+        {
+            RasHandle lphRasConn = null;
+
+            try
+            {
+                SetBusy();
+
+                var rasDialExtensions = ConvertToRasDialExtensions();
+                var rasDialParams = ConvertToRasDialParams(context);
+
+                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out lphRasConn);
+                if (ret != SUCCESS)
+                {
+                    throw exceptionPolicy.Create(ret);
+                }
+
+                callbackHandler.SetHandle(lphRasConn);
+            }
+            catch (Exception)
+            {
+                SetNotBusy();
+
+                lphRasConn?.Dispose();
+                throw;
+            }
+        }
+
+        private RASDIALEXTENSIONS ConvertToRasDialExtensions()
+        {
+            return structFactory.Create<RASDIALEXTENSIONS>();
+        }
+
+        private RASDIALPARAMS ConvertToRasDialParams(RasDialContext context)
+        {
+            var rasDialParams = structFactory.Create<RASDIALPARAMS>();
+            rasDialParams.szEntryName = context.EntryName;
+
+            if (context.Credentials != null)
+            {
+                rasDialParams.szUserName = context.Credentials.UserName;
+                rasDialParams.szPassword = context.Credentials.Password;
+                rasDialParams.szDomain = context.Credentials.Domain;
+            }
+
+            return rasDialParams;
+        }
+
+        private void SetBusy()
+        {
+            IsBusy = true;
+        }
+
+        private void SetNotBusy()
+        {
+            IsBusy = false;
+        }
+
+        private void GuardMustNotAlreadyBeBusy()
+        {
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("A connection is already being dialed.");
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                callbackHandler.DisposeIfNecessary();
+            }
+
+            base.Dispose(disposing);
+        }
+    }
+}
