@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <Version>1.0.0-alpha</Version>
+    <Version>2.0.0-alpha</Version>
     <Authors>Winnster.io</Authors>
     <Product>OpenRas</Product>
   </PropertyGroup>
