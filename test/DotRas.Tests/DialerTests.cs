@@ -103,7 +103,7 @@ namespace DotRas.Tests
                 PhoneBook = "PATH"
             };
 
-            var connection = await target.ConnectAsync(cancellationToken);
+            var connection = await target.DialAsync(cancellationToken);
             Assert.AreSame(result.Object, connection);
         }
 

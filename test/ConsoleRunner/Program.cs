@@ -41,7 +41,7 @@ namespace ConsoleRunner
 
         private async Task ConnectAsync(CancellationToken cancellationToken)
         {
-            connection = await dialer.ConnectAsync(cancellationToken);
+            connection = await dialer.DialAsync(cancellationToken);
             if (connection != null)
             {
                 SetConnected();

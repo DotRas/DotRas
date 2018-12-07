@@ -13,11 +13,11 @@ namespace DotRas.Win32.SafeHandles
         {
         }
 
-        public static RasHandle FromPtr(IntPtr lprasconn)
+        public static RasHandle FromPtr(IntPtr lpRasConn)
         {
-            if (lprasconn == IntPtr.Zero)
+            if (lpRasConn == IntPtr.Zero)
             {
-                throw new ArgumentNullException(nameof(lprasconn));
+                throw new ArgumentNullException(nameof(lpRasConn));
             }
 
             RasHandle result = null;
@@ -25,7 +25,7 @@ namespace DotRas.Win32.SafeHandles
             try
             {
                 result = new RasHandle();
-                result.SetHandle(lprasconn);
+                result.SetHandle(lpRasConn);
 
                 return result;
             }

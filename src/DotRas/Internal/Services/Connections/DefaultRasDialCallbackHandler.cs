@@ -24,7 +24,6 @@ namespace DotRas.Internal.Services.Connections
 
         private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
-
         private ITaskCompletionSource<Connection> completionSource;
         private Action<DialerStateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
@@ -71,6 +70,8 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(onCompletedCallback));
             }
 
+            GuardMustNotBeDisposed();
+
             lock (syncRoot)
             {
                 cancellationSource.DisposeIfNecessary();                
@@ -97,9 +98,11 @@ namespace DotRas.Internal.Services.Connections
             rasHangUp.HangUp(handle.Value, CancellationToken.None);
         }
 
-        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, ConnectionState rascs, int dwError, int dwExtendedError)
+        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, ConnectionState connectionState, int dwError, int dwExtendedError)
         {
+            GuardMustNotBeDisposed();
             GuardMustBeInitialized();
+
             WaitForHandleToBeTransferred();
 
             try
@@ -107,9 +110,9 @@ namespace DotRas.Internal.Services.Connections
                 GuardRequestShouldNotBeCancelled();
                 GuardErrorCodeMustBeZero(dwError);
 
-                ExecuteStateChangedCallback(rascs);
+                ExecuteStateChangedCallback(connectionState);
 
-                if (HasConnectionCompleted(rascs))
+                if (HasConnectionCompleted(connectionState))
                 {
                     SetConnectionResult();
                 }
@@ -147,9 +150,9 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        private bool HasConnectionCompleted(ConnectionState rascs)
+        private bool HasConnectionCompleted(ConnectionState connectionState)
         {
-            return rascs == ConnectionState.Connected;
+            return connectionState == ConnectionState.Connected;
         }
 
         private void RunPostCompleted()

@@ -9,7 +9,6 @@ using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Abstractions.Threading;
 using DotRas.Internal.Services.Connections;
-using DotRas.Tests.Internal.Stubs;
 using DotRas.Tests.Stubs;
 using DotRas.Win32;
 using DotRas.Win32.SafeHandles;
@@ -34,7 +33,7 @@ namespace DotRas.Tests.Internal.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDial(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object);
+                var unused = new RasDial(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object);
             });
         }
 
@@ -43,7 +42,7 @@ namespace DotRas.Tests.Internal.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDial(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object);
+                var unused = new RasDial(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object);
             });
         }
 
@@ -52,7 +51,7 @@ namespace DotRas.Tests.Internal.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null, new Mock<IRasDialCallbackHandler>().Object);
+                var unused = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object);
             });
         }
 
@@ -61,14 +60,14 @@ namespace DotRas.Tests.Internal.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, null);
+                var unused = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, null, new Mock<ITaskCompletionSourceFactory>().Object);
             });
         }
 
         [Test]
         public void ThrowAnExceptionWhenTheContextIsNull()
         {
-            var target = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object);
+            var target = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object);
             Assert.ThrowsAsync<ArgumentNullException>(() => target.DialAsync(null));
         }
 
@@ -82,10 +81,13 @@ namespace DotRas.Tests.Internal.Services
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            completionSourceFactory.Setup(o => o.Create<Connection>()).Returns(completionSource.Object);
+
             var callbackHandler = new Mock<IRasDialCallbackHandler>();
             callbackHandler.As<IDisposable>();
 
-            using (var target = new StubRasDial(completionSource.Object, api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object))
+            using (var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object))
             {
                 await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
             }
@@ -114,7 +116,10 @@ namespace DotRas.Tests.Internal.Services
             var completionSource = new Mock<ITaskCompletionSource<Connection>>();
             completionSource.Setup(o => o.Task).Returns(Task.FromResult(connection.Object));
 
-            var target = new StubRasDial(completionSource.Object, api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            completionSourceFactory.Setup(o => o.Create<Connection>()).Returns(completionSource.Object);
+
+            var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
             var result = await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
 
             Assert.AreSame(connection.Object, result);
@@ -143,7 +148,10 @@ namespace DotRas.Tests.Internal.Services
             var completionSource = new Mock<ITaskCompletionSource<Connection>>();
             completionSource.Setup(o => o.Task).Returns(Task.FromResult(connection.Object));
 
-            var target = new StubRasDial(completionSource.Object, api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            completionSourceFactory.Setup(o => o.Create<Connection>()).Returns(completionSource.Object);
+
+            var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
             Assert.ThrowsAsync<TestException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null)));
 
             Assert.IsFalse(target.IsBusy);
@@ -172,7 +180,10 @@ namespace DotRas.Tests.Internal.Services
             var completionSource = new Mock<ITaskCompletionSource<Connection>>();
             completionSource.Setup(o => o.Task).Returns(Task.FromResult(connection.Object));
 
-            var target = new StubRasDial(completionSource.Object, api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            completionSourceFactory.Setup(o => o.Create<Connection>()).Returns(completionSource.Object);
+
+            var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
             await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
 
             Assert.IsTrue(target.IsBusy);

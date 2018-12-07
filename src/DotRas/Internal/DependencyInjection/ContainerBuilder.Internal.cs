@@ -54,7 +54,8 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>(),
-                    c.GetRequiredService<IRasDialCallbackHandler>()));
+                    c.GetRequiredService<IRasDialCallbackHandler>(),
+                    c.GetRequiredService<ITaskCompletionSourceFactory>()));
 
             container.AddService(typeof(IRasDialCallbackHandler),
                 (c, _) => new RasDialCallbackHandlerLoggingAdvice(

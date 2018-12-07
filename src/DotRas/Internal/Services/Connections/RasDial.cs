@@ -4,7 +4,6 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Abstractions.Threading;
-using DotRas.Internal.Threading;
 using DotRas.Win32;
 using DotRas.Win32.SafeHandles;
 using static DotRas.Win32.NativeMethods;
@@ -21,16 +20,18 @@ namespace DotRas.Internal.Services.Connections
         private readonly IStructFactory structFactory;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IRasDialCallbackHandler callbackHandler;
+        private readonly ITaskCompletionSourceFactory completionSourceFactory;
         private readonly RasDialFunc2 callback;
 
         public bool IsBusy { get; private set; }
 
-        public RasDial(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
+        public RasDial(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
+            this.completionSourceFactory = completionSourceFactory ?? throw new ArgumentNullException(nameof(completionSourceFactory));
 
             callback = callbackHandler.OnCallback;
         }
@@ -42,6 +43,7 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(context));
             }
 
+            GuardMustNotBeDisposed();
             GuardMustNotAlreadyBeBusy();
 
             lock (syncRoot)
@@ -61,10 +63,9 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        protected virtual ITaskCompletionSource<Connection> CreateCompletionSource()
+        private ITaskCompletionSource<Connection> CreateCompletionSource()
         {
-            return new TaskCompletionSourceWrapper<Connection>(
-                new TaskCompletionSource<Connection>());
+            return completionSourceFactory.Create<Connection>();
         }
 
         private void InitializeCallbackHandler(ITaskCompletionSource<Connection> completionSource, RasDialContext context)

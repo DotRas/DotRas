@@ -14,6 +14,9 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(ITaskCancellationSourceFactory),
                 (c, _) => new TaskCancellationSourceFactory());
 
+            container.AddService(typeof(ITaskCompletionSourceFactory),
+                (c, _) => new TaskCompletionSourceFactory());
+
             container.AddService(typeof(IDeviceTypeFactory),
                 (c, _) => new DeviceTypeFactory(c));
             

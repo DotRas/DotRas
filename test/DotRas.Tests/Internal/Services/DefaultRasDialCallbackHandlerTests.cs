@@ -79,7 +79,21 @@ namespace DotRas.Tests.Internal.Services
         }
 
         [Test]
-        public void MustSupportMultipileInitializeForReuseOfHandler()
+        public void ThrowsAnExceptionWhenTheOnCompletedCallbackIsNull()
+        {
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasEnumConnections = new Mock<IRasEnumConnections>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+            var waitHandle = new Mock<IValueWaiter<RasHandle>>();
+            var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
+
+            var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
+            Assert.Throws<ArgumentNullException>(() => target.Initialize(new Mock<ITaskCompletionSource<Connection>>().Object, e => { }, null, CancellationToken.None));
+        }
+
+
+        [Test]
+        public void MustSupportMultipleInitializeForReuseOfHandler()
         {
             var rasHangUp = new Mock<IRasHangUp>();
             var rasEnumConnections = new Mock<IRasEnumConnections>();

@@ -57,6 +57,8 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public Connection Dial()
         {
+            GuardMustNotBeDisposed();
+
             return Dial(CancellationToken.None);
         }
 
@@ -67,7 +69,9 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public Connection Dial(CancellationToken cancellationToken)
         {
-            using (var task = ConnectAsync(cancellationToken))
+            GuardMustNotBeDisposed();
+
+            using (var task = DialAsync(cancellationToken))
             {
                 return task.Result;
             }
@@ -79,7 +83,9 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public Task<Connection> DialAsync()
         {
-            return ConnectAsync(CancellationToken.None);
+            GuardMustNotBeDisposed();
+
+            return DialAsync(CancellationToken.None);
         }
 
         /// <summary>
@@ -87,8 +93,10 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
-        public Task<Connection> ConnectAsync(CancellationToken cancellationToken)
+        public Task<Connection> DialAsync(CancellationToken cancellationToken)
         {
+            GuardMustNotBeDisposed();
+
             return api.DialAsync(new RasDialContext(PhoneBook, EntryName, Credentials, cancellationToken, RaiseDialStateChanged));
         }
 
