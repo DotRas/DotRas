@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class PadDeviceFactory : IDeviceFactory<Pad>
+    internal class PadDeviceFactory : IDeviceFactory
     {
-        public Pad Create(string name)
+        public Device Create(string name)
         {
             return new Pad(name);
         }

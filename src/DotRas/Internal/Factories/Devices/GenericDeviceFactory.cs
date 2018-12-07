@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class GenericDeviceFactory : IDeviceFactory<Generic>
+    internal class GenericDeviceFactory : IDeviceFactory
     {
-        public Generic Create(string name)
+        public Device Create(string name)
         {
             return new Generic(name);
         }

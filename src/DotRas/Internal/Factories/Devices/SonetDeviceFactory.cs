@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class SonetDeviceFactory : IDeviceFactory<Sonet>
+    internal class SonetDeviceFactory : IDeviceFactory
     {
-        public Sonet Create(string name)
+        public Device Create(string name)
         {
             return new Sonet(name);
         }

@@ -1,8 +1,7 @@
 ﻿namespace DotRas.Internal.Abstractions.Factories
 {
-    internal interface IDeviceFactory<out T>
-        where T : Device
+    internal interface IDeviceFactory
     {
-        T Create(string name);
+        Device Create(string name);
     }
 }

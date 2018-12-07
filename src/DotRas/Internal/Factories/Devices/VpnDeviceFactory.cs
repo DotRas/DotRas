@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class VpnDeviceFactory : IDeviceFactory<Vpn>
+    internal class VpnDeviceFactory : IDeviceFactory
     {
-        public Vpn Create(string name)
+        public Device Create(string name)
         {
             return new Vpn(name);
         }

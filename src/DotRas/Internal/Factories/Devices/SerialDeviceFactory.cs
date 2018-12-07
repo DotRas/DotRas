@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class SerialDeviceFactory : IDeviceFactory<Serial>
+    internal class SerialDeviceFactory : IDeviceFactory
     {
-        public Serial Create(string name)
+        public Device Create(string name)
         {
             return new Serial(name);
         }

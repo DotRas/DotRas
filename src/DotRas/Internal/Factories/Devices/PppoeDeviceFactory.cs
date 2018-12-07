@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class PppoeDeviceFactory : IDeviceFactory<Pppoe>
+    internal class PppoeDeviceFactory : IDeviceFactory
     {
-        public Pppoe Create(string name)
+        public Device Create(string name)
         {
             return new Pppoe(name);
         }

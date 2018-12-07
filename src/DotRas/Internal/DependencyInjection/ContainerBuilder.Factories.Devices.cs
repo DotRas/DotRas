@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.Design;
-using DotRas.Devices;
-using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Factories.Devices;
 
 namespace DotRas.Internal.DependencyInjection
@@ -9,46 +7,46 @@ namespace DotRas.Internal.DependencyInjection
     {
         private static void RegisterDeviceFactories(IServiceContainer container)
         {
-            container.AddService(typeof(IDeviceFactory<Atm>),
+            container.AddService(typeof(AtmDeviceFactory),
                 (c, _) => new AtmDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<FrameRelay>),
+            container.AddService(typeof(FrameRelayDeviceFactory),
                 (c, _) => new FrameRelayDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Generic>),
+            container.AddService(typeof(GenericDeviceFactory),
                 (c, _) => new GenericDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Irda>),
+            container.AddService(typeof(IrdaDeviceFactory),
                 (c, _) => new IrdaDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Isdn>),
+            container.AddService(typeof(IsdnDeviceFactory),
                 (c, _) => new IsdnDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Modem>),
+            container.AddService(typeof(ModemDeviceFactory),
                 (c, _) => new ModemDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Pad>),
+            container.AddService(typeof(PadDeviceFactory),
                 (c, _) => new PadDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Parallel>),
+            container.AddService(typeof(ParallelDeviceFactory),
                 (c, _) => new ParallelDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Pppoe>),
+            container.AddService(typeof(PppoeDeviceFactory),
                 (c, _) => new PppoeDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Serial>),
+            container.AddService(typeof(SerialDeviceFactory),
                 (c, _) => new SerialDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Sonet>),
+            container.AddService(typeof(SonetDeviceFactory),
                 (c, _) => new SonetDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Sw56>),
+            container.AddService(typeof(Sw56DeviceFactory),
                 (c, _) => new Sw56DeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<Vpn>),
+            container.AddService(typeof(VpnDeviceFactory),
                 (c, _) => new VpnDeviceFactory());
 
-            container.AddService(typeof(IDeviceFactory<X25>),
+            container.AddService(typeof(X25DeviceFactory),
                 (c, _) => new X25DeviceFactory());
         }
     }

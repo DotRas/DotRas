@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class Sw56DeviceFactory : IDeviceFactory<Sw56>
+    internal class Sw56DeviceFactory : IDeviceFactory
     {
-        public Sw56 Create(string name)
+        public Device Create(string name)
         {
             return new Sw56(name);
         }

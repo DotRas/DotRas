@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class ModemDeviceFactory : IDeviceFactory<Modem>
+    internal class ModemDeviceFactory : IDeviceFactory
     {
-        public Modem Create(string name)
+        public Device Create(string name)
         {
             return new Modem(name);
         }

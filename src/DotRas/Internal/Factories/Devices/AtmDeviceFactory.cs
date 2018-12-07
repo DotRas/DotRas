@@ -3,9 +3,9 @@ using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Factories.Devices
 {
-    internal class AtmDeviceFactory : IDeviceFactory<Atm>
+    internal class AtmDeviceFactory : IDeviceFactory
     {
-        public Atm Create(string name)
+        public Device Create(string name)
         {
             return new Atm(name);
         }
