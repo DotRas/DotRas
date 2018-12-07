@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Win32.SafeHandles;
 using static DotRas.Win32.ExternDll;
