@@ -158,5 +158,17 @@ namespace DotRas.Tests
 
             Assert.True(raised);
         }
+
+        [Test]
+        public void DisposesTheApiAsExpected()
+        {
+            var api = new Mock<IRasDial>();
+            var disposable = api.As<IDisposable>();
+
+            var target = new Dialer(api.Object);
+            target.Dispose();
+
+            disposable.Verify(o => o.Dispose(), Times.Once);
+        }
     }
 }
