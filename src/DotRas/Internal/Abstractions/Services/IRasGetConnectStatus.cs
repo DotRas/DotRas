@@ -4,6 +4,6 @@ namespace DotRas.Internal.Abstractions.Services
 {
     internal interface IRasGetConnectStatus
     {
-        ConnectionStatus GetConnectionStatus(RasHandle handle);
+        RasConnectionStatus GetConnectionStatus(RasHandle handle);
     }
 }

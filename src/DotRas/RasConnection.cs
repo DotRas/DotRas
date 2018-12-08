@@ -54,7 +54,7 @@ namespace DotRas
                 .EnumerateConnections();
         }
 
-        public virtual ConnectionStatus GetStatus()
+        public virtual RasConnectionStatus GetStatus()
         {
             GuardHandleMustBeValid();
 

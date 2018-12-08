@@ -24,7 +24,7 @@ namespace DotRas.Internal.Services.Connections
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));
         }
 
-        public ConnectionStatus GetConnectionStatus(RasHandle handle)
+        public RasConnectionStatus GetConnectionStatus(RasHandle handle)
         {
             if (handle == null)
             {
@@ -33,7 +33,7 @@ namespace DotRas.Internal.Services.Connections
 
             var rasConnStatus = GetConnectionStatusByHandle(handle);
 
-            return new ConnectionStatus(
+            return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
                 deviceTypeFactory.Create(rasConnStatus.szDeviceName, rasConnStatus.szDeviceType),
                 rasConnStatus.szPhoneNumber);
