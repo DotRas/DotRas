@@ -2,6 +2,6 @@
 {
     internal interface IDeviceFactory
     {
-        Device Create(string name);
+        RasDevice Create(string name);
     }
 }

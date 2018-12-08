@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Virtual Private Network (VPN) device.
     /// </summary>
-    public class Vpn : Device
+    public class Vpn : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Vpn"/> class.

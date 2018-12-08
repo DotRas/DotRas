@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Sonet device.
     /// </summary>
-    public class Sonet : Device
+    public class Sonet : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sonet"/> class.

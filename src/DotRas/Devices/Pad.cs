@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Packet Assembler/Disassembler (PAD) device.
     /// </summary>
-    public class Pad : Device
+    public class Pad : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Pad"/> class.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a modem.
     /// </summary>
-    public class Modem : Device
+    public class Modem : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Modem"/> class.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a generic device.
     /// </summary>
-    public class Generic : Device
+    public class Generic : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Generic"/> class.

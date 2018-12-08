@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets the device through which the connection has been established.
         /// </summary>
-        public virtual Device Device { get; }
+        public virtual RasDevice Device { get; }
 
         /// <summary>
         /// Gets the phone number dialed for this specific connection.
@@ -26,7 +26,7 @@
         /// <param name="connectionState">The state of the connection.</param>
         /// <param name="device">The device through which the connection has been established.</param>
         /// <param name="phoneNumber">The phone number dialed for this specific connection.</param>
-        public RasConnectionStatus(RasConnectionState connectionState, Device device, string phoneNumber)
+        public RasConnectionStatus(RasConnectionState connectionState, RasDevice device, string phoneNumber)
         {
             ConnectionState = connectionState;
             Device = device;

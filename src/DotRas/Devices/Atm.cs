@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an Asynchronous Transfer Mode (ATM) device.
     /// </summary>
-    public class Atm : Device
+    public class Atm : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Atm"/> class.

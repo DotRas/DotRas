@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a direct connection through a Parallel port.
     /// </summary>
-    public class Parallel : Device
+    public class Parallel : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Parallel"/> class.

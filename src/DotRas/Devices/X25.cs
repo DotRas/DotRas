@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an X.25 device.
     /// </summary>
-    public class X25 : Device
+    public class X25 : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="X25"/> class.

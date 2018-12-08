@@ -5,7 +5,7 @@ namespace DotRas.Internal.Factories.Devices
 {
     internal class PadDeviceFactory : IDeviceFactory
     {
-        public Device Create(string name)
+        public RasDevice Create(string name)
         {
             return new Pad(name);
         }

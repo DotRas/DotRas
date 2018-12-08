@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Switched 56K access device.
     /// </summary>
-    public class Sw56 : Device
+    public class Sw56 : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sw56"/> class.

@@ -10,7 +10,7 @@ namespace DotRas
 {
     public class RasConnection
     {
-        internal RasConnection(RasHandle handle, Device device, string entryName, string phoneBook)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBook)
         {
             if (handle == null)
             {
@@ -44,7 +44,7 @@ namespace DotRas
         }
 
         public virtual RasHandle Handle { get; }
-        public virtual Device Device { get; }
+        public virtual RasDevice Device { get; }
         public virtual string EntryName { get; }
         public virtual string PhoneBook { get; }
 

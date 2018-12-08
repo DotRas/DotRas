@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Point-to-Point Protocol over Ethernet (PPPoE) device.
     /// </summary>
-    public class Pppoe : Device
+    public class Pppoe : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Pppoe"/> class.

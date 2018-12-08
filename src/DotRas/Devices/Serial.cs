@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Serial device.
     /// </summary>
-    public class Serial : Device
+    public class Serial : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Serial"/> class.

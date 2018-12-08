@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an Integrated Service Digital Network (ISDN) device.
     /// </summary>
-    public class Isdn : Device
+    public class Isdn : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Isdn"/> class.

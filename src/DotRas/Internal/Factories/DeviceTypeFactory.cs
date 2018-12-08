@@ -34,7 +34,7 @@ namespace DotRas.Internal.Factories
             this.serviceLocator = serviceLocator ?? throw new ArgumentNullException(nameof(serviceLocator));
         }
 
-        public Device Create(string name, string deviceType)
+        public RasDevice Create(string name, string deviceType)
         {
             if (string.IsNullOrWhiteSpace(deviceType))
             {

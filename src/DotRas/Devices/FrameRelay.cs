@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Frame Relay device.
     /// </summary>
-    public class FrameRelay : Device
+    public class FrameRelay : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FrameRelay"/> class.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an Infrared Data Association (IrDA) compliant device.
     /// </summary>
-    public class Irda : Device
+    public class Irda : RasDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Irda"/> class.
