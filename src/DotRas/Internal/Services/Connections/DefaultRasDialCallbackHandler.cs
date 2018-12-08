@@ -25,7 +25,7 @@ namespace DotRas.Internal.Services.Connections
         private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
         private ITaskCompletionSource<RasConnection> completionSource;
-        private Action<DialerStateChangedEventArgs> onStateChangedCallback;
+        private Action<StateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
         private bool completed;
 
@@ -53,7 +53,7 @@ namespace DotRas.Internal.Services.Connections
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -139,7 +139,7 @@ namespace DotRas.Internal.Services.Connections
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
         {
-            onStateChangedCallback(new DialerStateChangedEventArgs(connectionState));
+            onStateChangedCallback(new StateChangedEventArgs(connectionState));
         }
 
         private void GuardErrorCodeMustBeZero(int errorCode)

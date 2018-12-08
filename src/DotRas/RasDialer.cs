@@ -21,7 +21,7 @@ namespace DotRas
         /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
         /// an active connection has been disconnected outside of an attempt to dial.
         /// </remarks>
-        public event EventHandler<DialerStateChangedEventArgs> StateChanged;
+        public event EventHandler<StateChangedEventArgs> StateChanged;
 
         /// <summary>
         /// Gets or sets the name of the entry within the phone book.
@@ -100,7 +100,7 @@ namespace DotRas
             return api.DialAsync(new RasDialContext(PhoneBook, EntryName, Credentials, cancellationToken, RaiseDialStateChanged));
         }
 
-        private void RaiseDialStateChanged(DialerStateChangedEventArgs e)
+        private void RaiseDialStateChanged(StateChangedEventArgs e)
         {
             if (e == null)
             {

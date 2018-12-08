@@ -15,7 +15,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
         {
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             AttachedObject.Initialize(completionSource, onStateChangedCallback, onCompletedCallback, cancellationToken);
         }

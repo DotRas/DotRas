@@ -133,7 +133,7 @@ namespace DotRas.Tests
         [Test]
         public async Task RaisesTheEventFromTheOnStateChangedCallback()
         {
-            var e = new DialerStateChangedEventArgs(RasConnectionState.OpenPort);
+            var e = new StateChangedEventArgs(RasConnectionState.OpenPort);
             var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();

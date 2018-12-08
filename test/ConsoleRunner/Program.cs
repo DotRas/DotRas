@@ -69,7 +69,7 @@ namespace ConsoleRunner
             return !IsConnected && !CancellationSource.IsCancellationRequested;
         }
 
-        private void OnStateChanged(object sender, DialerStateChangedEventArgs e)
+        private void OnStateChanged(object sender, StateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
         }
