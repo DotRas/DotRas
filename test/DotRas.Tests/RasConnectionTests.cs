@@ -10,7 +10,7 @@ using DotRas.Win32.SafeHandles;
 namespace DotRas.Tests
 {
     [TestFixture]
-    public class ConnectionTests
+    public class RasConnectionTests
     {
         private Mock<IServiceProvider> container;
 
@@ -31,10 +31,10 @@ namespace DotRas.Tests
         public void EnumeratesTheConnectionCorrectly()
         {
             var enumConnections = new Mock<IRasEnumConnections>();
-            enumConnections.Setup(o => o.EnumerateConnections()).Returns(new Connection[0]);
+            enumConnections.Setup(o => o.EnumerateConnections()).Returns(new RasConnection[0]);
 
             container.Setup(o => o.GetService(typeof(IRasEnumConnections))).Returns(enumConnections.Object);
-            var result = Connection.EnumerateConnections();
+            var result = RasConnection.EnumerateConnections();
             
             Assert.IsNotNull(result);
             container.Verify(o => o.GetService(typeof(IRasEnumConnections)), Times.Once);
@@ -44,10 +44,10 @@ namespace DotRas.Tests
         [Test]
         public void WillReturnTheCorrectConnectionWhenUsingLinq()
         {
-            var connection1 = new Mock<Connection>();
+            var connection1 = new Mock<RasConnection>();
             connection1.Setup(o => o.EntryName).Returns("Test1");
 
-            var connection2 = new Mock<Connection>();
+            var connection2 = new Mock<RasConnection>();
             connection2.Setup(o => o.EntryName).Returns("Test2");
 
             var enumConnections = new Mock<IRasEnumConnections>();
@@ -55,7 +55,7 @@ namespace DotRas.Tests
 
             container.Setup(o => o.GetService(typeof(IRasEnumConnections))).Returns(enumConnections.Object);
 
-            var result = Connection.EnumerateConnections().SingleOrDefault(o => o.EntryName == "Test2");
+            var result = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == "Test2");
 
             Assert.IsNotNull(result);
             Assert.AreSame(connection2.Object, result);
@@ -69,7 +69,7 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new Connection(handle, device, entryName, phoneBook);
+            var target = new RasConnection(handle, device, entryName, phoneBook);
             Assert.AreEqual(entryName, target.EntryName);
         }
 
@@ -81,7 +81,7 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new Connection(handle, device, entryName, phoneBook);
+            var target = new RasConnection(handle, device, entryName, phoneBook);
             Assert.AreEqual(handle, target.Handle);
         }
 
@@ -93,7 +93,7 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new Connection(handle, device, entryName, phoneBook);
+            var target = new RasConnection(handle, device, entryName, phoneBook);
             Assert.AreEqual(device, target.Device);
         }
 
@@ -105,7 +105,7 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new Connection(handle, device, entryName, phoneBook);
+            var target = new RasConnection(handle, device, entryName, phoneBook);
             Assert.AreEqual(phoneBook, target.PhoneBook);
         }
 
@@ -118,7 +118,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(null, device, entryName, phoneBook);
+                var unused = new RasConnection(null, device, entryName, phoneBook);
             });
         }
 
@@ -134,7 +134,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentException>(() =>
             {
-                var unused = new Connection(handle, device, entryName, phoneBook);
+                var unused = new RasConnection(handle, device, entryName, phoneBook);
             });
         }
 
@@ -148,7 +148,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentException>(() =>
             {
-                var unused = new Connection(handle, device, entryName, phoneBook);
+                var unused = new RasConnection(handle, device, entryName, phoneBook);
             });
         }
 
@@ -161,7 +161,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, null, entryName, phoneBook);
+                var unused = new RasConnection(handle, null, entryName, phoneBook);
             });
         }
 
@@ -174,7 +174,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, null, phoneBook);
+                var unused = new RasConnection(handle, device, null, phoneBook);
             });
         }
 
@@ -187,7 +187,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, "", phoneBook);
+                var unused = new RasConnection(handle, device, "", phoneBook);
             });
         }
 
@@ -200,7 +200,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, "                ", phoneBook);
+                var unused = new RasConnection(handle, device, "                ", phoneBook);
             });
         }
 
@@ -213,7 +213,7 @@ namespace DotRas.Tests
             
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, entryName, null);
+                var unused = new RasConnection(handle, device, entryName, null);
             });
         }
 
@@ -226,7 +226,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, entryName, "");
+                var unused = new RasConnection(handle, device, entryName, "");
             });
         }
 
@@ -239,7 +239,7 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new Connection(handle, device, entryName, "             ");
+                var unused = new RasConnection(handle, device, entryName, "             ");
             });
         }
     }

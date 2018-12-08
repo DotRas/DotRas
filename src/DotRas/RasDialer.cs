@@ -55,7 +55,7 @@ namespace DotRas
         /// Dials the connection.
         /// </summary>
         /// <returns>The connection instance.</returns>
-        public Connection Dial()
+        public RasConnection Dial()
         {
             GuardMustNotBeDisposed();
 
@@ -67,7 +67,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
-        public Connection Dial(CancellationToken cancellationToken)
+        public RasConnection Dial(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
 
@@ -81,7 +81,7 @@ namespace DotRas
         /// Dials the connection asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
-        public Task<Connection> DialAsync()
+        public Task<RasConnection> DialAsync()
         {
             GuardMustNotBeDisposed();
 
@@ -93,7 +93,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
-        public Task<Connection> DialAsync(CancellationToken cancellationToken)
+        public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
 

@@ -8,9 +8,9 @@ using DotRas.Win32.SafeHandles;
 
 namespace DotRas
 {
-    public class Connection
+    public class RasConnection
     {
-        internal Connection(RasHandle handle, Device device, string entryName, string phoneBook)
+        internal RasConnection(RasHandle handle, Device device, string entryName, string phoneBook)
         {
             if (handle == null)
             {
@@ -39,7 +39,7 @@ namespace DotRas
             Device = device ?? throw new ArgumentNullException(nameof(device));
         }
         
-        protected Connection()
+        protected RasConnection()
         {
         }
 
@@ -48,7 +48,7 @@ namespace DotRas
         public virtual string EntryName { get; }
         public virtual string PhoneBook { get; }
 
-        public static IEnumerable<Connection> EnumerateConnections()
+        public static IEnumerable<RasConnection> EnumerateConnections()
         {
             return Container.Default.GetRequiredService<IRasEnumConnections>()
                 .EnumerateConnections();

@@ -26,7 +26,7 @@ namespace DotRas.Internal.Services.Connections
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
         }
 
-        public IEnumerable<Connection> EnumerateConnections()
+        public IEnumerable<RasConnection> EnumerateConnections()
         {
             var connections = GetConnections(out var count);
 
@@ -62,7 +62,7 @@ namespace DotRas.Internal.Services.Connections
             return lpRasConns;
         }
 
-        protected virtual Connection CreateConnection(RASCONN hRasConn)
+        protected virtual RasConnection CreateConnection(RASCONN hRasConn)
         {
             var handle = RasHandle.FromPtr(hRasConn.handle);
 
@@ -72,7 +72,7 @@ namespace DotRas.Internal.Services.Connections
                 throw new InvalidOperationException("The device was not created.");
             }
 
-            return new Connection(
+            return new RasConnection(
                 handle,
                 device,
                 hRasConn.entryName,

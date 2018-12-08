@@ -75,7 +75,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
-            Assert.Throws<ArgumentNullException>(() => target.Initialize(new Mock<ITaskCompletionSource<Connection>>().Object, null, () => { }, CancellationToken.None));
+            Assert.Throws<ArgumentNullException>(() => target.Initialize(new Mock<ITaskCompletionSource<RasConnection>>().Object, null, () => { }, CancellationToken.None));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
-            Assert.Throws<ArgumentNullException>(() => target.Initialize(new Mock<ITaskCompletionSource<Connection>>().Object, e => { }, null, CancellationToken.None));
+            Assert.Throws<ArgumentNullException>(() => target.Initialize(new Mock<ITaskCompletionSource<RasConnection>>().Object, e => { }, null, CancellationToken.None));
         }
 
 
@@ -105,7 +105,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationTokenSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationTokenSource.Object);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
             var cancellationToken = new CancellationToken(true);
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
@@ -130,7 +130,7 @@ namespace DotRas.Tests.Internal.Services
             var waitHandle = new Mock<IValueWaiter<RasHandle>>();
             waitHandle.Setup(o => o.Value).Returns(handle);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
 
             using (var cts = new CancellationTokenSource())
             {
@@ -164,7 +164,7 @@ namespace DotRas.Tests.Internal.Services
             var waitHandle = new Mock<IValueWaiter<RasHandle>>();
             waitHandle.Setup(o => o.Value).Returns(handle);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
             var cancellationToken = new CancellationToken();
 
             var called = false;
@@ -200,7 +200,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationTokenSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationTokenSource.Object);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
             var cancellationToken = new CancellationToken();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
@@ -289,7 +289,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationTokenSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationTokenSource.Object);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
             var cancellationToken = new CancellationToken();
 
             var target = new StubDefaultRasDialCallbackHandler(_ => null, rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
@@ -306,7 +306,7 @@ namespace DotRas.Tests.Internal.Services
         {
             var handle = new RasHandle();
 
-            var connection = new Mock<Connection>();
+            var connection = new Mock<RasConnection>();
             connection.Setup(o => o.Handle).Returns(handle);
 
             var rasHangUp = new Mock<IRasHangUp>();
@@ -325,7 +325,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationTokenSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationTokenSource.Object);
 
-            var completionSource = new Mock<ITaskCompletionSource<Connection>>();
+            var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
             var cancellationToken = new CancellationToken();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
@@ -334,7 +334,7 @@ namespace DotRas.Tests.Internal.Services
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, ConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
-            completionSource.Verify(o => o.SetResultAsynchronously(It.IsAny<Connection>()), Times.Once);
+            completionSource.Verify(o => o.SetResultAsynchronously(It.IsAny<RasConnection>()), Times.Once);
         }
 
         [Test]
@@ -370,7 +370,7 @@ namespace DotRas.Tests.Internal.Services
             cancellationSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationSource.Object);
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waiter.Object, cancellationSourceFactory.Object);
-            target.Initialize(new Mock<ITaskCompletionSource<Connection>>().Object, e => { }, () => { }, CancellationToken.None);
+            target.Initialize(new Mock<ITaskCompletionSource<RasConnection>>().Object, e => { }, () => { }, CancellationToken.None);
 
             target.Dispose();
 

@@ -36,7 +36,7 @@ namespace DotRas.Internal.Services.Connections
             callback = callbackHandler.OnCallback;
         }
 
-        public Task<Connection> DialAsync(RasDialContext context)
+        public Task<RasConnection> DialAsync(RasDialContext context)
         {
             if (context == null)
             {
@@ -63,12 +63,12 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        private ITaskCompletionSource<Connection> CreateCompletionSource()
+        private ITaskCompletionSource<RasConnection> CreateCompletionSource()
         {
-            return completionSourceFactory.Create<Connection>();
+            return completionSourceFactory.Create<RasConnection>();
         }
 
-        private void InitializeCallbackHandler(ITaskCompletionSource<Connection> completionSource, RasDialContext context)
+        private void InitializeCallbackHandler(ITaskCompletionSource<RasConnection> completionSource, RasDialContext context)
         {
             callbackHandler.Initialize(completionSource, context.OnStateChangedCallback, SetNotBusy, context.CancellationToken);
         }   

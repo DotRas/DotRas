@@ -10,7 +10,7 @@ namespace ConsoleRunner
     {
         private readonly RasDialer dialer;
 
-        private Connection connection;
+        private RasConnection connection;
         public bool IsConnected { get; private set; }
 
         public Program()

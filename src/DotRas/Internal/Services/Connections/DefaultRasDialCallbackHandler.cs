@@ -24,7 +24,7 @@ namespace DotRas.Internal.Services.Connections
 
         private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
-        private ITaskCompletionSource<Connection> completionSource;
+        private ITaskCompletionSource<RasConnection> completionSource;
         private Action<DialerStateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
         private bool completed;
@@ -53,7 +53,7 @@ namespace DotRas.Internal.Services.Connections
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<Connection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -177,7 +177,7 @@ namespace DotRas.Internal.Services.Connections
             FlagRequestAsCompleted();
         }
 
-        protected virtual Connection CreateConnection(RasHandle handle)
+        protected virtual RasConnection CreateConnection(RasHandle handle)
         {
             return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle.Equals(handle));
         }

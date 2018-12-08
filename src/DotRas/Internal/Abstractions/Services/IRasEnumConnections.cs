@@ -4,6 +4,6 @@ namespace DotRas.Internal.Abstractions.Services
 {
     internal interface IRasEnumConnections
     {
-        IEnumerable<Connection> EnumerateConnections();
+        IEnumerable<RasConnection> EnumerateConnections();
     }
 }

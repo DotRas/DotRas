@@ -21,7 +21,7 @@ namespace DotRas.Tests
         [Test]
         public void DialTheConnectionSynchronouslyWithAnExistingCancellationToken()
         {
-            var connection = new Mock<Connection>();
+            var connection = new Mock<RasConnection>();
             var cancellationToken = new CancellationToken();
 
             var api = new Mock<IRasDial>();
@@ -42,7 +42,7 @@ namespace DotRas.Tests
         [Test]
         public void DialsTheConnectionSynchronouslyWithoutACancellationToken()
         {
-            var connection = new Mock<Connection>();
+            var connection = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
@@ -62,7 +62,7 @@ namespace DotRas.Tests
         [Test]
         public async Task DialsTheConnectionAsyncWithoutACancellationToken()
         {
-            var result = new Mock<Connection>();
+            var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
@@ -83,7 +83,7 @@ namespace DotRas.Tests
         {
             var cancellationToken = CancellationToken.None;
             var credentials = new NetworkCredential("USERNAME", "PASSWORD", "DOMAIN");
-            var result = new Mock<Connection>();
+            var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
@@ -111,7 +111,7 @@ namespace DotRas.Tests
         public async Task ThrowsAnExceptionWhenTheEventArgsIsNull()
         {
             var executed = false;
-            var result = new Mock<Connection>();
+            var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
@@ -134,7 +134,7 @@ namespace DotRas.Tests
         public async Task RaisesTheEventFromTheOnStateChangedCallback()
         {
             var e = new DialerStateChangedEventArgs(ConnectionState.OpenPort);
-            var result = new Mock<Connection>();
+            var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>

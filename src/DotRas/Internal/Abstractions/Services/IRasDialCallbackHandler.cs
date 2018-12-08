@@ -7,7 +7,7 @@ namespace DotRas.Internal.Abstractions.Services
 {
     internal interface IRasDialCallbackHandler
     {
-        void Initialize(ITaskCompletionSource<Connection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
+        void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialerStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
 
         bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, ConnectionState rascs, int dwError, int dwExtendedError);
 
