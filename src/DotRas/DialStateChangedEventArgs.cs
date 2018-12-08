@@ -8,9 +8,9 @@ namespace DotRas
     /// </summary>
     public class DialerStateChangedEventArgs : EventArgs
     {
-        public ConnectionState State { get; }
+        public RasConnectionState State { get; }
 
-        public DialerStateChangedEventArgs(ConnectionState state)
+        public DialerStateChangedEventArgs(RasConnectionState state)
         {
             State = state;
         }

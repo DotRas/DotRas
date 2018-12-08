@@ -20,7 +20,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             AttachedObject.Initialize(completionSource, onStateChangedCallback, onCompletedCallback, cancellationToken);
         }
 
-        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, ConnectionState rascs, int dwError, int dwExtendedError)
+        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError)
         {
             var occurredOn = DateTime.Now;
             var result = AttachedObject.OnCallback(dwCallbackId, dwSubEntry, hrasconn, message, rascs, dwError, dwExtendedError);

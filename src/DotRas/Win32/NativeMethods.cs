@@ -34,7 +34,7 @@ namespace DotRas.Win32
         {
             [SizeOf]
             public int dwSize;
-            public ConnectionState rasconnstate;
+            public RasConnectionState rasconnstate;
             public int dwError;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
             public string szDeviceType;
@@ -101,7 +101,7 @@ namespace DotRas.Win32
             int dwSubEntry,
             IntPtr hrasconn,
             uint message,
-            ConnectionState rascs,
+            RasConnectionState rascs,
             int dwError,
             int dwExtendedError);
     }

@@ -3,9 +3,10 @@
 namespace DotRas
 {
     /// <summary>
-    /// Defines the different states available for a connection.
+    /// Defines the different states available for a remote access service (RAS) connection.
     /// </summary>
-    public enum ConnectionState
+    /// <remarks>Do not write code that depends on the order or occurrence of a particular connection state, because this can vary between platforms.</remarks>
+    public enum RasConnectionState
     {
         /// <summary>
         /// The communications port is about to be opened.

@@ -139,7 +139,7 @@ namespace DotRas.Tests.Internal.Services
 
                 cts.Cancel();
 
-                var result = target.OnCallback(new IntPtr(1), 1, new IntPtr(1), 0, ConnectionState.OpenPort, 0, 0);
+                var result = target.OnCallback(new IntPtr(1), 1, new IntPtr(1), 0, RasConnectionState.OpenPort, 0, 0);
                 Assert.IsFalse(result);
             }
 
@@ -172,11 +172,11 @@ namespace DotRas.Tests.Internal.Services
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
             target.Initialize(completionSource.Object, (e) =>
             {
-                Assert.AreEqual(ConnectionState.OpenPort, e.State);
+                Assert.AreEqual(RasConnectionState.OpenPort, e.State);
                 called = true;
             }, () => { }, cancellationToken);
 
-            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, ConnectionState.OpenPort, 0, 0);
+            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 0, 0);
 
             Assert.IsTrue(result);
             Assert.IsTrue(called);
@@ -206,7 +206,7 @@ namespace DotRas.Tests.Internal.Services
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
             target.Initialize(completionSource.Object, (e) => { }, () => { }, cancellationToken);
 
-            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, ConnectionState.OpenPort, 632, 0);
+            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 632, 0);
 
             Assert.IsFalse(result);
             completionSource.Verify(o => o.SetExceptionAsynchronously(It.IsAny<Exception>()), Times.Once);
@@ -222,7 +222,7 @@ namespace DotRas.Tests.Internal.Services
             var cancellationTokenSourceFactory = new Mock<ITaskCancellationSourceFactory>();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
-            Assert.Throws<InvalidOperationException>(() => target.OnCallback(new IntPtr(1), 1, new IntPtr(1), 0, ConnectionState.OpenPort, 0, 0));
+            Assert.Throws<InvalidOperationException>(() => target.OnCallback(new IntPtr(1), 1, new IntPtr(1), 0, RasConnectionState.OpenPort, 0, 0));
         }
 
         [Test]
@@ -295,7 +295,7 @@ namespace DotRas.Tests.Internal.Services
             var target = new StubDefaultRasDialCallbackHandler(_ => null, rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
             target.Initialize(completionSource.Object, (e) => { }, () => { }, cancellationToken);
 
-            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, ConnectionState.Connected, 0, 0);
+            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
             completionSource.Verify(o => o.SetExceptionAsynchronously(It.IsAny<InvalidOperationException>()), Times.Once);
@@ -331,7 +331,7 @@ namespace DotRas.Tests.Internal.Services
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory.Object);
             target.Initialize(completionSource.Object, (e) => { }, () => { }, cancellationToken);
 
-            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, ConnectionState.Connected, 0, 0);
+            var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
             completionSource.Verify(o => o.SetResultAsynchronously(It.IsAny<RasConnection>()), Times.Once);

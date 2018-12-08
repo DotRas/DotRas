@@ -98,7 +98,7 @@ namespace DotRas.Internal.Services.Connections
             rasHangUp.HangUp(handle.Value, CancellationToken.None);
         }
 
-        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, ConnectionState connectionState, int dwError, int dwExtendedError)
+        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
         {
             GuardMustNotBeDisposed();
             GuardMustBeInitialized();
@@ -137,7 +137,7 @@ namespace DotRas.Internal.Services.Connections
             return !completed;
         }
 
-        private void ExecuteStateChangedCallback(ConnectionState connectionState)
+        private void ExecuteStateChangedCallback(RasConnectionState connectionState)
         {
             onStateChangedCallback(new DialerStateChangedEventArgs(connectionState));
         }
@@ -150,9 +150,9 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        private bool HasConnectionCompleted(ConnectionState connectionState)
+        private bool HasConnectionCompleted(RasConnectionState connectionState)
         {
-            return connectionState == ConnectionState.Connected;
+            return connectionState == RasConnectionState.Connected;
         }
 
         private void RunPostCompleted()

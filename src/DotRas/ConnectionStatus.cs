@@ -2,11 +2,11 @@
 {
     public class ConnectionStatus
     {
-        public virtual ConnectionState State { get; }
+        public virtual RasConnectionState State { get; }
         public virtual Device Device { get; }
         public virtual string PhoneNumber { get; }
 
-        public ConnectionStatus(ConnectionState state, Device device, string phoneNumber)
+        public ConnectionStatus(RasConnectionState state, Device device, string phoneNumber)
         {
             State = state;
             Device = device;
