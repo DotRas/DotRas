@@ -10,7 +10,7 @@ namespace DotRas
     /// <summary>
     /// Provides a mechanism to dial a connection.
     /// </summary>
-    public sealed class Dialer : DisposableObject
+    public sealed class RasDialer : DisposableObject
     {
         private readonly IRasDial api;        
 
@@ -39,14 +39,14 @@ namespace DotRas
         public NetworkCredential Credentials { get; set; }
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="Dialer"/> class.
+        /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
-        public Dialer()
+        public RasDialer()
             : this(Container.Default.GetRequiredService<IRasDial>())
         {
         }
 
-        internal Dialer(IRasDial api)
+        internal RasDialer(IRasDial api)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }

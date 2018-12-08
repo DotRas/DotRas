@@ -8,14 +8,14 @@ namespace ConsoleRunner
 {
     partial class Program
     {
-        private readonly Dialer dialer;
+        private readonly RasDialer dialer;
 
         private Connection connection;
         public bool IsConnected { get; private set; }
 
         public Program()
         {
-            dialer = new Dialer
+            dialer = new RasDialer
             {
                 EntryName = Config.EntryName,
                 Credentials = new NetworkCredential(Config.Username, Config.Password)

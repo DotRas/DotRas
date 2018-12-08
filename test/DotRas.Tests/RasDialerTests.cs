@@ -9,12 +9,12 @@ using DotRas.Internal.Abstractions.Services;
 namespace DotRas.Tests
 {
     [TestFixture]
-    public class DialerTests
+    public class RasDialerTests
     {
         [Test]
         public void CanInstantiateTheDialer()
         {
-            var target = new Dialer();
+            var target = new RasDialer();
             Assert.IsNotNull(target);
         }
 
@@ -32,7 +32,7 @@ namespace DotRas.Tests
                 return Task.FromResult(connection.Object);
             }).Verifiable();
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             var result = target.Dial(cancellationToken);
 
             Assert.IsNotNull(result);
@@ -52,7 +52,7 @@ namespace DotRas.Tests
                 return Task.FromResult(connection.Object);
             }).Verifiable();
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             var result = target.Dial();
 
             Assert.IsNotNull(result);
@@ -72,7 +72,7 @@ namespace DotRas.Tests
                 return Task.FromResult(result.Object);
             }).Verifiable();
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             await target.DialAsync();
 
             api.Verify();
@@ -96,7 +96,7 @@ namespace DotRas.Tests
                 return Task.FromResult(result.Object);
             });
 
-            var target = new Dialer(api.Object)
+            var target = new RasDialer(api.Object)
             {
                 Credentials = credentials,
                 EntryName = "ENTRY",
@@ -124,7 +124,7 @@ namespace DotRas.Tests
             });
 
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             await target.DialAsync();
 
             Assert.True(executed);
@@ -147,7 +147,7 @@ namespace DotRas.Tests
 
             var raised = false;
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             target.StateChanged += (sender, args) =>
             {
                 Assert.AreEqual(e, args);
@@ -165,7 +165,7 @@ namespace DotRas.Tests
             var api = new Mock<IRasDial>();
             var disposable = api.As<IDisposable>();
 
-            var target = new Dialer(api.Object);
+            var target = new RasDialer(api.Object);
             target.Dispose();
 
             disposable.Verify(o => o.Dispose(), Times.Once);
