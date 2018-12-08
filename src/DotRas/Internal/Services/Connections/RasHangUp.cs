@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Win32;
@@ -19,11 +18,6 @@ namespace DotRas.Internal.Services.Connections
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
-        }
-
-        public Task HangUpAsync(RasHandle handle, CancellationToken cancellationToken)
-        {
-            return Task.Run(() => HangUp(handle, cancellationToken));
         }
 
         public void HangUp(RasHandle handle, CancellationToken cancellationToken)

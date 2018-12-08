@@ -50,7 +50,7 @@ namespace ConsoleRunner
 
         private async Task DisconnectAsync(CancellationToken cancellationToken)
         {
-            await connection.DisconnectAsync(cancellationToken);
+            await connection.HangUpAsync(cancellationToken);
             SetNotConnected();
         }
 

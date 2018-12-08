@@ -106,7 +106,7 @@ namespace DotRas.Tests
             var phoneBook = @"C:\Test.pbk";
 
             var target = new RasConnection(handle, device, entryName, phoneBook);
-            Assert.AreEqual(phoneBook, target.PhoneBook);
+            Assert.AreEqual(phoneBook, target.PhoneBookPath);
         }
 
         [Test]
