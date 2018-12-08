@@ -65,6 +65,22 @@ namespace DotRas.Tests.Internal.Services
         }
 
         [Test]
+        public void ThrowsAnExceptionWhenTheCompletionSourceIsNotCreated()
+        {
+            var api = new Mock<IRasApi32>();
+            var structFactory = new Mock<IStructFactory>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns((ITaskCompletionSource<RasConnection>)null);
+
+            var callbackHandler = new Mock<IRasDialCallbackHandler>();
+
+            var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
+            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null)));
+        }
+
+        [Test]
         public async Task DisposeWillDisposeTheCallbackHandler()
         {
             var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();
