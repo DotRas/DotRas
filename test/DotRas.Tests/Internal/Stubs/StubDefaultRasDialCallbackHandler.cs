@@ -1,8 +1,8 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
+using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Abstractions.Threading;
 using DotRas.Internal.Services.Connections;
 using DotRas.Win32.SafeHandles;
 

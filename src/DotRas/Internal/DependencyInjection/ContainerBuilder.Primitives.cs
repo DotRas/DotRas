@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Design;
-using DotRas.Internal.Abstractions.Threading;
-using DotRas.Internal.Threading;
+using DotRas.Internal.Abstractions.Primitives;
+using DotRas.Internal.Primitives;
 using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Internal.DependencyInjection

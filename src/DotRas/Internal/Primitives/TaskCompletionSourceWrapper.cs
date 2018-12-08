@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DotRas.Internal.Abstractions.Threading;
+using DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Threading
+namespace DotRas.Internal.Primitives
 {
     internal class TaskCompletionSourceWrapper<T> : ITaskCompletionSource<T>
     {

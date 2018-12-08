@@ -1,4 +1,4 @@
-﻿using DotRas.Internal.Abstractions.Threading;
+﻿using DotRas.Internal.Abstractions.Primitives;
 
 namespace DotRas.Internal.Abstractions.Factories
 {

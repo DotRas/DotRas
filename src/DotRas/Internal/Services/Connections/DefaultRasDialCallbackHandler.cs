@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
+using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Abstractions.Threading;
 using DotRas.Win32.SafeHandles;
 using static DotRas.Win32.WinError;
 

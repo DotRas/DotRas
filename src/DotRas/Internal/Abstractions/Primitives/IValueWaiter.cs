@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace DotRas.Internal.Abstractions.Threading
+namespace DotRas.Internal.Abstractions.Primitives
 {
     internal interface IValueWaiter<T>
     {

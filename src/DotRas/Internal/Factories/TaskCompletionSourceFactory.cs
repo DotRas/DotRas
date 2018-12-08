@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Factories;
-using DotRas.Internal.Abstractions.Threading;
-using DotRas.Internal.Threading;
+using DotRas.Internal.Abstractions.Primitives;
+using DotRas.Internal.Primitives;
 
 namespace DotRas.Internal.Factories
 {
