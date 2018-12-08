@@ -4,7 +4,7 @@ using DotRas.Tests.Stubs;
 namespace DotRas.Tests
 {
     [TestFixture]
-    public class DeviceTests
+    public class RasDeviceTests
     {
         [Test]
         public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsNull()
