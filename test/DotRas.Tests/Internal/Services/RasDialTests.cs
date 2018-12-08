@@ -65,13 +65,6 @@ namespace DotRas.Tests.Internal.Services
         }
 
         [Test]
-        public void ThrowAnExceptionWhenTheContextIsNull()
-        {
-            var target = new RasDial(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object);
-            Assert.ThrowsAsync<ArgumentNullException>(() => target.DialAsync(null));
-        }
-
-        [Test]
         public async Task DisposeWillDisposeTheCallbackHandler()
         {
             var completionSource = new Mock<ITaskCompletionSource<RasConnection>>();

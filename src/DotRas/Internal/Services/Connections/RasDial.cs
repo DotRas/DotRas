@@ -38,11 +38,6 @@ namespace DotRas.Internal.Services.Connections
 
         public Task<RasConnection> DialAsync(RasDialContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
             GuardMustNotBeDisposed();
             GuardMustNotAlreadyBeBusy();
 
