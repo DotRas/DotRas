@@ -29,10 +29,6 @@ namespace DotRas.Internal.Services
             {
                 throw new ArgumentNullException(nameof(entryName));
             }
-            else if (string.IsNullOrWhiteSpace(phoneBookPath))
-            {
-                throw new ArgumentNullException(nameof(phoneBookPath));
-            }
 
             var rasCredentials = CreateStructure(RASCM.UserName | RASCM.Password | RASCM.Domain);
 

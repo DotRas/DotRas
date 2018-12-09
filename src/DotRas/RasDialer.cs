@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -128,9 +129,9 @@ namespace DotRas
 
         private void ValidateConfigurationPriorToDialAttempt()
         {
-            if (string.IsNullOrWhiteSpace(PhoneBookPath) || !fileSystem.VerifyFileExists(PhoneBookPath))
+            if (!string.IsNullOrWhiteSpace(PhoneBookPath) && !fileSystem.VerifyFileExists(PhoneBookPath))
             {
-                throw new RasDialerConfigurationException($"The {nameof(PhoneBookPath)} has not been set, or the phone book does not exist.");
+                throw new FileNotFoundException("The file does not exist.", PhoneBookPath);
             }
 
             if (string.IsNullOrWhiteSpace(EntryName) || !validator.VerifyEntryExists(EntryName, PhoneBookPath))

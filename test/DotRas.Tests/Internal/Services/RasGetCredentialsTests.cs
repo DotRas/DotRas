@@ -89,14 +89,14 @@ namespace DotRas.Tests.Internal.Services
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenThePhoneBookPathIsNull()
+        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull()
         {
             var api = new Mock<IRasApi32>();
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasGetCredentials(api.Object, structFactory.Object, exceptionPolicy.Object);
-            Assert.Throws<ArgumentNullException>(() => target.GetNetworkCredential("ENTRY", null));
+            Assert.DoesNotThrow(() => target.GetNetworkCredential("ENTRY", null));
         }
     }
 }

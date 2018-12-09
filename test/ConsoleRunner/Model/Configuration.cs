@@ -8,7 +8,7 @@ namespace ConsoleRunner.Model
         [DataMember(Name = "entryName", IsRequired = true, Order = 1)]
         public string EntryName { get; set; }
 
-        [DataMember(Name = "phoneBookPath", IsRequired = true, Order = 2)]
+        [DataMember(Name = "phoneBookPath", IsRequired = false, Order = 2)]
         public string PhoneBookPath { get; set; }
 
         [DataMember(Name = "username", IsRequired = true, Order = 3)]

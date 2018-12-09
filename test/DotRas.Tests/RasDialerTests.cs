@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -298,7 +299,10 @@ namespace DotRas.Tests
         {
             var api = new Mock<IRasDial>();
             var rasGetCredentials = new Mock<IRasGetCredentials>();
+
             var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
+
             var validator = new Mock<IPhoneBookEntryValidator>();
 
             var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object)
@@ -311,12 +315,14 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenThePhoneBookPathHasNotBeenSet()
+        public void DoesNotThrowsAnExceptionWhenThePhoneBookPathHasNotBeenSet()
         {
             var api = new Mock<IRasDial>();
             var rasGetCredentials = new Mock<IRasGetCredentials>();
             var fileSystem = new Mock<IFileSystem>();
+
             var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, null)).Returns(true);
 
             var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object)
             {
@@ -324,7 +330,7 @@ namespace DotRas.Tests
                 PhoneBookPath = null
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            Assert.DoesNotThrow(() => target.Dial());
         }
 
         [Test]
@@ -343,7 +349,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            Assert.Throws<FileNotFoundException>(() => target.Dial());
 
             fileSystem.Verify();
         }

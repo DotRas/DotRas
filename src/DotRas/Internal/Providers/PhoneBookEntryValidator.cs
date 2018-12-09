@@ -20,10 +20,6 @@ namespace DotRas.Internal.Providers
             {
                 throw new ArgumentNullException(nameof(entryName));
             }
-            else if (string.IsNullOrWhiteSpace(phoneBookPath))
-            {
-                throw new ArgumentNullException(nameof(phoneBookPath));
-            }
 
             var ret = api.RasValidateEntryName(phoneBookPath, entryName);
             return ret == ERROR_ALREADY_EXISTS;

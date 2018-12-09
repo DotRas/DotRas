@@ -26,12 +26,12 @@ namespace DotRas.Tests.Internal.Providers
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenThePhoneBookPathIsNull()
+        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull()
         {
             var api = new Mock<IRasApi32>();
 
             var target = new PhoneBookEntryValidator(api.Object);
-            Assert.Throws<ArgumentNullException>(() => target.VerifyEntryExists("ENTRY", null));
+            Assert.DoesNotThrow(() => target.VerifyEntryExists("ENTRY", null));
         }
 
         [Test]
