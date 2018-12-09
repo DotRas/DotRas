@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using DotRas.Tests.Stubs;
+﻿using DotRas.Tests.Stubs;
+using NUnit.Framework;
 
 namespace DotRas.Tests
 {

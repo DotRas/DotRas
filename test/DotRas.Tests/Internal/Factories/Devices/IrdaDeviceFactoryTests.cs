@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using DotRas.Devices;
+﻿using DotRas.Devices;
 using DotRas.Internal.Factories.Devices;
+using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Factories.Devices
 {

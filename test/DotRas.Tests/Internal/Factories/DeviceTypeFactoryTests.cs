@@ -1,8 +1,8 @@
 ﻿using System;
 using DotRas.Devices;
-using NUnit.Framework;
 using DotRas.Internal.Factories;
 using Moq;
+using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Factories
 {

@@ -18,10 +18,4 @@
     <ProjectReference Include="..\..\src\DotRas\DotRas.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="SampleData\Test.lic">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

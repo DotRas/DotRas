@@ -1,6 +1,6 @@
 ﻿using System;
-using NUnit.Framework;
 using DotRas.Win32.SafeHandles;
+using NUnit.Framework;
 
 namespace DotRas.Tests.Win32.SafeHandles
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using NUnit.Framework;
 using DotRas.Internal.Providers;
 using DotRas.Tests.Internal.Stubs;
+using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Providers
 {

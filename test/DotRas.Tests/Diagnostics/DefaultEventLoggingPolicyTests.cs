@@ -1,8 +1,8 @@
 ﻿using System;
-using Moq;
-using NUnit.Framework;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
+using Moq;
+using NUnit.Framework;
 
 namespace DotRas.Tests.Diagnostics
 {
