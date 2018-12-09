@@ -44,7 +44,7 @@ namespace DotRas.Internal.Factories
             var factory = GetFactoryFromDeviceType(deviceType);
             if (factory == null)
             {
-                throw new NotSupportedException($"The device type '{deviceType}' is not supported.");
+                return new Unknown(name, deviceType);
             }
 
             return factory.Create(name);
