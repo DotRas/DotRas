@@ -63,12 +63,18 @@ namespace DotRas.Win32
             EapInfoCryptInCapable = 0x8000
         }
 
-        /// <summary>
-        /// Defines the callback signatures available for the dialing process.
-        /// </summary>
         public enum NotifierType
         {
             RasDialFunc2 = 2
+        }
+
+        [Flags]
+        public enum RASCM
+        {
+            None = 0x0,
+            UserName = 0x1,
+            Password = 0x2,
+            Domain = 0x4
         }
     }
 }

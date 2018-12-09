@@ -69,6 +69,28 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return AttachedObject.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);
         }
 
+        public int RasGetCredentials(string lpszPhonebook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeCallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasGetCredentials),
+                Result = result,
+            };
+
+            callEvent.Args.Add(nameof(lpszPhonebook), lpszPhonebook);
+            callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
+            callEvent.OutArgs.Add(nameof(lpCredentials), lpCredentials);
+
+            LogInformation(callEvent);
+            return result;
+        }
+
         public int RasGetErrorString(int uErrorValue, StringBuilder lpszErrorString, int cBufSize)
         {
             var stopwatch = Stopwatch.StartNew();

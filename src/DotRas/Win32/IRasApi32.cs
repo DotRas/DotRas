@@ -24,6 +24,11 @@ namespace DotRas.Win32
             RasHandle hRasConn,
             ref RASCONNSTATUS lpRasConnStatus);
 
+        int RasGetCredentials(
+            string lpszPhonebook,
+            string lpszEntryName,
+            ref RASCREDENTIALS lpCredentials);
+
         int RasGetErrorString(
             int uErrorValue,
             StringBuilder lpszErrorString,

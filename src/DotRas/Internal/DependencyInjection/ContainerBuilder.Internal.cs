@@ -53,6 +53,12 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new RasGetErrorString(
                     c.GetRequiredService<IRasApi32>()));
 
+            container.AddService(typeof(IRasGetCredentials),
+                (c, _) => new RasGetCredentials(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
             container.AddService(typeof(IRasDial),
                 (c, _) => new RasDial(
                     c.GetRequiredService<IRasApi32>(),

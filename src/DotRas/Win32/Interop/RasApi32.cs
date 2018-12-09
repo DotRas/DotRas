@@ -22,6 +22,11 @@ namespace DotRas.Win32.Interop
             return SafeNativeMethods.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);
         }
 
+        public int RasGetCredentials(string lpszPhonebook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
+        {
+            return SafeNativeMethods.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
+        }
+
         public int RasGetErrorString(int uErrorValue, StringBuilder lpszErrorString, int cBufSize)
         {
             return SafeNativeMethods.RasGetErrorString(uErrorValue, lpszErrorString, cBufSize);

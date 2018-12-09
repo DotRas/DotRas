@@ -14,18 +14,12 @@ namespace DotRas
     /// </summary>
     public sealed class RasDialer : DisposableObject
     {
+        #region Fields and Properties
+
         private readonly IRasDial api;
+        private readonly IRasGetCredentials rasGetCredentials;
         private readonly IFileSystem fileSystem;
         private readonly IPhoneBookEntryValidator validator;
-
-        /// <summary>
-        /// Occurs when the state changes while dialing a connection.
-        /// </summary>
-        /// <remarks>
-        /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
-        /// an active connection has been disconnected outside of an attempt to dial.
-        /// </remarks>
-        public event EventHandler<StateChangedEventArgs> StateChanged;
 
         /// <summary>
         /// Gets or sets the name of the entry within the phone book.
@@ -41,18 +35,42 @@ namespace DotRas
         /// Gets or sets the credentials.
         /// </summary>
         public NetworkCredential Credentials { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets a value indicating whether stored credentials will be allowed if the credentials have not been provided.
+        /// </summary>
+        public bool AllowUseStoredCredentials { get; set; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Occurs when the state changes while dialing a connection.
+        /// </summary>
+        /// <remarks>
+        /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
+        /// an active connection has been disconnected outside of an attempt to dial.
+        /// </remarks>
+        public event EventHandler<StateChangedEventArgs> StateChanged;
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
-        public RasDialer()
-            : this(Container.Default.GetRequiredService<IRasDial>(), Container.Default.GetRequiredService<IFileSystem>(), Container.Default.GetRequiredService<IPhoneBookEntryValidator>())
+        public RasDialer() : this(
+                Container.Default.GetRequiredService<IRasDial>(), 
+                Container.Default.GetRequiredService<IRasGetCredentials>(), 
+                Container.Default.GetRequiredService<IFileSystem>(), 
+                Container.Default.GetRequiredService<IPhoneBookEntryValidator>())
         {
         }
 
-        internal RasDialer(IRasDial api, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
+        internal RasDialer(IRasDial api, IRasGetCredentials rasGetCredentials, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
+            this.rasGetCredentials = rasGetCredentials ?? throw new ArgumentNullException(nameof(rasGetCredentials));
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
@@ -105,7 +123,7 @@ namespace DotRas
             GuardMustNotBeDisposed();
             ValidateConfigurationPriorToDialAttempt();
 
-            return api.DialAsync(new RasDialContext(PhoneBookPath, EntryName, Credentials, cancellationToken, RaiseDialStateChanged));
+            return api.DialAsync(new RasDialContext(PhoneBookPath, EntryName, GetCredentials(), cancellationToken, RaiseDialStateChanged));
         }
 
         private void ValidateConfigurationPriorToDialAttempt()
@@ -119,6 +137,21 @@ namespace DotRas
             {
                 throw new RasDialerConfigurationException($"The {nameof(EntryName)} has not been set, or the entry does not exist within the phone book specified.");
             }
+
+            if (AllowUseStoredCredentials && Credentials != null)
+            {
+                throw new RasDialerConfigurationException("The credentials must not be supplied if the stored credentials are to be used.");
+            }
+        }
+
+        private NetworkCredential GetCredentials()
+        {
+            if (AllowUseStoredCredentials && Credentials == null)
+            {
+                return rasGetCredentials.GetNetworkCredential(EntryName, PhoneBookPath);
+            }
+
+            return Credentials;
         }
 
         private void RaiseDialStateChanged(StateChangedEventArgs e)

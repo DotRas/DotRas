@@ -24,9 +24,6 @@ namespace DotRas.Win32
             public string phoneBook;
             public int subEntryId;
             public Guid entryId;
-            //public NativeMethods.RASCF connectionOptions;
-            //public Luid sessionId;
-            //public Guid correlationId;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
@@ -42,6 +39,20 @@ namespace DotRas.Win32
             public string szDeviceName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxPhoneNumber + 1)]
             public string szPhoneNumber;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
+        public struct RASCREDENTIALS
+        {
+            [SizeOf]
+            public int dwSize;
+            public RASCM dwMask;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = UNLEN + 1)]
+            public string szUserName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PWLEN + 1)]
+            public string szPassword;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = DNLEN + 1)]
+            public string szDomain;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
