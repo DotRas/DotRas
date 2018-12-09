@@ -18,6 +18,7 @@ namespace ConsoleRunner
             dialer = new RasDialer
             {
                 EntryName = Config.EntryName,
+                PhoneBookPath = Config.PhoneBookPath,
                 Credentials = new NetworkCredential(Config.Username, Config.Password)
             };
 
