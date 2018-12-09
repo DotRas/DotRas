@@ -31,6 +31,14 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentException("The handle is invalid.", nameof(handle));
             }
 
+            CloseAllConnectionsToTheHandle(handle, cancellationToken);
+            EnsurePortHasBeenReleased();
+
+            handle.SetHandleAsInvalid();
+        }
+
+        private void CloseAllConnectionsToTheHandle(RasHandle handle, CancellationToken cancellationToken)
+        {
             int ret;
 
             do
@@ -43,13 +51,18 @@ namespace DotRas.Internal.Services.Connections
                     throw exceptionPolicy.Create(ret);
                 }
             } while (ret == SUCCESS);
-
-            handle.SetHandleAsInvalid();
         }
 
         private bool ShouldThrowExceptionFromReturnCode(int ret)
         {
             return ret != SUCCESS && ret != ERROR_NO_CONNECTION;
+        }
+
+        private void EnsurePortHasBeenReleased()
+        {
+            // ATTENTION! This required pause comes from the Windows SDK. Failure to perform this pause may cause the state machine to leave 
+            // the port open which will require the machine to be rebooted to release the port.
+            Thread.Sleep(1000);
         }
     }
 }
