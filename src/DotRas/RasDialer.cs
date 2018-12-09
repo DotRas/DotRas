@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
 
@@ -12,7 +13,8 @@ namespace DotRas
     /// </summary>
     public sealed class RasDialer : DisposableObject
     {
-        private readonly IRasDial api;        
+        private readonly IRasDial api;
+        private readonly IFileSystem fileSystem;
 
         /// <summary>
         /// Occurs when the state changes while dialing a connection.
@@ -31,7 +33,7 @@ namespace DotRas
         /// <summary>
         /// Gets the full path (including filename) of the phone book containing the entry.
         /// </summary>
-        public string PhoneBook { get; set; }
+        public string PhoneBookPath { get; set; }
 
         /// <summary>
         /// Gets or sets the credentials.
@@ -42,13 +44,14 @@ namespace DotRas
         /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
         public RasDialer()
-            : this(Container.Default.GetRequiredService<IRasDial>())
+            : this(Container.Default.GetRequiredService<IRasDial>(), Container.Default.GetRequiredService<IFileSystem>())
         {
         }
 
-        internal RasDialer(IRasDial api)
+        internal RasDialer(IRasDial api, IFileSystem fileSystem)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         /// <summary>
@@ -70,6 +73,7 @@ namespace DotRas
         public RasConnection Dial(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
+            ValidateConfigurationForDialAttempt();
 
             using (var task = DialAsync(cancellationToken))
             {
@@ -96,8 +100,22 @@ namespace DotRas
         public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
+            ValidateConfigurationForDialAttempt();
 
-            return api.DialAsync(new RasDialContext(PhoneBook, EntryName, Credentials, cancellationToken, RaiseDialStateChanged));
+            return api.DialAsync(new RasDialContext(PhoneBookPath, EntryName, Credentials, cancellationToken, RaiseDialStateChanged));
+        }
+
+        private void ValidateConfigurationForDialAttempt()
+        {
+            if (string.IsNullOrWhiteSpace(EntryName))
+            {
+                throw new RasDialerConfigurationException("The entry name has not been set.");
+            }
+
+            if (string.IsNullOrWhiteSpace(PhoneBookPath) || !fileSystem.VerifyFileExists(PhoneBookPath))
+            {
+                throw new RasDialerConfigurationException("The phone book path has not been set or the file does not exist.");
+            }
         }
 
         private void RaiseDialStateChanged(StateChangedEventArgs e)

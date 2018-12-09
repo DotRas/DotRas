@@ -16,6 +16,8 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new ValueWaiter<RasHandle>(
                     c.GetRequiredService<IManualResetEvent>()));
 
+            container.AddService(typeof(IFileSystem),
+                (c, _) => new FileSystem());
         }
     }
 }
