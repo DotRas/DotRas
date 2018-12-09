@@ -7,5 +7,7 @@
         public const int ERROR_INVALID_PARAMETER = 87;
 
         public const int ERROR_INSUFFICIENT_BUFFER = 122;
+
+        public const int ERROR_ALREADY_EXISTS = 183;
     }
 }

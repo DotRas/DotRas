@@ -3,15 +3,19 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
+using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 using Moq;
 using NUnit.Framework;
-using DotRas.Internal.Abstractions.Services;
 
 namespace DotRas.Tests
 {
     [TestFixture]
     public class RasDialerTests
     {
+        private const string PhoneBookPath = "PATH";
+        private const string EntryName = "ENTRY";
+
         [Test]
         public void CanInstantiateTheDialer()
         {
@@ -34,12 +38,15 @@ namespace DotRas.Tests
             }).Verifiable();
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             var result = target.Dial(cancellationToken);
@@ -62,12 +69,15 @@ namespace DotRas.Tests
             }).Verifiable();
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             var result = target.Dial();
@@ -90,12 +100,15 @@ namespace DotRas.Tests
             }).Verifiable();
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             await target.DialAsync();
@@ -115,20 +128,23 @@ namespace DotRas.Tests
             {
                 Assert.AreEqual(cancellationToken, c.CancellationToken);
                 Assert.AreEqual(credentials, c.Credentials);
-                Assert.AreEqual("ENTRY", c.EntryName);
-                Assert.AreEqual("PATH", c.PhoneBookPath);
+                Assert.AreEqual(EntryName, c.EntryName);
+                Assert.AreEqual(PhoneBookPath, c.PhoneBookPath);
 
                 return Task.FromResult(result.Object);
             });
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
                 Credentials = credentials,
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             var connection = await target.DialAsync(cancellationToken);
@@ -152,12 +168,15 @@ namespace DotRas.Tests
             });
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             await target.DialAsync();
@@ -181,14 +200,17 @@ namespace DotRas.Tests
             });
 
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(true);
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
+
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(true);
 
             var raised = false;
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             target.StateChanged += (sender, args) =>
@@ -209,8 +231,9 @@ namespace DotRas.Tests
             var disposable = api.As<IDisposable>();
 
             var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
 
-            var target = new RasDialer(api.Object, fileSystem.Object);
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object);
             target.Dispose();
 
             disposable.Verify(o => o.Dispose(), Times.Once);
@@ -221,11 +244,12 @@ namespace DotRas.Tests
         {
             var api = new Mock<IRasDial>();           
             var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
                 EntryName = null,
-                PhoneBookPath = "PATH"
+                PhoneBookPath = PhoneBookPath
             };
 
             Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
@@ -236,10 +260,11 @@ namespace DotRas.Tests
         {
             var api = new Mock<IRasDial>();
             var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
+                EntryName = EntryName,
                 PhoneBookPath = null
             };
 
@@ -251,17 +276,40 @@ namespace DotRas.Tests
         {
             var api = new Mock<IRasDial>();
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(o => o.VerifyFileExists("PATH")).Returns(false).Verifiable();
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(false).Verifiable();
 
-            var target = new RasDialer(api.Object, fileSystem.Object)
+            var validator = new Mock<IPhoneBookEntryValidator>();
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                EntryName = "ENTRY",
-                PhoneBookPath = "PATH"
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
             };
 
             Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
 
             fileSystem.Verify();
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenTheEntryNameDoesNotExist()
+        {
+            var api = new Mock<IRasDial>();
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(o => o.VerifyFileExists(PhoneBookPath)).Returns(true);
+
+            var validator = new Mock<IPhoneBookEntryValidator>();
+            validator.Setup(o => o.VerifyEntryExists(EntryName, PhoneBookPath)).Returns(false).Verifiable();
+
+            var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
+            {
+                EntryName = EntryName,
+                PhoneBookPath = PhoneBookPath
+            };
+
+            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+
+            validator.Verify();
         }
     }
 }

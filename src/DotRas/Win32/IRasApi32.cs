@@ -30,5 +30,9 @@ namespace DotRas.Win32
             int cBufSize);
 
         int RasHangUp(RasHandle hRasConn);
+
+        int RasValidateEntryName(
+            string lpszPhonebook,
+            string lpszEntryName);
     }
 }

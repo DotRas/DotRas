@@ -33,6 +33,10 @@ namespace DotRas.Internal.DependencyInjection
                     new StructMarshaller(),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 
+            container.AddService(typeof(IPhoneBookEntryValidator),
+                (c, _) => new PhoneBookEntryValidator(
+                    c.GetRequiredService<IRasApi32>()));
+
             container.AddService(typeof(IRasHangUp),
                 (c, _) => new RasHangUp(
                     c.GetRequiredService<IRasApi32>(),

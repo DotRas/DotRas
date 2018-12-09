@@ -24,5 +24,10 @@ namespace DotRas.Win32.Interop
             [In, Out] RASCONN[] lpRasConn,
             ref int lpCb,
             ref int lpConnections);
+        
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasValidateEntryName(
+            string lpszPhonebook,
+            string lpszEntryName);
     }
 }

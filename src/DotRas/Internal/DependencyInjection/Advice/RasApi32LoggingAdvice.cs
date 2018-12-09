@@ -110,5 +110,26 @@ namespace DotRas.Internal.DependencyInjection.Advice
             LogInformation(callEvent);
             return result;
         }
+
+        public int RasValidateEntryName(string lpszPhonebook, string lpszEntryName)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasValidateEntryName(lpszPhonebook, lpszEntryName);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeCallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasValidateEntryName),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(lpszPhonebook), lpszPhonebook);
+            callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
+
+            LogInformation(callEvent);
+            return result;
+        }
     }
 }

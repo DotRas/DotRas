@@ -31,5 +31,10 @@ namespace DotRas.Win32.Interop
         {
             return UnsafeNativeMethods.RasHangUp(hRasConn);
         }
+
+        public int RasValidateEntryName(string lpszPhonebook, string lpszEntryName)
+        {
+            return SafeNativeMethods.RasValidateEntryName(lpszPhonebook, lpszEntryName);
+        }
     }
 }
