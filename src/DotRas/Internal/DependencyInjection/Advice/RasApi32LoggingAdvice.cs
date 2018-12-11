@@ -2,11 +2,11 @@
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
-using DotRas.Win32;
+using DotRas.Internal.Interop;
 using DotRas.Win32.SafeHandles;
-using static DotRas.Win32.ExternDll;
-using static DotRas.Win32.NativeMethods;
-using static DotRas.Win32.Ras;
+using static DotRas.Internal.Interop.ExternDll;
+using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.DependencyInjection.Advice
 {

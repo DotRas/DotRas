@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Win32\SafeHandles\" />
   </ItemGroup>
 
   <ItemGroup>

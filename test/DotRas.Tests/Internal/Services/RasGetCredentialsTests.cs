@@ -1,12 +1,12 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
+using DotRas.Internal.Interop;
 using DotRas.Internal.Services;
 using DotRas.Tests.Stubs;
-using DotRas.Win32;
 using Moq;
 using NUnit.Framework;
-using static DotRas.Win32.NativeMethods;
+using static DotRas.Internal.Interop.NativeMethods;
 
 namespace DotRas.Tests.Internal.Services
 {

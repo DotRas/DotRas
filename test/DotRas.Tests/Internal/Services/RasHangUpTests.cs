@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading;
 using DotRas.Internal.Abstractions.Policies;
+using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Stubs;
-using DotRas.Win32;
 using DotRas.Win32.SafeHandles;
 using Moq;
 using NUnit.Framework;
-using static DotRas.Win32.RasError;
-using static DotRas.Win32.WinError;
+using static DotRas.Internal.Interop.RasError;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Tests.Internal.Services
 {

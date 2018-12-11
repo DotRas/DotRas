@@ -1,9 +1,8 @@
 ﻿using DotRas.Win32.SafeHandles;
 using System.Text;
-using static DotRas.Win32.Ras;
-using static DotRas.Win32.NativeMethods;
+using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Win32
+namespace DotRas.Internal.Interop
 {
     internal interface IRasApi32
     {
@@ -16,7 +15,7 @@ namespace DotRas.Win32
             ref RASDIALEXTENSIONS lpRasDialExtensions,
             string lpszPhoneBook,
             ref RASDIALPARAMS lpRasDialParams,
-            NotifierType dwNotifierType,
+            Ras.NotifierType dwNotifierType,
             RasDialFunc2 lpvNotifier,
             out RasHandle lphRasConn);
 

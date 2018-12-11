@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRas.Win32
+namespace DotRas.Internal.Interop
 {
     /// <summary>
     /// Identifies a field which should be masked during logging operations.

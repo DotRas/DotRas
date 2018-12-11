@@ -1,4 +1,4 @@
-﻿namespace DotRas.Win32
+﻿namespace DotRas.Internal.Interop
 {
     internal class StdLib
     {

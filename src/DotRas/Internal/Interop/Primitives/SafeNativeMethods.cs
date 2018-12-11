@@ -1,11 +1,10 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Win32.SafeHandles;
-using static DotRas.Win32.ExternDll;
-using static DotRas.Win32.NativeMethods;
+using static DotRas.Internal.Interop.ExternDll;
+using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Win32.Interop
+namespace DotRas.Internal.Interop.Primitives
 {
     internal static class SafeNativeMethods
     {

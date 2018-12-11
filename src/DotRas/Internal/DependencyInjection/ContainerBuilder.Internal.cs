@@ -6,10 +6,10 @@ using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Advice;
+using DotRas.Internal.Interop;
 using DotRas.Internal.Providers;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
-using DotRas.Win32;
 using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Internal.DependencyInjection

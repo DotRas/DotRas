@@ -23,9 +23,4 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Win32\Interop\" />
-    <Folder Include="Win32\SafeHandles\" />
-  </ItemGroup>
-
 </Project>

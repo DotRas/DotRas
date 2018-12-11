@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DotRas.Devices;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Factories.Devices;
-using static DotRas.Win32.Ras;
+using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Factories
 {

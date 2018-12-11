@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
+using DotRas.Internal.Interop;
 using DotRas.Internal.Services;
-using DotRas.Win32;
 using Moq;
 using NUnit.Framework;
-using static DotRas.Win32.WinError;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Tests.Internal.Services
 {

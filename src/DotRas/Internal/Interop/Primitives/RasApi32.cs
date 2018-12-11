@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using DotRas.Win32.SafeHandles;
-using static DotRas.Win32.Ras;
-using static DotRas.Win32.NativeMethods;
+using static DotRas.Internal.Interop.Ras;
+using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Win32.Interop
+namespace DotRas.Internal.Interop.Primitives
 {
     internal class RasApi32 : IRasApi32
     {

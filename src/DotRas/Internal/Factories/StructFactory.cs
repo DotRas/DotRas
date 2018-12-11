@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Providers;
-using DotRas.Win32;
+using DotRas.Internal.Interop;
 
 namespace DotRas.Internal.Factories
 {

@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
-using static DotRas.Win32.RasError;
-using static DotRas.Win32.WinError;
+using static DotRas.Internal.Interop.RasError;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Policies
 {

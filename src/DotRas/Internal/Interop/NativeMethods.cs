@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using static DotRas.Win32.Lmcons;
-using static DotRas.Win32.Ras;
-using static DotRas.Win32.StdLib;
+using static DotRas.Internal.Interop.Lmcons;
+using static DotRas.Internal.Interop.Ras;
+using static DotRas.Internal.Interop.StdLib;
 
-namespace DotRas.Win32
+namespace DotRas.Internal.Interop
 {
     internal static class NativeMethods
     {

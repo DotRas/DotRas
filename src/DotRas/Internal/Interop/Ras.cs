@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRas.Win32
+namespace DotRas.Internal.Interop
 {
     internal static class Ras
     {

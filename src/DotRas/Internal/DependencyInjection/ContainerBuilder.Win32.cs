@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Design;
 using DotRas.Diagnostics;
 using DotRas.Internal.DependencyInjection.Advice;
-using DotRas.Win32;
-using DotRas.Win32.Interop;
+using DotRas.Internal.Interop;
+using DotRas.Internal.Interop.Primitives;
 
 namespace DotRas.Internal.DependencyInjection
 {

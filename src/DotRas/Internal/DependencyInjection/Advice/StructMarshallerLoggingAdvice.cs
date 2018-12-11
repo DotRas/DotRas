@@ -4,7 +4,7 @@ using System.Reflection;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Internal.Abstractions.Providers;
-using DotRas.Win32;
+using DotRas.Internal.Interop;
 
 namespace DotRas.Internal.DependencyInjection.Advice
 {

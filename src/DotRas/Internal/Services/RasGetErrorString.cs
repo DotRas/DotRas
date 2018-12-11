@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Text;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Win32;
-using static DotRas.Win32.WinError;
+using DotRas.Internal.Interop;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services
 {

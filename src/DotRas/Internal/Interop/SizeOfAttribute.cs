@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRas.Win32
+namespace DotRas.Internal.Interop
 {
     [AttributeUsage(AttributeTargets.Field)]
     internal class SizeOfAttribute : Attribute

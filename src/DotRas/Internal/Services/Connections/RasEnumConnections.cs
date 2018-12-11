@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Win32;
+using DotRas.Internal.Interop;
 using DotRas.Win32.SafeHandles;
-using static DotRas.Win32.NativeMethods;
-using static DotRas.Win32.RasError;
-using static DotRas.Win32.WinError;
+using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.RasError;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Connections
 {

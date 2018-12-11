@@ -1,4 +1,4 @@
-﻿using static DotRas.Win32.Ras;
+﻿using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas
 {
