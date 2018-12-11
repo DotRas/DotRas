@@ -1,8 +1,7 @@
 ﻿using System;
-using DotRas.Win32.SafeHandles;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Win32.SafeHandles
+namespace DotRas.Tests
 {
     [TestFixture]
     public class RasHandleTests

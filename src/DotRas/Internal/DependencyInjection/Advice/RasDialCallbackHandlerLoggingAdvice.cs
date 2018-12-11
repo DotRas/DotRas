@@ -4,7 +4,6 @@ using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Internal.DependencyInjection.Advice
 {

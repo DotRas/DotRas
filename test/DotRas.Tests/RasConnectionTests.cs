@@ -3,7 +3,6 @@ using System.Linq;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
 using DotRas.Tests.Stubs;
-using DotRas.Win32.SafeHandles;
 using Moq;
 using NUnit.Framework;
 

@@ -3,7 +3,6 @@ using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Internal.Interop;
-using DotRas.Win32.SafeHandles;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;

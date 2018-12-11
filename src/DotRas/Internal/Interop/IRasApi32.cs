@@ -1,5 +1,4 @@
-﻿using DotRas.Win32.SafeHandles;
-using System.Text;
+﻿using System.Text;
 using static DotRas.Internal.Interop.NativeMethods;
 
 namespace DotRas.Internal.Interop

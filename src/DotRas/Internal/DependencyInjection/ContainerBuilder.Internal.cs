@@ -10,7 +10,6 @@ using DotRas.Internal.Interop;
 using DotRas.Internal.Providers;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
-using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Internal.DependencyInjection
 {

@@ -4,7 +4,6 @@ using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Stubs;
-using DotRas.Win32.SafeHandles;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.RasError;

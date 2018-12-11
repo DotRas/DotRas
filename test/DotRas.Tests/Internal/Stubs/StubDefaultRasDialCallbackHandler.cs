@@ -4,7 +4,6 @@ using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Services.Connections;
-using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Tests.Internal.Stubs
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Win32.SafeHandles;
 
 namespace DotRas.Internal.Abstractions.Services
 {

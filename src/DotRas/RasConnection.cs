@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
-using DotRas.Win32.SafeHandles;
 
 namespace DotRas
 {

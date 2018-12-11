@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Win32.SafeHandles;
 
-namespace DotRas.Win32.SafeHandles
+namespace DotRas
 {
     /// <summary>
     /// Represents a remote access service connection handle.

@@ -7,7 +7,6 @@ using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Factories;
 using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Internal.Stubs;
-using DotRas.Win32.SafeHandles;
 using Moq;
 using NUnit.Framework;
 

@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using DotRas.Win32.SafeHandles;
 using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.NativeMethods;
 

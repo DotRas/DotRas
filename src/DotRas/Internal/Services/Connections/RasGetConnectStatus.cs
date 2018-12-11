@@ -3,7 +3,6 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
-using DotRas.Win32.SafeHandles;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.WinError;
 

@@ -5,7 +5,6 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Win32.SafeHandles;
 using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Connections

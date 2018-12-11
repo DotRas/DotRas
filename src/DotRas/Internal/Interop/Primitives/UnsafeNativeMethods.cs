@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using DotRas.Win32.SafeHandles;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
