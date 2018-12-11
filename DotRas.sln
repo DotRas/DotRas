@@ -19,6 +19,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas", "src\DotRas\DotRas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas.Tests", "test\DotRas.Tests\DotRas.Tests.csproj", "{1F46ADDE-3E40-4BB3-B933-11DD919839AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Includes", "Includes", "{48D5F528-BF5E-4B79-B6A2-3CD77E28C482}"
+	ProjectSection(SolutionItems) = preProject
+		includes\shared\lmcons.h = includes\shared\lmcons.h
+		includes\um\Ras.h = includes\um\Ras.h
+		includes\um\RasDlg.h = includes\um\RasDlg.h
+		includes\um\RasError.h = includes\um\RasError.h
+		includes\ucrt\stdlib.h = includes\ucrt\stdlib.h
+		includes\shared\winerror.h = includes\shared\winerror.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +54,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{82CDADEF-9BA9-480C-A059-DAF35FD69B08} = {6908689B-72AB-4390-BDAA-857EA62E925A}
 		{1F46ADDE-3E40-4BB3-B933-11DD919839AE} = {9D34A309-06DD-4B78-9424-672421884BCB}
+		{48D5F528-BF5E-4B79-B6A2-3CD77E28C482} = {C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BBA19DF-42BF-442B-95C4-17D4A554714E}
