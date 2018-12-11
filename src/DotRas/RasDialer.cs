@@ -138,11 +138,6 @@ namespace DotRas
             {
                 throw new RasDialerConfigurationException($"The {nameof(EntryName)} has not been set, or the entry does not exist within the phone book specified.");
             }
-
-            if (AllowUseStoredCredentials && Credentials != null)
-            {
-                throw new RasDialerConfigurationException("The credentials must not be supplied if the stored credentials are to be used.");
-            }
         }
 
         private NetworkCredential GetCredentials()
