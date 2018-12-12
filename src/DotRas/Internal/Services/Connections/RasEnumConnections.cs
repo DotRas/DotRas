@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
+using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.RasError;
@@ -16,13 +17,15 @@ namespace DotRas.Internal.Services.Connections
         private readonly IDeviceTypeFactory deviceTypeFactory;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IStructArrayFactory structFactory;
+        private readonly IServiceProvider serviceLocator;
 
-        public RasEnumConnections(IRasApi32 api, IDeviceTypeFactory deviceTypeFactory, IExceptionPolicy exceptionPolicy, IStructArrayFactory structFactory)
+        public RasEnumConnections(IRasApi32 api, IDeviceTypeFactory deviceTypeFactory, IExceptionPolicy exceptionPolicy, IStructArrayFactory structFactory, IServiceProvider serviceLocator)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
+            this.serviceLocator = serviceLocator ?? throw new ArgumentNullException(nameof(serviceLocator));
         }
 
         public IEnumerable<RasConnection> EnumerateConnections()
@@ -75,7 +78,9 @@ namespace DotRas.Internal.Services.Connections
                 handle,
                 device,
                 hRasConn.entryName,
-                hRasConn.phoneBook);
+                hRasConn.phoneBook,
+                serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
+                serviceLocator.GetRequiredService<IRasHangUp>());
         }
     }
 }

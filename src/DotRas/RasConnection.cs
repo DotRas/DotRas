@@ -12,7 +12,34 @@ namespace DotRas
     /// </summary>
     public class RasConnection
     {
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath)
+        #region Fields and Properties
+
+        private readonly IRasGetConnectStatus getConnectStatusService;
+        private readonly IRasHangUp hangUpService;
+
+        /// <summary>
+        /// Gets the handle of the connection.
+        /// </summary>
+        public virtual RasHandle Handle { get; }
+
+        /// <summary>
+        /// Gets the device through which the connection has been established.
+        /// </summary>
+        public virtual RasDevice Device { get; }
+
+        /// <summary>
+        /// Gets the name of the phone book entry used to establish the remote access connection.
+        /// </summary>
+        public virtual string EntryName { get; }
+
+        /// <summary>
+        /// Gets the full path and filename to the phone book (PBK) containing the entry for this connection.
+        /// </summary>
+        public virtual string PhoneBookPath { get; }
+
+        #endregion
+
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -39,6 +66,9 @@ namespace DotRas
             PhoneBookPath = phoneBookPath;
             Handle = handle;
             Device = device ?? throw new ArgumentNullException(nameof(device));
+
+            this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
+            this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
         }
         
         /// <summary>
@@ -47,26 +77,6 @@ namespace DotRas
         protected RasConnection()
         {
         }
-
-        /// <summary>
-        /// Gets the handle of the connection.
-        /// </summary>
-        public virtual RasHandle Handle { get; }
-
-        /// <summary>
-        /// Gets the device through which the connection has been established.
-        /// </summary>
-        public virtual RasDevice Device { get; }
-
-        /// <summary>
-        /// Gets the name of the phone book entry used to establish the remote access connection.
-        /// </summary>
-        public virtual string EntryName { get; }
-
-        /// <summary>
-        /// Gets the full path and filename to the phone book (PBK) containing the entry for this connection.
-        /// </summary>
-        public virtual string PhoneBookPath { get; }
 
         /// <summary>
         /// Enumerates the connections.
@@ -85,8 +95,7 @@ namespace DotRas
         {
             GuardHandleMustBeValid();
 
-            return Container.Default.GetRequiredService<IRasGetConnectStatus>()
-                .GetConnectionStatus(Handle);
+            return getConnectStatusService.GetConnectionStatus(Handle);
         }
 
         /// <summary>
@@ -97,8 +106,7 @@ namespace DotRas
         {
             GuardHandleMustBeValid();
 
-            Container.Default.GetRequiredService<IRasHangUp>()
-                .HangUp(Handle, cancellationToken);
+            hangUpService.HangUp(Handle, cancellationToken);
         }
 
         /// <summary>

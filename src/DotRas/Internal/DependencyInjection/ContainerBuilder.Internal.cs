@@ -25,7 +25,8 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IDeviceTypeFactory>(),
                     c.GetRequiredService<IExceptionPolicy>(),
-                    c.GetRequiredService<IStructArrayFactory>()));
+                    c.GetRequiredService<IStructArrayFactory>(),
+                    c));
 
             container.AddService(typeof(IStructMarshaller),
                 (c, _) => new StructMarshallerLoggingAdvice(

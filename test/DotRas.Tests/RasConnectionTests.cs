@@ -68,7 +68,10 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new RasConnection(handle, device, entryName, phoneBook);
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             Assert.AreEqual(entryName, target.EntryName);
         }
 
@@ -80,7 +83,10 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new RasConnection(handle, device, entryName, phoneBook);
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             Assert.AreEqual(handle, target.Handle);
         }
 
@@ -92,7 +98,10 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new RasConnection(handle, device, entryName, phoneBook);
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             Assert.AreEqual(device, target.Device);
         }
 
@@ -104,7 +113,10 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
-            var target = new RasConnection(handle, device, entryName, phoneBook);
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             Assert.AreEqual(phoneBook, target.PhoneBookPath);
         }
 
@@ -115,9 +127,12 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(null, device, entryName, phoneBook);
+                var unused = new RasConnection(null, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -131,9 +146,12 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentException>(() =>
             {
-                var unused = new RasConnection(handle, device, entryName, phoneBook);
+                var unused = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -145,9 +163,12 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentException>(() =>
             {
-                var unused = new RasConnection(handle, device, entryName, phoneBook);
+                var unused = new RasConnection(handle, device, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -158,9 +179,12 @@ namespace DotRas.Tests
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, null, entryName, phoneBook);
+                var unused = new RasConnection(handle, null, entryName, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -171,9 +195,12 @@ namespace DotRas.Tests
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, null, phoneBook);
+                var unused = new RasConnection(handle, device, null, phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -184,9 +211,12 @@ namespace DotRas.Tests
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, "", phoneBook);
+                var unused = new RasConnection(handle, device, "", phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -197,9 +227,12 @@ namespace DotRas.Tests
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, "                ", phoneBook);
+                var unused = new RasConnection(handle, device, "                ", phoneBook, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -209,10 +242,13 @@ namespace DotRas.Tests
             var handle = RasHandle.FromPtr(new IntPtr(1));
             var device = new TestDevice("Test");
             var entryName = "Test";
-            
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, entryName, null);
+                var unused = new RasConnection(handle, device, entryName, null, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -223,9 +259,12 @@ namespace DotRas.Tests
             var device = new TestDevice("Test");
             var entryName = "Test";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, entryName, "");
+                var unused = new RasConnection(handle, device, entryName, "", rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
 
@@ -236,9 +275,12 @@ namespace DotRas.Tests
             var device = new TestDevice("Test");
             var entryName = "Test";
 
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasHangUp = new Mock<IRasHangUp>();
+
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(handle, device, entryName, "             ");
+                var unused = new RasConnection(handle, device, entryName, "             ", rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
     }
