@@ -83,6 +83,7 @@ namespace DotRas
         public RasConnection Dial()
         {
             GuardMustNotBeDisposed();
+            ValidateConfigurationPriorToDialAttempt();
 
             return Dial(CancellationToken.None);
         }
@@ -110,6 +111,7 @@ namespace DotRas
         public Task<RasConnection> DialAsync()
         {
             GuardMustNotBeDisposed();
+            ValidateConfigurationPriorToDialAttempt();
 
             return DialAsync(CancellationToken.None);
         }
