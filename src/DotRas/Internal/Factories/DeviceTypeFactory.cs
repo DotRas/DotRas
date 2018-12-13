@@ -44,7 +44,7 @@ namespace DotRas.Internal.Factories
             var factory = GetFactoryFromDeviceType(deviceType);
             if (factory == null)
             {
-                return new Unknown(name, deviceType);
+                return CreateUnknownDevice(name, deviceType);
             }
 
             return factory.Create(name);
@@ -58,6 +58,11 @@ namespace DotRas.Internal.Factories
             }
 
             return null;
+        }
+
+        private static RasDevice CreateUnknownDevice(string name, string deviceType)
+        {
+            return new Unknown(name, deviceType);
         }
     }
 }
