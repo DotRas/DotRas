@@ -79,6 +79,8 @@ namespace DotRas.Internal.Services.Connections
                 device,
                 hRasConn.entryName,
                 hRasConn.phoneBook,
+                hRasConn.subEntryId,
+                hRasConn.entryId,
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasHangUp>());
         }

@@ -37,9 +37,19 @@ namespace DotRas
         /// </summary>
         public virtual string PhoneBookPath { get; }
 
+        /// <summary>
+        /// Gets the one-based sub-entry index of the connected link in a multi-link connection.
+        /// </summary>
+        public int SubEntryId { get; }
+
+        /// <summary>
+        /// Gets the <see cref="System.Guid"/> that represents the phone book entry.
+        /// </summary>
+        public Guid EntryId { get; }
+
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -66,6 +76,8 @@ namespace DotRas
             PhoneBookPath = phoneBookPath;
             Handle = handle;
             Device = device ?? throw new ArgumentNullException(nameof(device));
+            SubEntryId = subEntryId;
+            EntryId = entryId;
 
             this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
