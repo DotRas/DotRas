@@ -34,7 +34,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             callEvent.OutArgs.Add(nameof(lpCb), lpCb);
             callEvent.OutArgs.Add(nameof(lpConnections), lpConnections);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
 
@@ -59,7 +59,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             callEvent.Args.Add(nameof(lpvNotifier), lpvNotifier);
             callEvent.OutArgs.Add(nameof(lphRasConn), lphRasConn);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
 
@@ -86,7 +86,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
             callEvent.OutArgs.Add(nameof(lpCredentials), lpCredentials);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
 
@@ -108,7 +108,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             callEvent.Args.Add(nameof(lpszErrorString), lpszErrorString);
             callEvent.Args.Add(nameof(cBufSize), cBufSize);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
 
@@ -128,7 +128,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
 
             callEvent.Args.Add(nameof(hRasConn), hRasConn);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
 
@@ -149,7 +149,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             callEvent.Args.Add(nameof(lpszPhonebook), lpszPhonebook);
             callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
 
-            LogInformation(callEvent);
+            LogVerbose(callEvent);
             return result;
         }
     }
