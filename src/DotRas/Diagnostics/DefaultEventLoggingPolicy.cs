@@ -21,7 +21,7 @@ namespace DotRas.Diagnostics
 
             try
             {
-                log.HandleEvent(eventLevel, eventData);
+                log.Log(eventLevel, eventData);
             }
             catch (Exception)
             {
