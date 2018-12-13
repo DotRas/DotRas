@@ -19,7 +19,7 @@ namespace DotRas.Internal.DependencyInjection
             var result = serviceProvider.GetService(serviceType);
             if (result == null)
             {
-                throw new ServiceNotFoundException($"The required service '{serviceType}' could not be found.");
+                throw new InvalidOperationException($"The required service '{serviceType}' could not be found.");
             }
 
             return result;

@@ -66,7 +66,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             }
         }
 
-        private object GetValue(object instance, FieldInfo field)
+        private static object GetValue(object instance, FieldInfo field)
         {
             var value = field.GetValue(instance);
             if (field.GetCustomAttribute<MaskedValueAttribute>() != null && value != null)

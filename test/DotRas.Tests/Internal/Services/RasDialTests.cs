@@ -76,7 +76,7 @@ namespace DotRas.Tests.Internal.Services
             var callbackHandler = new Mock<IRasDialCallbackHandler>();
 
             var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null)));
+            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace DotRas.Tests.Internal.Services
 
             using (var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object))
             {
-                await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
+                await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
             }
 
             callbackHandler.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
@@ -128,7 +128,7 @@ namespace DotRas.Tests.Internal.Services
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            var result = await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
+            var result = await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
 
             Assert.AreSame(connection.Object, result);
             Assert.IsTrue(target.IsBusy);
@@ -160,7 +160,7 @@ namespace DotRas.Tests.Internal.Services
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            Assert.ThrowsAsync<TestException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null)));
+            Assert.ThrowsAsync<TestException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
 
             Assert.IsFalse(target.IsBusy);
             callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<StateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -192,10 +192,10 @@ namespace DotRas.Tests.Internal.Services
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDial(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null));
+            await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
 
             Assert.IsTrue(target.IsBusy);
-            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), CancellationToken.None, null)));
+            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
 
             Assert.IsTrue(target.IsBusy);
         }

@@ -149,7 +149,7 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        private bool HasConnectionCompleted(RasConnectionState connectionState)
+        private static bool HasConnectionCompleted(RasConnectionState connectionState)
         {
             return connectionState == RasConnectionState.Connected;
         }

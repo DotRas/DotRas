@@ -4,6 +4,6 @@ namespace DotRas.Diagnostics
 {
     public interface ILog
     {
-        void Event(EventLevel eventLevel, TraceEvent eventData);
+        void HandleEvent(EventLevel eventLevel, TraceEvent eventData);
     }
 }

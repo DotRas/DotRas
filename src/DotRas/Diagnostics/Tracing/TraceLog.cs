@@ -17,7 +17,7 @@ namespace DotRas.Diagnostics.Tracing
             this.eventLevelConverter = eventLevelConverter ?? throw new ArgumentNullException(nameof(eventLevelConverter));
         }
 
-        public void Event(EventLevel eventLevel, TraceEvent eventData)
+        public void HandleEvent(EventLevel eventLevel, TraceEvent eventData)
         {
             lock (source)
             {

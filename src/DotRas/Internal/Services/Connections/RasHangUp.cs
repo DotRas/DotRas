@@ -52,12 +52,12 @@ namespace DotRas.Internal.Services.Connections
             } while (ret == SUCCESS);
         }
 
-        private bool ShouldThrowExceptionFromReturnCode(int ret)
+        private static bool ShouldThrowExceptionFromReturnCode(int ret)
         {
             return ret != SUCCESS && ret != ERROR_NO_CONNECTION;
         }
 
-        private void EnsurePortHasBeenReleased()
+        private static void EnsurePortHasBeenReleased()
         {
             // ATTENTION! This required pause comes from the Windows SDK. Failure to perform this pause may cause the state machine to leave 
             // the port open which will require the machine to be rebooted to release the port.

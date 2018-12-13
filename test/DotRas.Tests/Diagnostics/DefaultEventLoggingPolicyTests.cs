@@ -33,14 +33,14 @@ namespace DotRas.Tests.Diagnostics
             var target = new DefaultEventLoggingPolicy(log.Object);
             target.LogEvent(EventLevel.Error, new PInvokeCallCompletedTraceEvent());
 
-            log.Verify(o => o.Event(EventLevel.Error, It.IsAny<TraceEvent>()), Times.Once);
+            log.Verify(o => o.HandleEvent(EventLevel.Error, It.IsAny<TraceEvent>()), Times.Once);
         }
 
         [Test]
         public void SwallowExceptionsWhenLoggingEvents()
         {
             var log = new Mock<ILog>();
-            log.Setup(o => o.Event(EventLevel.Error, It.IsAny<TraceEvent>())).Throws<Exception>().Verifiable();
+            log.Setup(o => o.HandleEvent(EventLevel.Error, It.IsAny<TraceEvent>())).Throws<Exception>().Verifiable();
 
             var target = new DefaultEventLoggingPolicy(log.Object);
             target.LogEvent(EventLevel.Error, new PInvokeCallCompletedTraceEvent());
