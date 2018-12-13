@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>net46;net47;net471;net472</TargetFrameworks>
     <Version>2.0.0-alpha</Version>
     <Authors>Winnster.io</Authors>
     <Product>OpenRas</Product>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetOperatingSystem>WIN10</TargetOperatingSystem>
+    <TargetOperatingSystem>WIN7</TargetOperatingSystem>
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>bin\$(Configuration)\$(TargetOperatingSystem)\</OutputPath>
+    <OutputPath>bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(TargetOperatingSystem)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
