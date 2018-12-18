@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
 
@@ -121,22 +120,11 @@ namespace DotRas
             hangUpService.HangUp(Handle, cancellationToken);
         }
 
-        /// <summary>
-        /// Terminates the remote access connection asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-        public virtual Task HangUpAsync(CancellationToken cancellationToken)
-        {
-            GuardHandleMustBeValid();
-
-            return Task.Run(() => HangUp(cancellationToken), cancellationToken);
-        }
-
         private void GuardHandleMustBeValid()
         {
             if (Handle.IsClosed || Handle.IsInvalid)
             {
-                throw new Exception("The handle is invalid.");
+                throw new InvalidHandleException("The handle is invalid.");
             }
         }
     }

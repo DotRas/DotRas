@@ -34,7 +34,7 @@ namespace ConsoleRunner
                     await ConnectAsync(tcs.Token);
                     if (IsConnected)
                     {
-                        await DisconnectAsync(tcs.Token);
+                        DisconnectAsync(tcs.Token);
                     }                 
                 }
             }
@@ -49,9 +49,9 @@ namespace ConsoleRunner
             }
         }
 
-        private async Task DisconnectAsync(CancellationToken cancellationToken)
+        private void DisconnectAsync(CancellationToken cancellationToken)
         {
-            await connection.HangUpAsync(cancellationToken);
+            connection.HangUp(cancellationToken);
             SetNotConnected();
         }
 
