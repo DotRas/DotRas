@@ -345,5 +345,29 @@ namespace DotRas.Tests
                 var unused = new RasConnection(handle, device, entryName, "             ", subEntryId, entryId, rasGetConnectStatus.Object, rasHangUp.Object);
             });
         }
+
+        [Test]
+        public void RetrievesTheConnectionStatusAsExpected()
+        {
+            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var subEntryId = 1;
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+
+            var status = new RasConnectionStatus(RasConnectionState.Connected, device, "abcd.com");
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            rasGetConnectStatus.Setup(o => o.GetConnectionStatus(handle)).Returns(status).Verifiable();
+
+            var rasHangUp = new Mock<IRasHangUp>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, rasGetConnectStatus.Object, rasHangUp.Object);
+            var result = target.GetConnectionStatus();
+
+            Assert.AreEqual(status, result);
+            rasGetConnectStatus.Verify();
+        }
     }
 }
