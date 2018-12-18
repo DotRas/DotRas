@@ -23,6 +23,11 @@ namespace DotRas
         private readonly IPhoneBookEntryValidator validator;
 
         /// <summary>
+        /// Gets a value indicating whether this instance is currently dialing a connection.
+        /// </summary>
+        public bool IsBusy => api.IsBusy;
+
+        /// <summary>
         /// Gets or sets the name of the entry within the phone book.
         /// </summary>
         public string EntryName { get; set; }

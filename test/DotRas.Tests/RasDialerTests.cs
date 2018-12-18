@@ -375,5 +375,33 @@ namespace DotRas.Tests
 
             validator.Verify();
         }
+
+        [Test]
+        public void IndicatesTheObjectIsBusyAsExpected()
+        {
+            var api = new Mock<IRasDial>();
+            api.Setup(o => o.IsBusy).Returns(true);
+
+            var rasGetCredentials = new Mock<IRasGetCredentials>();
+            var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
+
+            var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object);
+            Assert.True(target.IsBusy);
+        }
+
+        [Test]
+        public void IndicatesTheObjectIsNotBusyAsExpected()
+        {
+            var api = new Mock<IRasDial>();
+            api.Setup(o => o.IsBusy).Returns(false);
+
+            var rasGetCredentials = new Mock<IRasGetCredentials>();
+            var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
+
+            var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object);
+            Assert.False(target.IsBusy);
+        }
     }
 }
