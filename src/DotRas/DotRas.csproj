@@ -26,8 +26,4 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Internal\Providers\" />
-  </ItemGroup>
-
 </Project>
