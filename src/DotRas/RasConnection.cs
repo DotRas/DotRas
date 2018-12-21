@@ -42,13 +42,18 @@ namespace DotRas
         public int SubEntryId { get; }
 
         /// <summary>
-        /// Gets the <see cref="System.Guid"/> that represents the phone book entry.
+        /// Gets the <see cref="Guid"/> that represents the phone book entry.
         /// </summary>
         public Guid EntryId { get; }
 
+        /// <summary>
+        /// Gets the <see cref="Luid"/> that represents the logon session in which the connection was established.
+        /// </summary>
+        public Luid SessionId { get; }
+
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, Luid sessionId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -77,11 +82,12 @@ namespace DotRas
             Device = device ?? throw new ArgumentNullException(nameof(device));
             SubEntryId = subEntryId;
             EntryId = entryId;
+            SessionId = sessionId;
 
             this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnection"/> class.
         /// </summary>

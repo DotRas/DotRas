@@ -66,9 +66,9 @@ namespace DotRas.Internal.Services.Connections
 
         protected virtual RasConnection CreateConnection(RASCONN hRasConn)
         {
-            var handle = RasHandle.FromPtr(hRasConn.handle);
+            var handle = RasHandle.FromPtr(hRasConn.hrasconn);
 
-            var device = deviceTypeFactory.Create(hRasConn.deviceName, hRasConn.deviceType);
+            var device = deviceTypeFactory.Create(hRasConn.szDeviceName, hRasConn.szDeviceType);
             if (device == null)
             {
                 throw new InvalidOperationException("The device was not created.");
@@ -77,10 +77,11 @@ namespace DotRas.Internal.Services.Connections
             return new RasConnection(
                 handle,
                 device,
-                hRasConn.entryName,
-                hRasConn.phoneBook,
-                hRasConn.subEntryId,
-                hRasConn.entryId,
+                hRasConn.szEntryName,
+                hRasConn.szPhonebook,
+                hRasConn.dwSubEntry,
+                hRasConn.guidEntry,
+                hRasConn.luid,
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasHangUp>());
         }

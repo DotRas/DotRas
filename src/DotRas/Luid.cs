@@ -26,12 +26,7 @@ namespace DotRas
 
         #endregion
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Luid"/> structure.
-        /// </summary>
-        /// <param name="lowPart">The low part.</param>
-        /// <param name="highPart">The high part.</param>
-        public Luid(uint lowPart, int highPart)
+        internal Luid(uint lowPart, int highPart)
         {
             this.lowPart = lowPart;
             this.highPart = highPart;

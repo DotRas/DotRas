@@ -43,6 +43,15 @@ namespace DotRas.Internal.Interop
         #endregion
 
         [Flags]
+        public enum RASCF
+        {
+            AllUsers = 0x1,
+            GlobalCreds = 0x2,
+            OwnerKnown = 0x4,
+            OwnerMatch = 0x8
+        }
+
+        [Flags]
         public enum RDEOPT
         {
             UsePrefixSuffix = 0x1,
