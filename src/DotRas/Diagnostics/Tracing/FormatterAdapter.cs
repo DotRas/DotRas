@@ -6,6 +6,14 @@ namespace DotRas.Diagnostics.Tracing
     internal class FormatterAdapter : IFormatterAdapter
     {
         private const string FormatMethodName = nameof(IFormatter<object>.Format);
+        private const string FactoryMethodName = nameof(IFormatterFactory.Create);
+
+        private readonly IFormatterFactory factory;
+
+        public FormatterAdapter(IFormatterFactory factory)
+        {
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
 
         public string Format(object value)
         {
@@ -14,30 +22,36 @@ namespace DotRas.Diagnostics.Tracing
                 return "[(null)]";
             }
 
-            var valueType = value.GetType();
-
-            var attribute = valueType.GetCustomAttribute<FormatterAttribute>();
-            if (attribute == null)
-            {
-                throw new FormatterNotFoundException($"The formatter for type '{valueType.FullName} could not be identified.");
-            }
-
-            var expected = typeof(IFormatter<>).MakeGenericType(valueType);
-            if (!expected.IsAssignableFrom(attribute.FormatterType))
-            {
-                throw new InvalidOperationException($"The formatter does not implement the correct interface. Expected: {expected.FullName}");
-            }
-
-            var formatter = Activator.CreateInstance(attribute.FormatterType);
+            var formatter = CreateFormatterForType(value.GetType());
             if (formatter == null)
             {
-                throw new FormatterNotFoundException($"The formatter '{attribute.FormatterType.FullName}' could not be created.");
+                throw new FormatterNotFoundException($"The formatter could not be located.", value.GetType());
             }
 
-            var method = attribute.FormatterType.GetMethod(FormatMethodName, BindingFlags.Instance | BindingFlags.Public);
+            return FormatValue(formatter, value);            
+        }
+
+        private object CreateFormatterForType(Type valueType)
+        {
+            var factoryType = factory.GetType();
+
+            var factoryMethod = factoryType.GetMethod(FactoryMethodName, BindingFlags.Instance | BindingFlags.Public)?.MakeGenericMethod(valueType);
+            if (factoryMethod == null)
+            {
+                throw new InvalidOperationException("The factory method could not be located.");
+            }
+
+            return factoryMethod.Invoke(factory, null);
+        }
+
+        private static string FormatValue(object formatter, object value)
+        {
+            var formatterType = formatter.GetType();
+
+            var method = formatterType.GetMethod(FormatMethodName, BindingFlags.Instance | BindingFlags.Public);
             if (method == null)
             {
-                throw new MissingMethodException(attribute.FormatterType.Name, FormatMethodName);
+                throw new MissingMethodException(formatterType.Name, FormatMethodName);
             }
 
             return (string)method.Invoke(formatter, new[] { value });

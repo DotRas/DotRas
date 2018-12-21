@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 
 namespace DotRas.Diagnostics
 {
@@ -9,6 +10,16 @@ namespace DotRas.Diagnostics
     [Serializable]
     public class FormatterNotFoundException : Exception
     {
+        /// <summary>
+        /// Gets the target type of the formatter.
+        /// </summary>
+        public Type TargetType { get; }
+
+        /// <summary>
+        /// Gets the type of formatter.
+        /// </summary>
+        public Type FormatterType { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.
         /// </summary>
@@ -23,6 +34,19 @@ namespace DotRas.Diagnostics
         public FormatterNotFoundException(string message) 
             : base(message)
         {
+        }  
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.
+        /// </summary>
+        /// <param name="message">A message describing the error.</param>
+        /// <param name="targetType">The target type of the formatter.</param>
+        /// <param name="formatterType">Optional. The type of formatter used by the target type.</param>
+        public FormatterNotFoundException(string message, Type targetType, Type formatterType = null)
+            : base(message)
+        {
+            TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
+            FormatterType = formatterType;
         }
 
         /// <summary>

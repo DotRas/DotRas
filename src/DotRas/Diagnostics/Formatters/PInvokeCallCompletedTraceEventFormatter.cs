@@ -2,11 +2,17 @@
 using System.Text;
 using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Tracing.Formatters
+namespace DotRas.Diagnostics.Formatters
 {
-    internal class PInvokeCallCompletedTraceEventFormatter<TEvent, TResult> : IFormatter<TEvent>
+    /// <summary>
+    /// Provides a formatter for a <see cref="PInvokeCallCompletedTraceEvent{TResult}"/>.
+    /// </summary>
+    /// <typeparam name="TEvent">The type of event being formatted.</typeparam>
+    /// <typeparam name="TResult">The result of the event.</typeparam>
+    public class PInvokeCallCompletedTraceEventFormatter<TEvent, TResult> : IFormatter<TEvent>
         where TEvent : PInvokeCallCompletedTraceEvent<TResult>
     {
+        /// <inheritdoc />
         public string Format(TEvent eventData)
         {
             if (eventData == null)

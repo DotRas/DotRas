@@ -2,10 +2,14 @@
 using System.Text;
 using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Tracing.Formatters
+namespace DotRas.Diagnostics.Formatters
 {
-    internal class StructMarshalledToPtrTraceEventFormatter : IFormatter<StructMarshalledToPtrTraceEvent>
+    /// <summary>
+    /// Provides a formatter for a <see cref="StructMarshalledToPtrTraceEvent"/> event.
+    /// </summary>
+    public class StructMarshalledToPtrTraceEventFormatter : IFormatter<StructMarshalledToPtrTraceEvent>
     {
+        /// <inheritdoc />
         public string Format(StructMarshalledToPtrTraceEvent eventData)
         {
             if (eventData == null)

@@ -18,7 +18,12 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IFormatterAdapter>(),
                     c.GetRequiredService<IConverter<EventLevel, TraceEventType>>()));
 
-            container.AddService(typeof(IFormatterAdapter), (c, _) => new FormatterAdapter());
+            container.AddService(typeof(IFormatterFactory), (c, _) => new ConventionBasedFormatterFactory());
+
+            container.AddService(typeof(IFormatterAdapter), 
+                (c, _) => new FormatterAdapter(
+                    c.GetRequiredService<IFormatterFactory>()));
+
             container.AddService(typeof(IConverter<EventLevel, TraceEventType>), (c, _) => new EventLevelConverter());
         }
     }

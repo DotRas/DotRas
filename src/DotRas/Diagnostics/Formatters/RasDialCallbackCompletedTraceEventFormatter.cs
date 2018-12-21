@@ -2,10 +2,14 @@
 using System.Text;
 using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Tracing.Formatters
+namespace DotRas.Diagnostics.Formatters
 {
-    internal class RasDialCallbackCompletedTraceEventFormatter : IFormatter<RasDialCallbackCompletedTraceEvent>
+    /// <summary>
+    /// Provides a formatter for a <see cref="RasDialCallbackCompletedTraceEvent"/> event.
+    /// </summary>
+    public class RasDialCallbackCompletedTraceEventFormatter : IFormatter<RasDialCallbackCompletedTraceEvent>
     {
+        /// <inheritdoc />
         public string Format(RasDialCallbackCompletedTraceEvent eventData)
         {
             if (eventData == null)
