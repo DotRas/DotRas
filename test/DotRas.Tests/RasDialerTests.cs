@@ -311,7 +311,10 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+
+            Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
+            Assert.AreEqual(null, ex.EntryName);
         }
 
         [Test]
@@ -371,7 +374,10 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+
+            Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
+            Assert.AreEqual(EntryName, ex.EntryName);
 
             validator.Verify();
         }
