@@ -4,7 +4,7 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Factories;
+using DotRas.Internal.DependencyInjection.Factories;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Tests.Internal.Stubs;
 using Moq;
@@ -124,7 +124,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var rasHangUp = new Mock<IRasHangUp>();
             var rasEnumConnections = new Mock<IRasEnumConnections>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
-            var cancellationTokenSourceFactory = new TaskCancellationSourceFactory();            
+            var cancellationSourceFactory = new TaskCancellationSourceFactory();
 
             var waitHandle = new Mock<IValueWaiter<RasHandle>>();
             waitHandle.Setup(o => o.Value).Returns(handle);
@@ -133,7 +133,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             using (var cts = new CancellationTokenSource())
             {
-                var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationTokenSourceFactory);
+                var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationSourceFactory);
                 target.Initialize(completionSource.Object, (e) => { }, () => { }, cts.Token);
 
                 cts.Cancel();

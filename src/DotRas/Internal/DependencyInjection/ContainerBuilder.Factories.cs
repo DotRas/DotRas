@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Design;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Providers;
-using DotRas.Internal.Factories;
+using DotRas.Internal.DependencyInjection.Factories;
 
 namespace DotRas.Internal.DependencyInjection
 {
