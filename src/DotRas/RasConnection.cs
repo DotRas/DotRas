@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
@@ -9,6 +10,7 @@ namespace DotRas
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
+    [DebuggerDisplay("EntryName = {EntryName}")]
     public class RasConnection
     {
         #region Fields and Properties
