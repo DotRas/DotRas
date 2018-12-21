@@ -20,6 +20,10 @@ namespace DotRas.Internal.DependencyInjection
             RegisterPolicies(container);
             RegisterThreading(container);
 
+            container.AddService(typeof(IAllocateLocallyUniqueId),
+                (c, _) => new AllocateLocallyUniqueIdService(
+                    c.GetRequiredService<IAdvApi32>()));
+
             container.AddService(typeof(IRasEnumConnections),
                 (c, _) => new RasEnumConnections(
                     c.GetRequiredService<IRasApi32>(),

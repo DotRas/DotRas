@@ -7,6 +7,11 @@ namespace DotRas.Internal.Interop.Primitives
 {
     internal static class SafeNativeMethods
     {
+        [DllImport(AdvApi32Dll, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool AllocateLocallyUniqueId(
+            [Out] out Luid pLuid);
+
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasEnumConnections(
             [In, Out] RASCONN[] lpRasConn,

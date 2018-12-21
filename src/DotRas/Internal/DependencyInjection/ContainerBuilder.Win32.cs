@@ -13,6 +13,10 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(IRasApi32), (c, _) => new RasApi32LoggingAdvice(
                 new RasApi32(),
                 c.GetRequiredService<IEventLoggingPolicy>()));
+
+            container.AddService(typeof(IAdvApi32), (c, _) => new AdvApi32LoggingAdvice(
+                new AdvApi32(), 
+                c.GetRequiredService<IEventLoggingPolicy>()));
         }
     }
 }

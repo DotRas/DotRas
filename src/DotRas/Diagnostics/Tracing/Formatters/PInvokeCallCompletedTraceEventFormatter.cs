@@ -4,9 +4,10 @@ using DotRas.Diagnostics.Events;
 
 namespace DotRas.Diagnostics.Tracing.Formatters
 {
-    internal class PInvokeCallCompletedTraceEventFormatter : IFormatter<PInvokeCallCompletedTraceEvent>
+    internal class PInvokeCallCompletedTraceEventFormatter<TEvent, TResult> : IFormatter<TEvent>
+        where TEvent : PInvokeCallCompletedTraceEvent<TResult>
     {
-        public string Format(PInvokeCallCompletedTraceEvent eventData)
+        public string Format(TEvent eventData)
         {
             if (eventData == null)
             {
@@ -26,7 +27,7 @@ namespace DotRas.Diagnostics.Tracing.Formatters
             {
                 sb.AppendLine($"\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
             }
-           
+
             foreach (var arg in eventData.OutArgs)
             {
                 sb.AppendLine($"\t\tout {arg.Key}: [{arg.Value ?? "(null)"}]");
