@@ -81,10 +81,16 @@ namespace DotRas.Internal.Services.Connections
                 hRasConn.szPhonebook,
                 hRasConn.dwSubEntry,
                 hRasConn.guidEntry,
+                CreateConnectionOptions(hRasConn),
                 hRasConn.luid,
                 hRasConn.guidCorrelationId,
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasHangUp>());
+        }
+
+        protected virtual RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)
+        {
+            return new RasConnectionOptions(hRasConn.dwFlags);
         }
     }
 }

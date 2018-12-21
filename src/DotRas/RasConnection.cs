@@ -47,6 +47,11 @@ namespace DotRas
         public virtual Guid EntryId { get; }
 
         /// <summary>
+        /// Gets the connection options.
+        /// </summary>
+        public virtual RasConnectionOptions Options { get; }
+
+        /// <summary>
         /// Gets the <see cref="Luid"/> that represents the logon session in which the connection was established.
         /// </summary>
         public virtual Luid SessionId { get; }
@@ -58,7 +63,7 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -87,6 +92,7 @@ namespace DotRas
             Device = device ?? throw new ArgumentNullException(nameof(device));
             SubEntryId = subEntryId;
             EntryId = entryId;
+            Options = options ?? throw new ArgumentNullException(nameof(options));
             SessionId = sessionId;
             CorrelationId = correlationId;
 
