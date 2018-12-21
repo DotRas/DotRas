@@ -9,7 +9,7 @@ namespace DotRas.Diagnostics.Formatters
     /// </summary>
     /// <typeparam name="TEvent">The type of event being formatted.</typeparam>
     /// <typeparam name="TResult">The result of the event.</typeparam>
-    public class PInvokeCallCompletedTraceEventFormatter<TEvent, TResult> : IFormatter<TEvent>
+    public class PInvokeCallCompletedTraceEventFormatter<TEvent, TResult> : IEventFormatter<TEvent>
         where TEvent : PInvokeCallCompletedTraceEvent<TResult>
     {
         /// <inheritdoc />

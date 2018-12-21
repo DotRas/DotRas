@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Reflection;
+using DotRas.Diagnostics.Events;
 
 namespace DotRas.Diagnostics.Tracing
 {
-    internal class FormatterAdapter : IFormatterAdapter
+    internal class EventFormatterAdapter : IEventFormatterAdapter
     {
-        private const string FormatMethodName = nameof(IFormatter<object>.Format);
-        private const string FactoryMethodName = nameof(IFormatterFactory.Create);
+        private const string FormatMethodName = nameof(IEventFormatter<TraceEvent>.Format);
+        private const string FactoryMethodName = nameof(IEventFormatterFactory.Create);
 
-        private readonly IFormatterFactory factory;
+        private readonly IEventFormatterFactory factory;
 
-        public FormatterAdapter(IFormatterFactory factory)
+        public EventFormatterAdapter(IEventFormatterFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

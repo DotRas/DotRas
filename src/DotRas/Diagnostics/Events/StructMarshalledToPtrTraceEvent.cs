@@ -8,7 +8,7 @@ namespace DotRas.Diagnostics.Events
     /// Describes a structure which has been marshalled to a pointer.
     /// </summary>
     [Serializable]
-    [Formatter(typeof(StructMarshalledToPtrTraceEventFormatter))]
+    [EventFormatter(typeof(StructMarshalledToPtrTraceEventFormatter))]
     public class StructMarshalledToPtrTraceEvent : CallCompletedTraceEvent
     {
         /// <summary>

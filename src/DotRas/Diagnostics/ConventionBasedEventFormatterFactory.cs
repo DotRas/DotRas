@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Reflection;
+using DotRas.Diagnostics.Events;
 
 namespace DotRas.Diagnostics
 {
     /// <summary>
     /// Provides a factory which uses an attribute-based convention for identifying the factory for a type.
     /// </summary>
-    public class ConventionBasedFormatterFactory : IFormatterFactory
+    public class ConventionBasedEventFormatterFactory : IEventFormatterFactory
     {
         /// <summary>
         /// Creates a formatter.
         /// </summary>
-        /// <typeparam name="T">The type of object which needs to be formatted.</typeparam>
+        /// <typeparam name="T">The type of <see cref="TraceEvent"/> to be formatted.</typeparam>
         /// <returns>The formatter instance.</returns>
         /// <exception cref="FormatterNotFoundException">The formatter for type <typeparamref name="T"/> could not be determined based on the convention.</exception>
-        public IFormatter<T> Create<T>()
+        public IEventFormatter<T> Create<T>() 
+            where T : TraceEvent
         {
             var valueType = typeof(T);
 
-            var attribute = valueType.GetCustomAttribute<FormatterAttribute>();
+            var attribute = valueType.GetCustomAttribute<EventFormatterAttribute>();
             if (attribute == null)
             {
                 throw new FormatterNotFoundException("The formatter could not be identified.", valueType);
@@ -28,7 +30,7 @@ namespace DotRas.Diagnostics
 
             try
             {
-                return (IFormatter<T>)Activator.CreateInstance(attribute.FormatterType);
+                return (IEventFormatter<T>)Activator.CreateInstance(attribute.FormatterType);
             }
             catch (MissingMethodException)
             {
@@ -38,7 +40,7 @@ namespace DotRas.Diagnostics
 
         private static void GuardTheFormatterIsTheCorrectType(Type valueType, Type formatterType)
         {
-            var expected = typeof(IFormatter<>).MakeGenericType(valueType);
+            var expected = typeof(IEventFormatter<>).MakeGenericType(valueType);
             if (!expected.IsAssignableFrom(formatterType))
             {
                 throw new InvalidOperationException("The formatter does not implement the correct interface.");

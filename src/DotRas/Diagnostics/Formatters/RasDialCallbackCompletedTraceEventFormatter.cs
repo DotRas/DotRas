@@ -7,7 +7,7 @@ namespace DotRas.Diagnostics.Formatters
     /// <summary>
     /// Provides a formatter for a <see cref="RasDialCallbackCompletedTraceEvent"/> event.
     /// </summary>
-    public class RasDialCallbackCompletedTraceEventFormatter : IFormatter<RasDialCallbackCompletedTraceEvent>
+    public class RasDialCallbackCompletedTraceEventFormatter : IEventFormatter<RasDialCallbackCompletedTraceEvent>
     {
         /// <inheritdoc />
         public string Format(RasDialCallbackCompletedTraceEvent eventData)

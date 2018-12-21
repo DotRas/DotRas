@@ -7,7 +7,7 @@ namespace DotRas.Diagnostics.Events
     /// Describes a callback completion event used by the RasDial Win32 API.
     /// </summary>
     [Serializable]
-    [Formatter(typeof(RasDialCallbackCompletedTraceEventFormatter))]
+    [EventFormatter(typeof(RasDialCallbackCompletedTraceEventFormatter))]
     public class RasDialCallbackCompletedTraceEvent : CallbackTraceEvent
     {
         /// <summary>

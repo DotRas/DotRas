@@ -2,7 +2,7 @@
 
 namespace DotRas.Tests.Stubs
 {
-    public class GoodFormatter : IFormatter<GoodTraceEventWithGoodFormatter>
+    public class GoodFormatter : IEventFormatter<GoodTraceEventWithGoodFormatter>
     {
         public string Format(GoodTraceEventWithGoodFormatter value)
         {

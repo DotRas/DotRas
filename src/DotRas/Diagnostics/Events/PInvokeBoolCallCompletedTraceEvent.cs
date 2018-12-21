@@ -7,7 +7,7 @@ namespace DotRas.Diagnostics.Events
     /// Describes a platform invocation call completion event which uses a boolean based result.
     /// </summary>
     [Serializable]
-    [Formatter(typeof(PInvokeBoolCallCompletedTraceEventFormatter))]
+    [EventFormatter(typeof(PInvokeBoolCallCompletedTraceEventFormatter))]
     public class PInvokeBoolCallCompletedTraceEvent : PInvokeCallCompletedTraceEvent<bool>
     {
     }

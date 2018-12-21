@@ -3,10 +3,10 @@
 namespace DotRas.Diagnostics
 {
     /// <summary>
-    /// Identifies the formatter for a class.
+    /// Identifies the event formatter for a class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
-    public sealed class FormatterAttribute : Attribute
+    public sealed class EventFormatterAttribute : Attribute
     {
         /// <summary>
         /// Gets the type of formatter.
@@ -14,10 +14,10 @@ namespace DotRas.Diagnostics
         public Type FormatterType { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FormatterAttribute"/> class.
+        /// Initializes a new instance of the <see cref="EventFormatterAttribute"/> class.
         /// </summary>
         /// <param name="formatterType">The type of formatter.</param>
-        public FormatterAttribute(Type formatterType)
+        public EventFormatterAttribute(Type formatterType)
         {
             FormatterType = formatterType ?? throw new ArgumentNullException(nameof(formatterType));
         }

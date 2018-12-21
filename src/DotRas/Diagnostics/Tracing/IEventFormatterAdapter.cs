@@ -1,6 +1,6 @@
 ﻿namespace DotRas.Diagnostics.Tracing
 {
-    internal interface IFormatterAdapter
+    internal interface IEventFormatterAdapter
     {
         string Format(object value);
     }

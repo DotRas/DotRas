@@ -7,7 +7,7 @@ namespace DotRas.Diagnostics.Formatters
     /// <summary>
     /// Provides a formatter for a <see cref="StructMarshalledToPtrTraceEvent"/> event.
     /// </summary>
-    public class StructMarshalledToPtrTraceEventFormatter : IFormatter<StructMarshalledToPtrTraceEvent>
+    public class StructMarshalledToPtrTraceEventFormatter : IEventFormatter<StructMarshalledToPtrTraceEvent>
     {
         /// <inheritdoc />
         public string Format(StructMarshalledToPtrTraceEvent eventData)

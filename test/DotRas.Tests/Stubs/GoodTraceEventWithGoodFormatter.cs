@@ -5,7 +5,7 @@ using DotRas.Diagnostics.Events;
 namespace DotRas.Tests.Stubs
 {
     [Serializable]
-    [Formatter(typeof(GoodFormatter))]
+    [EventFormatter(typeof(GoodFormatter))]
     public class GoodTraceEventWithGoodFormatter : TraceEvent
     {
     }
