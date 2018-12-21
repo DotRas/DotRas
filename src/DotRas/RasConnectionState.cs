@@ -76,7 +76,7 @@ namespace DotRas
         /// <summary>
         /// The authentication (after callback) phase is starting.
         /// </summary>
-        PostCallbackAuthentication,
+        ReAuthenticate,
 
         /// <summary>
         /// The client has successfully completed authentication.
@@ -130,9 +130,6 @@ namespace DotRas
 
         /// <summary>
         /// The client is applying settings.
-        /// <para>
-        /// <b>Windows 7 or later:</b> This value is supported.
-        /// </para>
         /// </summary>
         ApplySettings,
 
