@@ -39,21 +39,26 @@ namespace DotRas
         /// <summary>
         /// Gets the one-based sub-entry index of the connected link in a multi-link connection.
         /// </summary>
-        public int SubEntryId { get; }
+        public virtual int SubEntryId { get; }
 
         /// <summary>
         /// Gets the <see cref="Guid"/> that represents the phone book entry.
         /// </summary>
-        public Guid EntryId { get; }
+        public virtual Guid EntryId { get; }
 
         /// <summary>
         /// Gets the <see cref="Luid"/> that represents the logon session in which the connection was established.
         /// </summary>
-        public Luid SessionId { get; }
+        public virtual Luid SessionId { get; }
+
+        /// <summary>
+        /// Gets the correlation id.
+        /// </summary>
+        public virtual Guid CorrelationId { get; }
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, Luid sessionId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -83,6 +88,7 @@ namespace DotRas
             SubEntryId = subEntryId;
             EntryId = entryId;
             SessionId = sessionId;
+            CorrelationId = correlationId;
 
             this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
