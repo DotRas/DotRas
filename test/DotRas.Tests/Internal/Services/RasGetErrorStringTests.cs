@@ -16,7 +16,7 @@ namespace DotRas.Tests.Internal.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasGetErrorString(null);
+                var unused = new RasGetErrorStringService(null);
             });
         }
 
@@ -26,7 +26,7 @@ namespace DotRas.Tests.Internal.Services
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetErrorString(87, It.IsAny<StringBuilder>(), It.IsAny<int>())).Returns(ERROR_INVALID_PARAMETER);
 
-            var target = new RasGetErrorString(api.Object);
+            var target = new RasGetErrorStringService(api.Object);
             var result = target.GetErrorString(87);
 
             Assert.IsNull(result);
@@ -42,7 +42,7 @@ namespace DotRas.Tests.Internal.Services
                 .Callback<int, StringBuilder, int>((o1, o2, o3) => { o2.Append(message); })
                 .Returns(SUCCESS);
 
-            var target = new RasGetErrorString(api.Object);
+            var target = new RasGetErrorStringService(api.Object);
             var result = target.GetErrorString(1);
 
             Assert.AreEqual(message, result);
@@ -53,7 +53,7 @@ namespace DotRas.Tests.Internal.Services
         {
             var api = new Mock<IRasApi32>();
 
-            var target = new RasGetErrorString(api.Object);
+            var target = new RasGetErrorStringService(api.Object);
             Assert.Throws<ArgumentException>(() => target.GetErrorString(0));
 
             api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Never);
@@ -64,7 +64,7 @@ namespace DotRas.Tests.Internal.Services
         {
             var api = new Mock<IRasApi32>();
 
-            var target = new RasGetErrorString(api.Object);
+            var target = new RasGetErrorStringService(api.Object);
             Assert.Throws<ArgumentException>(() => target.GetErrorString(-1));
 
             api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Never);
@@ -76,7 +76,7 @@ namespace DotRas.Tests.Internal.Services
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetErrorString(1, It.IsAny<StringBuilder>(), It.IsAny<int>())).Returns(ERROR_INSUFFICIENT_BUFFER);
 
-            var target = new RasGetErrorString(api.Object);
+            var target = new RasGetErrorStringService(api.Object);
             Assert.Throws<System.ComponentModel.Win32Exception>(() => target.GetErrorString(1));
         }        
     }

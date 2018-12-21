@@ -1,11 +1,11 @@
 ﻿using System;
 using DotRas.Internal.Interop;
-using DotRas.Internal.Providers;
+using DotRas.Internal.Services.PhoneBooks;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Providers
+namespace DotRas.Tests.Internal.Services.PhoneBooks
 {
     [TestFixture]
     public class PhoneBookEntryValidatorTests
@@ -13,7 +13,7 @@ namespace DotRas.Tests.Internal.Providers
         [Test]
         public void ThrowsAnExceptionWhenApiIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new PhoneBookEntryValidator(null));
+            Assert.Throws<ArgumentNullException>(() => new PhoneBookEntryNameValidationService(null));
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace DotRas.Tests.Internal.Providers
         {
             var api = new Mock<IRasApi32>();
 
-            var target = new PhoneBookEntryValidator(api.Object);
+            var target = new PhoneBookEntryNameValidationService(api.Object);
             Assert.Throws<ArgumentNullException>(() => target.VerifyEntryExists(null, "PATH"));
         }
 
@@ -30,7 +30,7 @@ namespace DotRas.Tests.Internal.Providers
         {
             var api = new Mock<IRasApi32>();
 
-            var target = new PhoneBookEntryValidator(api.Object);
+            var target = new PhoneBookEntryNameValidationService(api.Object);
             Assert.DoesNotThrow(() => target.VerifyEntryExists("ENTRY", null));
         }
 
@@ -40,7 +40,7 @@ namespace DotRas.Tests.Internal.Providers
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasValidateEntryName("PATH", "ENTRY")).Returns(ERROR_ALREADY_EXISTS);
 
-            var target = new PhoneBookEntryValidator(api.Object);
+            var target = new PhoneBookEntryNameValidationService(api.Object);
             var result = target.VerifyEntryExists("ENTRY", "PATH");
 
             Assert.True(result);
@@ -52,7 +52,7 @@ namespace DotRas.Tests.Internal.Providers
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasValidateEntryName("PATH", "ENTRY")).Returns(SUCCESS);
 
-            var target = new PhoneBookEntryValidator(api.Object);
+            var target = new PhoneBookEntryNameValidationService(api.Object);
             var result = target.VerifyEntryExists("ENTRY", "PATH");
 
             Assert.False(result);

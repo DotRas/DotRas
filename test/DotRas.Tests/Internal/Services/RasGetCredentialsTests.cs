@@ -21,19 +21,19 @@ namespace DotRas.Tests.Internal.Services
         [Test]
         public void ThrowsAnExceptionWhenTheApiIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentials(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object));
+            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheStructFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentials(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object));
+            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheExceptionPolicyIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentials(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
+            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace DotRas.Tests.Internal.Services
 
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            var target = new RasGetCredentials(api.Object, structFactory.Object, exceptionPolicy.Object);
+            var target = new RasGetCredentialsService(api.Object, structFactory.Object, exceptionPolicy.Object);
             var result = target.GetNetworkCredential("ENTRY", "PATH");
 
             Assert.AreEqual("USER", result.UserName);
@@ -73,7 +73,7 @@ namespace DotRas.Tests.Internal.Services
             var exceptionPolicy = new Mock<IExceptionPolicy>();
             exceptionPolicy.Setup(o => o.Create(-1)).Returns(new TestException());
 
-            var target = new RasGetCredentials(api.Object, structFactory.Object, exceptionPolicy.Object);
+            var target = new RasGetCredentialsService(api.Object, structFactory.Object, exceptionPolicy.Object);
             Assert.Throws<TestException>(() => target.GetNetworkCredential("ENTRY", "PATH"));
         }
 
@@ -84,7 +84,7 @@ namespace DotRas.Tests.Internal.Services
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            var target = new RasGetCredentials(api.Object, structFactory.Object, exceptionPolicy.Object);
+            var target = new RasGetCredentialsService(api.Object, structFactory.Object, exceptionPolicy.Object);
             Assert.Throws<ArgumentNullException>(() => target.GetNetworkCredential(null, "PATH"));
         }
 
@@ -95,7 +95,7 @@ namespace DotRas.Tests.Internal.Services
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            var target = new RasGetCredentials(api.Object, structFactory.Object, exceptionPolicy.Object);
+            var target = new RasGetCredentialsService(api.Object, structFactory.Object, exceptionPolicy.Object);
             Assert.DoesNotThrow(() => target.GetNetworkCredential("ENTRY", null));
         }
     }

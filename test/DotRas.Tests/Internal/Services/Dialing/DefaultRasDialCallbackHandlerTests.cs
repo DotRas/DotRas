@@ -5,12 +5,12 @@ using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Factories;
-using DotRas.Internal.Services.Connections;
+using DotRas.Internal.Services.Dialing;
 using DotRas.Tests.Internal.Stubs;
 using Moq;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.Services
+namespace DotRas.Tests.Internal.Services.Dialing
 {
     [TestFixture]
     public class DefaultRasDialCallbackHandlerTests

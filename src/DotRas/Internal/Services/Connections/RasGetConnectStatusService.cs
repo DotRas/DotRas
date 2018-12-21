@@ -8,14 +8,14 @@ using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Connections
 {
-    internal class RasGetConnectStatus : IRasGetConnectStatus
+    internal class RasGetConnectStatusService : IRasGetConnectStatus
     {
         private readonly IRasApi32 api;
         private readonly IStructFactory structFactory;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IDeviceTypeFactory deviceTypeFactory;
 
-        public RasGetConnectStatus(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
+        public RasGetConnectStatusService(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));

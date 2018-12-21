@@ -11,7 +11,7 @@ using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Connections
 {
-    internal class RasEnumConnections : IRasEnumConnections
+    internal class RasEnumConnectionsService : IRasEnumConnections
     {        
         private readonly IRasApi32 api;
         private readonly IDeviceTypeFactory deviceTypeFactory;
@@ -19,7 +19,7 @@ namespace DotRas.Internal.Services.Connections
         private readonly IStructArrayFactory structFactory;
         private readonly IServiceProvider serviceLocator;
 
-        public RasEnumConnections(IRasApi32 api, IDeviceTypeFactory deviceTypeFactory, IExceptionPolicy exceptionPolicy, IStructArrayFactory structFactory, IServiceProvider serviceLocator)
+        public RasEnumConnectionsService(IRasApi32 api, IDeviceTypeFactory deviceTypeFactory, IExceptionPolicy exceptionPolicy, IStructArrayFactory structFactory, IServiceProvider serviceLocator)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));

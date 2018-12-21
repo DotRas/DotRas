@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using DotRas.Internal.Providers;
+using DotRas.Internal.Services;
 using DotRas.Tests.Internal.Stubs;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.Providers
+namespace DotRas.Tests.Internal.Services
 {
     [TestFixture]
-    public class StructMarshallerTests
+    public class StructMarshallingServiceTests
     {
         [Test]
         public void IdentifyTheCorrectSizeOfAnInteger()
         {
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
             var result = target.SizeOf<int>();
 
             Assert.AreEqual(4, result);
@@ -21,7 +21,7 @@ namespace DotRas.Tests.Internal.Providers
         [Test]
         public void IdentifyTheCorrectSizeOfAStructure()
         {
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
             var result = target.SizeOf<StubStructure>();
 
             Assert.AreEqual(32, result);
@@ -31,7 +31,7 @@ namespace DotRas.Tests.Internal.Providers
         public void FreeTheMemoryAllocated()
         {
             var result = IntPtr.Zero;
-            var target = new StubStructMarshaller();
+            var target = new StubStructMarshallingService();
 
             try
             {
@@ -49,7 +49,7 @@ namespace DotRas.Tests.Internal.Providers
         [Test]
         public void NotFreeTheMemoryAllocatedIfPtrIsZero()
         {
-            var target = new StubStructMarshaller();
+            var target = new StubStructMarshallingService();
             target.FreeHGlobalIfNeeded(IntPtr.Zero);
 
             Assert.IsFalse(target.ReleasedUnmanagedMemory);
@@ -62,7 +62,7 @@ namespace DotRas.Tests.Internal.Providers
 
             try
             {
-                var target = new StructMarshaller();
+                var target = new StructMarshallingService();
                 result = target.AllocHGlobal(4);
                 
                 Assert.AreNotEqual(IntPtr.Zero, result);
@@ -80,7 +80,7 @@ namespace DotRas.Tests.Internal.Providers
         public void MarshalTheValueToAPointer()
         {
             var lpStubStructure = IntPtr.Zero;
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
 
             try
             {
@@ -115,21 +115,21 @@ namespace DotRas.Tests.Internal.Providers
         [Test]
         public void ThrowAnExceptionWhenThePtrIsZero()
         {
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
             Assert.Throws<ArgumentNullException>(() => target.StructureToPtr(new StubStructure(), IntPtr.Zero));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheSizeIsZero()
         {
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
             Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheSizeIsLessThanZero()
         {
-            var target = new StructMarshaller();
+            var target = new StructMarshallingService();
             Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
         }
     }

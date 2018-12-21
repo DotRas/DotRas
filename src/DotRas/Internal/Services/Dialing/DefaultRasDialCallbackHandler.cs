@@ -7,7 +7,7 @@ using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services.Connections
+namespace DotRas.Internal.Services.Dialing
 {
     internal class DefaultRasDialCallbackHandler : DisposableObject, IRasDialCallbackHandler
     {

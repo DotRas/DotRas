@@ -10,13 +10,13 @@ using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services
 {
-    internal class RasGetCredentials : IRasGetCredentials
+    internal class RasGetCredentialsService : IRasGetCredentials
     {
         private readonly IRasApi32 api;
         private readonly IStructFactory structFactory;
         private readonly IExceptionPolicy exceptionPolicy;
 
-        public RasGetCredentials(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy)
+        public RasGetCredentialsService(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));

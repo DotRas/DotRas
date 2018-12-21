@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Internal\Providers\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

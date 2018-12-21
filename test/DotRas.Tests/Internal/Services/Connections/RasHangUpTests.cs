@@ -17,13 +17,13 @@ namespace DotRas.Tests.Internal.Services
         [Test]
         public void ThrowAnExceptionWhenTheApiIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasHangUp(null, new Mock<IExceptionPolicy>().Object));
+            Assert.Throws<ArgumentNullException>(() => new RasHangUpService(null, new Mock<IExceptionPolicy>().Object));
         }
 
         [Test]
         public void ThrowAnExceptionWhenTheExceptionPolicyIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasHangUp(new Mock<IRasApi32>().Object, null));
+            Assert.Throws<ArgumentNullException>(() => new RasHangUpService(new Mock<IRasApi32>().Object, null));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace DotRas.Tests.Internal.Services
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            var target = new RasHangUp(api.Object, exceptionPolicy.Object);
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
             Assert.Throws<ArgumentNullException>(() => target.HangUp(null, CancellationToken.None));
         }
 
@@ -44,7 +44,7 @@ namespace DotRas.Tests.Internal.Services
 
             using (var handle = new RasHandle())
             {
-                var target = new RasHangUp(api.Object, exceptionPolicy.Object);
+                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
                 Assert.Throws<ArgumentException>(() => target.HangUp(handle, CancellationToken.None));
             }
         }
@@ -72,7 +72,7 @@ namespace DotRas.Tests.Internal.Services
                     }
                 });
 
-                var target = new RasHangUp(api.Object, exceptionPolicy.Object);
+                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
                 target.HangUp(handle, CancellationToken.None);
 
                 api.Verify(o => o.RasHangUp(handle), Times.Exactly(3));
@@ -90,7 +90,7 @@ namespace DotRas.Tests.Internal.Services
             {
                 cancellationSource.Cancel();                
 
-                var target = new RasHangUp(api.Object, exceptionPolicy.Object);
+                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
                 Assert.Throws<OperationCanceledException>(() => target.HangUp(handle, cancellationSource.Token));
             }
         }
@@ -108,7 +108,7 @@ namespace DotRas.Tests.Internal.Services
             {
                 api.Setup(o => o.RasHangUp(handle)).Returns(-1);
 
-                var target = new RasHangUp(api.Object, exceptionPolicy.Object);
+                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
                 Assert.Throws<TestException>(() => target.HangUp(handle, CancellationToken.None));
 
                 api.Verify(o => o.RasHangUp(handle), Times.Once);

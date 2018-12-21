@@ -7,7 +7,7 @@ using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services
 {
-    internal class RasGetErrorString : IRasGetErrorString
+    internal class RasGetErrorStringService : IRasGetErrorString
     {
         /// <summary>
         /// Defines the default buffer size as defined within the Microsoft documentation.
@@ -16,7 +16,7 @@ namespace DotRas.Internal.Services
 
         private readonly IRasApi32 api;
 
-        public RasGetErrorString(IRasApi32 api)
+        public RasGetErrorStringService(IRasApi32 api)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }

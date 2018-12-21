@@ -7,9 +7,10 @@ using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Advice;
 using DotRas.Internal.Interop;
-using DotRas.Internal.Providers;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
+using DotRas.Internal.Services.Dialing;
+using DotRas.Internal.Services.PhoneBooks;
 
 namespace DotRas.Internal.DependencyInjection
 {
@@ -25,7 +26,7 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IAdvApi32>()));
 
             container.AddService(typeof(IRasEnumConnections),
-                (c, _) => new RasEnumConnections(
+                (c, _) => new RasEnumConnectionsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IDeviceTypeFactory>(),
                     c.GetRequiredService<IExceptionPolicy>(),
@@ -34,37 +35,37 @@ namespace DotRas.Internal.DependencyInjection
 
             container.AddService(typeof(IStructMarshaller),
                 (c, _) => new StructMarshallerLoggingAdvice(
-                    new StructMarshaller(),
+                    new StructMarshallingService(),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 
             container.AddService(typeof(IPhoneBookEntryValidator),
-                (c, _) => new PhoneBookEntryValidator(
+                (c, _) => new PhoneBookEntryNameValidationService(
                     c.GetRequiredService<IRasApi32>()));
 
             container.AddService(typeof(IRasHangUp),
-                (c, _) => new RasHangUp(
+                (c, _) => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
             container.AddService(typeof(IRasGetConnectStatus),
-                (c, _) => new RasGetConnectStatus(
+                (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
 
             container.AddService(typeof(IRasGetErrorString),
-                (c, _) => new RasGetErrorString(
+                (c, _) => new RasGetErrorStringService(
                     c.GetRequiredService<IRasApi32>()));
 
             container.AddService(typeof(IRasGetCredentials),
-                (c, _) => new RasGetCredentials(
+                (c, _) => new RasGetCredentialsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
             container.AddService(typeof(IRasDial),
-                (c, _) => new RasDial(
+                (c, _) => new RasDialService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>(),

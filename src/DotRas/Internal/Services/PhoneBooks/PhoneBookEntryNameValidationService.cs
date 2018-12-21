@@ -3,13 +3,13 @@ using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Providers
+namespace DotRas.Internal.Services.PhoneBooks
 {
-    internal class PhoneBookEntryValidator : IPhoneBookEntryValidator
+    internal class PhoneBookEntryNameValidationService : IPhoneBookEntryValidator
     {
         private readonly IRasApi32 api;
 
-        public PhoneBookEntryValidator(IRasApi32 api)
+        public PhoneBookEntryNameValidationService(IRasApi32 api)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }

@@ -9,9 +9,9 @@ using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services.Connections
+namespace DotRas.Internal.Services.Dialing
 {
-    internal class RasDial : DisposableObject, IRasDial
+    internal class RasDialService : DisposableObject, IRasDial
     {
         private readonly object syncRoot = new object();
 
@@ -24,7 +24,7 @@ namespace DotRas.Internal.Services.Connections
 
         public bool IsBusy { get; private set; }
 
-        public RasDial(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
+        public RasDialService(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));

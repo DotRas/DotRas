@@ -8,12 +8,12 @@ using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Connections
 {
-    internal class RasHangUp : IRasHangUp
+    internal class RasHangUpService : IRasHangUp
     {
         private readonly IRasApi32 api;
         private readonly IExceptionPolicy exceptionPolicy;
 
-        public RasHangUp(IRasApi32 api, IExceptionPolicy exceptionPolicy)
+        public RasHangUpService(IRasApi32 api, IExceptionPolicy exceptionPolicy)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));

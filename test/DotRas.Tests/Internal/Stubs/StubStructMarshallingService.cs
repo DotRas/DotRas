@@ -1,9 +1,9 @@
 ﻿using System;
-using DotRas.Internal.Providers;
+using DotRas.Internal.Services;
 
 namespace DotRas.Tests.Internal.Stubs
 {
-    internal class StubStructMarshaller : StructMarshaller
+    internal class StubStructMarshallingService : StructMarshallingService
     {
         public bool ReleasedUnmanagedMemory { get; private set; }
 

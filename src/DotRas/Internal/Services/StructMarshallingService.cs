@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using DotRas.Internal.Abstractions.Providers;
 
-namespace DotRas.Internal.Providers
+namespace DotRas.Internal.Services
 {
-    internal class StructMarshaller : IStructMarshaller
+    internal class StructMarshallingService : IStructMarshaller
     {
         public int SizeOf<T>()
         {
