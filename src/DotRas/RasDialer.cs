@@ -130,14 +130,16 @@ namespace DotRas
             GuardMustNotBeDisposed();
             ValidateConfigurationPriorToDialAttempt();
 
-            return api.DialAsync(new RasDialContext(
-                PhoneBookPath, 
-                EntryName, 
-                GetCredentials(), 
-                Options.InterfaceIndex, 
-                RaiseDialStateChanged, 
-                cancellationToken));
-        }
+            return api.DialAsync(new RasDialContext
+            {
+                PhoneBookPath = PhoneBookPath,
+                EntryName = EntryName,
+                Credentials = GetCredentials(),
+                CancellationToken = cancellationToken,
+                InterfaceIndex = Options.InterfaceIndex,
+                OnStateChangedCallback = RaiseDialStateChanged
+            });
+        }        
 
         private void ValidateConfigurationPriorToDialAttempt()
         {

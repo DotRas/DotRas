@@ -16,7 +16,8 @@ namespace DotRas.Internal.Services.Dialing
         private readonly object syncRoot = new object();
 
         private readonly IRasApi32 api;
-        private readonly IStructFactory structFactory;
+        private readonly IRasDialExtensionsBuilder extensionsBuilder;
+        private readonly IRasDialParamsBuilder paramsBuilder;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IRasDialCallbackHandler callbackHandler;
         private readonly ITaskCompletionSourceFactory completionSourceFactory;
@@ -24,10 +25,11 @@ namespace DotRas.Internal.Services.Dialing
 
         public bool IsBusy { get; private set; }
 
-        public RasDialService(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
+        public RasDialService(IRasApi32 api, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
-            this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
+            this.extensionsBuilder = extensionsBuilder ?? throw new ArgumentNullException(nameof(extensionsBuilder));
+            this.paramsBuilder = paramsBuilder ?? throw new ArgumentNullException(nameof(paramsBuilder));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
             this.completionSourceFactory = completionSourceFactory ?? throw new ArgumentNullException(nameof(completionSourceFactory));
@@ -75,7 +77,7 @@ namespace DotRas.Internal.Services.Dialing
             {
                 SetBusy();
 
-                var rasDialExtensions = ConvertToRasDialExtensions();
+                var rasDialExtensions = ConvertToRasDialExtensions(context);
                 var rasDialParams = ConvertToRasDialParams(context);
 
                 var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out lphRasConn);
@@ -95,25 +97,14 @@ namespace DotRas.Internal.Services.Dialing
             }
         }
 
-        private RASDIALEXTENSIONS ConvertToRasDialExtensions()
+        private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)
         {
-            return structFactory.Create<RASDIALEXTENSIONS>();
+            return extensionsBuilder.Build(context);
         }
 
         private RASDIALPARAMS ConvertToRasDialParams(RasDialContext context)
         {
-            var rasDialParams = structFactory.Create<RASDIALPARAMS>();
-            rasDialParams.szEntryName = context.EntryName;
-            rasDialParams.dwIfIndex = context.InterfaceIndex;
-
-            if (context.Credentials != null)
-            {
-                rasDialParams.szUserName = context.Credentials.UserName;
-                rasDialParams.szPassword = context.Credentials.Password;
-                rasDialParams.szDomain = context.Credentials.Domain;
-            }            
-
-            return rasDialParams;
+            return paramsBuilder.Build(context);
         }
 
         private void SetBusy()

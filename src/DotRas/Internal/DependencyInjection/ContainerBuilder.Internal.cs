@@ -70,10 +70,19 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
+            container.AddService(typeof(IRasDialExtensionsBuilder),
+                (c, _) => new RasDialExtensionsBuilder(
+                    c.GetRequiredService<IStructFactory>()));
+
+            container.AddService(typeof(IRasDialParamsBuilder),
+                (c, _) => new RasDialParamsBuilder(
+                    c.GetRequiredService<IStructFactory>()));
+
             container.AddService(typeof(IRasDial),
                 (c, _) => new RasDialService(
                     c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IRasDialExtensionsBuilder>(),
+                    c.GetRequiredService<IRasDialParamsBuilder>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IRasDialCallbackHandler>(),
                     c.GetRequiredService<ITaskCompletionSourceFactory>()));
