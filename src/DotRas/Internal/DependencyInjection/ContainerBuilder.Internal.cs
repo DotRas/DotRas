@@ -11,6 +11,7 @@ using DotRas.Internal.Services.Connections;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Internal.Services.ErrorHandling;
 using DotRas.Internal.Services.PhoneBooks;
+using DotRas.Internal.Services.Security;
 
 namespace DotRas.Internal.DependencyInjection
 {
