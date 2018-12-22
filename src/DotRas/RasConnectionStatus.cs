@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace DotRas
 {
@@ -28,18 +29,39 @@ namespace DotRas
         public virtual string PhoneNumber { get; }
 
         /// <summary>
+        /// Gets the local client endpoint information of a virtual private network (VPN) tunnel.
+        /// </summary>
+        public virtual IPAddress LocalEndPoint { get; }
+
+        /// <summary>
+        /// Gets the remote server endpoint information of a virtual private network (VPN) tunnel.
+        /// </summary>
+        public virtual IPAddress RemoteEndPoint { get; }
+
+        /// <summary>
+        /// Gets the state of an Internet Key Exchange version 2 (IKEv2) virtual private network (VPN) tunnel.
+        /// </summary>
+        public virtual RasConnectionSubState ConnectionSubState { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RasConnectionState"/> class.
         /// </summary>
         /// <param name="connectionState">The state of the connection.</param>
         /// <param name="errorInformation">The information about the error which caused a failure.</param>
         /// <param name="device">The device through which the connection has been established.</param>
         /// <param name="phoneNumber">The phone number dialed for this specific connection.</param>
-        public RasConnectionStatus(RasConnectionState connectionState, Win32ErrorInformation errorInformation, RasDevice device, string phoneNumber)
+        /// <param name="localEndpoint">Optional. The local client endpoint information of a virtual private network (VPN) tunnel.</param>
+        /// <param name="remoteEndpoint">Optional. The remote client endpoint information of a virtual private network (VPN) tunnel.</param>
+        /// <param name="connectionSubState">The state of an Internet Key Exchange version2 (IKEv2) virtual private network (VPN) tunnel.</param>
+        public RasConnectionStatus(RasConnectionState connectionState, Win32ErrorInformation errorInformation, RasDevice device, string phoneNumber, IPAddress localEndpoint, IPAddress remoteEndpoint, RasConnectionSubState connectionSubState)
         {
             ConnectionState = connectionState;
             ErrorInformation = errorInformation;
             Device = device ?? throw new ArgumentNullException(nameof(device));
             PhoneNumber = phoneNumber;
+            LocalEndPoint = localEndpoint;
+            RemoteEndPoint = remoteEndpoint;
+            ConnectionSubState = connectionSubState;
         }
 
         /// <summary>

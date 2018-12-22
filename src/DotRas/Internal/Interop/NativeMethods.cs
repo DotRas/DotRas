@@ -42,8 +42,11 @@ namespace DotRas.Internal.Interop
             public string szDeviceName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxPhoneNumber + 1)]
             public string szPhoneNumber;
+            public RASTUNNELENDPOINT localEndpoint;
+            public RASTUNNELENDPOINT remoteEndpoint;
+            public RasConnectionSubState rasconnsubstate;
         }
-
+        
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
         public struct RASCREDENTIALS
         {
@@ -108,6 +111,14 @@ namespace DotRas.Internal.Interop
             public int dwSubEntry;
             public IntPtr dwCallbackId;
             public int dwIfIndex;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RASTUNNELENDPOINT
+        {
+            public RASTUNNELENDPOINTTYPE type;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] addr;
         }
 
         public delegate bool RasDialFunc2(

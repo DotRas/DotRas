@@ -6,6 +6,7 @@ namespace DotRas.Internal.Interop
     {
         public const int RASCS_PAUSED = 0x1000;
         public const int RASCS_DONE = 0x2000;
+        public const int RASCSS_DONE = 0x2000;
 
         public const int RAS_MaxDeviceType = 16;
         public const int RAS_MaxPhoneNumber = 128;
@@ -41,6 +42,13 @@ namespace DotRas.Internal.Interop
         public const string RASDT_PPPoE = "PPPoE";
 
         #endregion
+
+        public enum RASTUNNELENDPOINTTYPE
+        {
+            Unknown,
+            IPv4,
+            IPv6
+        }
 
         [Flags]
         public enum RASCF
@@ -84,6 +92,6 @@ namespace DotRas.Internal.Interop
             UserName = 0x1,
             Password = 0x2,
             Domain = 0x4
-        }
+        }        
     }
 }
