@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 
 namespace DotRas.Internal.Services
 {
-    internal class StructMarshallingService : IStructMarshaller
+    internal class MarshallingService : IMarshaller
     {
         public int SizeOf<T>()
         {
@@ -45,6 +45,16 @@ namespace DotRas.Internal.Services
             }
 
             Marshal.StructureToPtr(structure, ptr, true);
+        }
+
+        public string PtrToUnicodeString(IntPtr ptr, int length)
+        {
+            if (ptr == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            return Marshal.PtrToStringUni(ptr, length);
         }
     }
 }

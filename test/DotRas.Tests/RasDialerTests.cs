@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using Moq;
 using NUnit.Framework;

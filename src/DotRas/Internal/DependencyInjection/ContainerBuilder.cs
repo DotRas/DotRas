@@ -11,7 +11,7 @@ namespace DotRas.Internal.DependencyInjection
             RegisterDiagnostics(container);
             RegisterFactories(container);
             RegisterInternal(container);
-            RegisterWin32(container);
+            RegisterInterop(container);
 
             return container;
         }

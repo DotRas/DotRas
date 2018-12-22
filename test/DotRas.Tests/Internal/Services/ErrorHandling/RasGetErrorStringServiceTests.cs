@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Text;
 using DotRas.Internal.Interop;
-using DotRas.Internal.Services;
+using DotRas.Internal.Services.ErrorHandling;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Services
+namespace DotRas.Tests.Internal.Services.ErrorHandling
 {
     [TestFixture]
-    public class RasGetErrorStringTests
+    public class RasGetErrorStringServiceTests
     {
         [Test]
         public void ThrowAnExceptionWhenTheApiIsNull()

@@ -8,8 +8,8 @@ namespace DotRas.Internal.DependencyInjection.Advice
 {
     internal class AdvApi32LoggingAdvice : LoggingAdvice<IAdvApi32>, IAdvApi32
     {
-        public AdvApi32LoggingAdvice(IAdvApi32 instance, IEventLoggingPolicy eventLoggingPolicy)
-            : base(instance, eventLoggingPolicy)
+        public AdvApi32LoggingAdvice(IAdvApi32 attachedObject, IEventLoggingPolicy eventLoggingPolicy)
+            : base(attachedObject, eventLoggingPolicy)
         {
         }
 

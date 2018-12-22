@@ -12,13 +12,15 @@ namespace DotRas.Internal.Services.Connections
     {
         private readonly IRasApi32 api;
         private readonly IStructFactory structFactory;
+        private readonly IWin32ErrorInformation errorInformation;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IDeviceTypeFactory deviceTypeFactory;
 
-        public RasGetConnectStatusService(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
+        public RasGetConnectStatusService(IRasApi32 api, IStructFactory structFactory, IWin32ErrorInformation errorInformation, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
+            this.errorInformation = errorInformation ?? throw new ArgumentNullException(nameof(errorInformation));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));
         }
@@ -34,6 +36,7 @@ namespace DotRas.Internal.Services.Connections
 
             return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
+                errorInformation.CreateFromErrorCode(rasConnStatus.dwError),
                 deviceTypeFactory.Create(rasConnStatus.szDeviceName, rasConnStatus.szDeviceType),
                 rasConnStatus.szPhoneNumber);
         }

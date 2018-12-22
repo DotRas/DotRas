@@ -8,7 +8,7 @@ using static DotRas.Internal.Interop.WinError;
 namespace DotRas.Tests.Internal.Services.PhoneBooks
 {
     [TestFixture]
-    public class PhoneBookEntryValidatorTests
+    public class PhoneBookEntryValidationServiceTests
     {
         [Test]
         public void ThrowsAnExceptionWhenApiIsNull()

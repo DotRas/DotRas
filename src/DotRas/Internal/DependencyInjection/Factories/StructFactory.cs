@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Reflection;
 using DotRas.Internal.Abstractions.Factories;
-using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 
 namespace DotRas.Internal.DependencyInjection.Factories
 {
     internal class StructFactory : IStructFactory, IStructArrayFactory
     {
-        private readonly IStructMarshaller marshaller;
+        private readonly IMarshaller marshaller;
 
-        public StructFactory(IStructMarshaller marshaller)
+        public StructFactory(IMarshaller marshaller)
         {
             this.marshaller = marshaller ?? throw new ArgumentNullException(nameof(marshaller));
         }

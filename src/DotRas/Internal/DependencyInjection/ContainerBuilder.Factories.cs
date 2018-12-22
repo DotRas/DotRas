@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Design;
 using DotRas.Internal.Abstractions.Factories;
-using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Factories;
 
 namespace DotRas.Internal.DependencyInjection
@@ -22,11 +22,11 @@ namespace DotRas.Internal.DependencyInjection
             
             container.AddService(typeof(IStructFactory),
                 (c, _) => new StructFactory(
-                    c.GetRequiredService<IStructMarshaller>()));
+                    c.GetRequiredService<IMarshaller>()));
 
             container.AddService(typeof(IStructArrayFactory),
                 (c, _) => new StructFactory(
-                    c.GetRequiredService<IStructMarshaller>()));
+                    c.GetRequiredService<IMarshaller>()));
         }        
     }
 }

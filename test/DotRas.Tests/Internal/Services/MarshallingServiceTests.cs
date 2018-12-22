@@ -7,12 +7,12 @@ using NUnit.Framework;
 namespace DotRas.Tests.Internal.Services
 {
     [TestFixture]
-    public class StructMarshallingServiceTests
+    public class MarshallingServiceTests
     {
         [Test]
         public void IdentifyTheCorrectSizeOfAnInteger()
         {
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
             var result = target.SizeOf<int>();
 
             Assert.AreEqual(4, result);
@@ -21,7 +21,7 @@ namespace DotRas.Tests.Internal.Services
         [Test]
         public void IdentifyTheCorrectSizeOfAStructure()
         {
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
             var result = target.SizeOf<StubStructure>();
 
             Assert.AreEqual(32, result);
@@ -62,7 +62,7 @@ namespace DotRas.Tests.Internal.Services
 
             try
             {
-                var target = new StructMarshallingService();
+                var target = new MarshallingService();
                 result = target.AllocHGlobal(4);
                 
                 Assert.AreNotEqual(IntPtr.Zero, result);
@@ -80,7 +80,7 @@ namespace DotRas.Tests.Internal.Services
         public void MarshalTheValueToAPointer()
         {
             var lpStubStructure = IntPtr.Zero;
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
 
             try
             {
@@ -115,21 +115,21 @@ namespace DotRas.Tests.Internal.Services
         [Test]
         public void ThrowAnExceptionWhenThePtrIsZero()
         {
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
             Assert.Throws<ArgumentNullException>(() => target.StructureToPtr(new StubStructure(), IntPtr.Zero));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheSizeIsZero()
         {
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
             Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheSizeIsLessThanZero()
         {
-            var target = new StructMarshallingService();
+            var target = new MarshallingService();
             Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
         }
     }

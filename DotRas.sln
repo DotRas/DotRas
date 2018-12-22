@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Includes", "Includes", "{48
 		includes\um\RasError.h = includes\um\RasError.h
 		includes\um\securitybaseapi.h = includes\um\securitybaseapi.h
 		includes\ucrt\stdlib.h = includes\ucrt\stdlib.h
+		includes\um\WinBase.h = includes\um\WinBase.h
 		includes\shared\winerror.h = includes\shared\winerror.h
 		includes\um\winnt.h = includes\um\winnt.h
 	EndProjectSection

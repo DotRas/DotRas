@@ -1,5 +1,5 @@
 ﻿using System;
-using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 

@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets the name of the device.
         /// </summary>
-        public string Name { get; }
+        public virtual string Name { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RasDevice"/> class.
@@ -17,6 +17,13 @@
         protected RasDevice(string name)
         {
             Name = name;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasDevice"/> class.
+        /// </summary>
+        protected RasDevice()
+        {
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -11,6 +12,16 @@ namespace DotRas.Internal.Interop.Primitives
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool AllocateLocallyUniqueId(
             [Out] out Luid pLuid);
+
+        [DllImport(Kernel32Dll, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int FormatMessage(
+            int dwFlags,
+            IntPtr lpSource,
+            int dwMessageId,
+            int dwLanguageId,
+            [In, Out] ref IntPtr lpBuffer,
+            int nSize,
+            IntPtr arguments);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasEnumConnections(

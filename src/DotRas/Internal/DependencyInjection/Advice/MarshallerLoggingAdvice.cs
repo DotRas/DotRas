@@ -3,15 +3,15 @@ using System.Diagnostics;
 using System.Reflection;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
-using DotRas.Internal.Abstractions.Providers;
+using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 
 namespace DotRas.Internal.DependencyInjection.Advice
 {
-    internal class StructMarshallerLoggingAdvice : LoggingAdvice<IStructMarshaller>, IStructMarshaller
+    internal class MarshallerLoggingAdvice : LoggingAdvice<IMarshaller>, IMarshaller
     {
-        public StructMarshallerLoggingAdvice(IStructMarshaller instance, IEventLoggingPolicy eventLoggingPolicy)
-            : base(instance, eventLoggingPolicy)
+        public MarshallerLoggingAdvice(IMarshaller attachedObject, IEventLoggingPolicy eventLoggingPolicy)
+            : base(attachedObject, eventLoggingPolicy)
         {
         }
 
@@ -28,6 +28,11 @@ namespace DotRas.Internal.DependencyInjection.Advice
         public bool FreeHGlobalIfNeeded(IntPtr ptr)
         {
             return AttachedObject.FreeHGlobalIfNeeded(ptr);
+        }
+
+        public string PtrToUnicodeString(IntPtr ptr, int length)
+        {
+            return AttachedObject.PtrToUnicodeString(ptr, length);
         }
 
         public void StructureToPtr<T>(T structure, IntPtr ptr)

@@ -3,7 +3,7 @@ using DotRas.Internal.Services;
 
 namespace DotRas.Tests.Internal.Stubs
 {
-    internal class StubStructMarshallingService : StructMarshallingService
+    internal class StubStructMarshallingService : MarshallingService
     {
         public bool ReleasedUnmanagedMemory { get; private set; }
 

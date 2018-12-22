@@ -1,4 +1,4 @@
-﻿namespace DotRas.Internal.Abstractions.Providers
+﻿namespace DotRas.Internal.Abstractions.Services
 {
     internal interface IPhoneBookEntryValidator
     {

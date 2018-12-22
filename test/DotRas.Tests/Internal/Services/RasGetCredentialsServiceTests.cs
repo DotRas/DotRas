@@ -11,7 +11,7 @@ using static DotRas.Internal.Interop.NativeMethods;
 namespace DotRas.Tests.Internal.Services
 {
     [TestFixture]
-    public class RasGetCredentialsTests
+    public class RasGetCredentialsServiceTests
     {
         private delegate void RasGetCredentialsCallback(
             string lpszPhonebook,

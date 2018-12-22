@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DotRas.Internal.Abstractions.Providers
+namespace DotRas.Internal.Abstractions.Services
 {
-    internal interface IStructMarshaller
+    internal interface IMarshaller
     {
         int SizeOf<T>();
 
@@ -10,5 +10,7 @@ namespace DotRas.Internal.Abstractions.Providers
         bool FreeHGlobalIfNeeded(IntPtr ptr);
 
         void StructureToPtr<T>(T structure, IntPtr ptr);
+
+        string PtrToUnicodeString(IntPtr ptr, int length);
     }
 }

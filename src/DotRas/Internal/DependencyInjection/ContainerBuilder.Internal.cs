@@ -3,13 +3,13 @@ using DotRas.Diagnostics;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Advice;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
 using DotRas.Internal.Services.Dialing;
+using DotRas.Internal.Services.ErrorHandling;
 using DotRas.Internal.Services.PhoneBooks;
 
 namespace DotRas.Internal.DependencyInjection
@@ -33,9 +33,9 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IStructArrayFactory>(),
                     c));
 
-            container.AddService(typeof(IStructMarshaller),
-                (c, _) => new StructMarshallerLoggingAdvice(
-                    new StructMarshallingService(),
+            container.AddService(typeof(IMarshaller),
+                (c, _) => new MarshallerLoggingAdvice(
+                    new MarshallingService(),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 
             container.AddService(typeof(IPhoneBookEntryValidator),
@@ -51,6 +51,7 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IWin32ErrorInformation>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
 
@@ -81,6 +82,16 @@ namespace DotRas.Internal.DependencyInjection
                         c.GetRequiredService<IValueWaiter<RasHandle>>(),
                         c.GetRequiredService<ITaskCancellationSourceFactory>()),
                     c.GetRequiredService<IEventLoggingPolicy>()));
+
+            container.AddService(typeof(IWin32FormatMessage),
+                (c, _) => new Win32FormatMessageService(
+                    c.GetRequiredService<IKernel32>(),
+                    c.GetRequiredService<IMarshaller>()));
+
+            container.AddService(typeof(IWin32ErrorInformation),
+                (c, _) => new Win32ErrorInformationService(
+                    c.GetRequiredService<IRasGetErrorString>(),
+                    c.GetRequiredService<IWin32FormatMessage>()));
         }
     }
 }

@@ -11,8 +11,8 @@ namespace DotRas.Internal.DependencyInjection.Advice
 {
     internal class RasApi32LoggingAdvice : LoggingAdvice<IRasApi32>, IRasApi32
     {
-        public RasApi32LoggingAdvice(IRasApi32 instance, IEventLoggingPolicy eventLoggingPolicy)
-            : base(instance, eventLoggingPolicy)
+        public RasApi32LoggingAdvice(IRasApi32 attachedObject, IEventLoggingPolicy eventLoggingPolicy)
+            : base(attachedObject, eventLoggingPolicy)
         {
         }
 

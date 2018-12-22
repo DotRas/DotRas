@@ -469,17 +469,17 @@ namespace DotRas.Tests
             var sessionId = new Luid(1, 1);
             var correlationId = Guid.NewGuid();
 
-            var status = new RasConnectionStatus(RasConnectionState.Connected, device, "test.com");
+            var status = new Mock<RasConnectionStatus>();
 
             var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            rasGetConnectStatus.Setup(o => o.GetConnectionStatus(handle)).Returns(status).Verifiable();
+            rasGetConnectStatus.Setup(o => o.GetConnectionStatus(handle)).Returns(status.Object).Verifiable();
 
             var rasHangUp = new Mock<IRasHangUp>();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasHangUp.Object);
             var result = target.GetConnectionStatus();
 
-            Assert.AreEqual(status, result);
+            Assert.AreEqual(status.Object, result);
             rasGetConnectStatus.Verify();
         }
 

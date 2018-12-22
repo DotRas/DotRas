@@ -5,7 +5,7 @@ using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services
+namespace DotRas.Internal.Services.ErrorHandling
 {
     internal class RasGetErrorStringService : IRasGetErrorString
     {
