@@ -75,9 +75,7 @@ namespace DotRas.Internal.Interop
             PauseOnScript = 0x400,
             Router = 0x800,
             CustomDial = 0x1000,
-            UseCustomScripting = 0x2000,
-            IgnoreAutoTriggerCredentialUI = 0x4000,
-            EapInfoCryptInCapable = 0x8000
+            UseCustomScripting = 0x2000
         }
 
         public enum NotifierType
