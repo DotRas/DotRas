@@ -33,6 +33,9 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IStructArrayFactory>(),
                     c));
 
+            container.AddService(typeof(IIPAddressConverter),
+                (c, _) => new IPAddressConversionService());
+
             container.AddService(typeof(IMarshaller),
                 (c, _) => new MarshallerLoggingAdvice(
                     new MarshallingService(),
@@ -52,6 +55,7 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IWin32ErrorInformation>(),
+                    c.GetRequiredService<IIPAddressConverter>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
 
