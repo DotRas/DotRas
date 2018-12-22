@@ -104,13 +104,14 @@ namespace DotRas.Internal.Services.Dialing
         {
             var rasDialParams = structFactory.Create<RASDIALPARAMS>();
             rasDialParams.szEntryName = context.EntryName;
+            rasDialParams.dwIfIndex = context.InterfaceIndex;
 
             if (context.Credentials != null)
             {
                 rasDialParams.szUserName = context.Credentials.UserName;
                 rasDialParams.szPassword = context.Credentials.Password;
                 rasDialParams.szDomain = context.Credentials.Domain;
-            }
+            }            
 
             return rasDialParams;
         }

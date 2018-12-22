@@ -193,7 +193,10 @@ namespace DotRas.Tests
             {
                 EntryName = EntryName,
                 PhoneBookPath = PhoneBookPath,
-                AllowUseStoredCredentials = true
+                Options =
+                {
+                    AllowUseStoredCredentials = true
+                }
             };
 
             var connection = await target.DialAsync(cancellationToken);

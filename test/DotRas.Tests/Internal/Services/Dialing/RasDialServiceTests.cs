@@ -21,7 +21,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
     {
         private delegate void RasDialCallback(
             ref RASDIALEXTENSIONS rasDialExtensions, 
-            string phoneBook, 
+            string lpszPhoneBook, 
             ref RASDIALPARAMS rasDialParams, 
             Ras.NotifierType notifierType, 
             RasDialFunc2 rasDialFunc, 
@@ -76,7 +76,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var callbackHandler = new Mock<IRasDialCallbackHandler>();
 
             var target = new RasDialService(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
+            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), 0, null, CancellationToken.None)));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             using (var target = new RasDialService(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object))
             {
-                await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
+                await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), 0, null, CancellationToken.None));
             }
 
             callbackHandler.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
@@ -107,11 +107,23 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public async Task DialTheConnection()
         {
             var handle = new RasHandle();
+            var phoneBookPath = @"C:\Test.pbk";
+            var entryName = "Entry";
+            var userName = "User";
+            var password = "Password";
+            var interfaceIndex = 1;
 
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<RasHandle>.IsAny)).Callback(new RasDialCallback(
-                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out RasHandle o6) =>
+
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<RasHandle>.IsAny)).Callback(new RasDialCallback(
+                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams, Ras.NotifierType notifierType, RasDialFunc2 o5, out RasHandle o6) =>
                 {
+                    Assert.AreEqual(phoneBookPath, lpszPhoneBook);
+                    Assert.AreEqual(entryName, rasDialParams.szEntryName);
+                    Assert.AreEqual(userName, rasDialParams.szUserName);
+                    Assert.AreEqual(password, rasDialParams.szPassword);
+                    Assert.AreEqual(interfaceIndex, rasDialParams.dwIfIndex);
+
                     o6 = handle;
                 }));
 
@@ -128,7 +140,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDialService(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            var result = await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
+            var result = await target.DialAsync(new RasDialContext(phoneBookPath, entryName, new NetworkCredential(userName, password), interfaceIndex, null, CancellationToken.None));
 
             Assert.AreSame(connection.Object, result);
             Assert.IsTrue(target.IsBusy);
@@ -160,7 +172,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDialService(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            Assert.ThrowsAsync<TestException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
+            Assert.ThrowsAsync<TestException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), 0, null, CancellationToken.None)));
 
             Assert.IsFalse(target.IsBusy);
             callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<DialStateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -192,10 +204,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var target = new RasDialService(api.Object, structFactory.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
-            await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None));
+            await target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), 0, null, CancellationToken.None));
 
             Assert.IsTrue(target.IsBusy);
-            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), null, CancellationToken.None)));
+            Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(new RasDialContext(@"C:\Test.pbk", "Entry", new NetworkCredential("User", "Password"), 0, null, CancellationToken.None)));
 
             Assert.IsTrue(target.IsBusy);
         }

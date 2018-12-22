@@ -42,9 +42,9 @@ namespace DotRas
         public NetworkCredential Credentials { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether stored credentials will be allowed if the credentials have not been provided.
+        /// Gets the options configurable for a dial attempt.
         /// </summary>
-        public bool AllowUseStoredCredentials { get; set; }
+        public RasDialerOptions Options { get; } = new RasDialerOptions();
 
         #endregion
 
@@ -130,7 +130,13 @@ namespace DotRas
             GuardMustNotBeDisposed();
             ValidateConfigurationPriorToDialAttempt();
 
-            return api.DialAsync(new RasDialContext(PhoneBookPath, EntryName, GetCredentials(), RaiseDialStateChanged, cancellationToken));
+            return api.DialAsync(new RasDialContext(
+                PhoneBookPath, 
+                EntryName, 
+                GetCredentials(), 
+                Options.InterfaceIndex, 
+                RaiseDialStateChanged, 
+                cancellationToken));
         }
 
         private void ValidateConfigurationPriorToDialAttempt()
@@ -148,7 +154,7 @@ namespace DotRas
 
         private NetworkCredential GetCredentials()
         {
-            if (AllowUseStoredCredentials && Credentials == null)
+            if (Options.AllowUseStoredCredentials && Credentials == null)
             {
                 return rasGetCredentials.GetNetworkCredential(EntryName, PhoneBookPath);
             }
