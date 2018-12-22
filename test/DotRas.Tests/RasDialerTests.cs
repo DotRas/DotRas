@@ -238,7 +238,7 @@ namespace DotRas.Tests
         [Test]
         public async Task RaisesTheEventFromTheOnStateChangedCallback()
         {
-            var e = new StateChangedEventArgs(RasConnectionState.OpenPort);
+            var e = new DialStateChangedEventArgs(RasConnectionState.OpenPort);
             var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
@@ -266,7 +266,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            target.StateChanged += (sender, args) =>
+            target.DialStateChanged += (sender, args) =>
             {
                 Assert.AreEqual(e, args);
                 raised = true;

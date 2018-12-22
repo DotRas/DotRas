@@ -9,10 +9,10 @@ namespace DotRas.Internal.Abstractions.Services
         public string PhoneBookPath { get; }
         public string EntryName { get; }
         public NetworkCredential Credentials { get; }
-        public Action<StateChangedEventArgs> OnStateChangedCallback { get; }
+        public Action<DialStateChangedEventArgs> OnStateChangedCallback { get; }
         public CancellationToken CancellationToken { get; }
 
-        public RasDialContext(string phoneBookPath, string entryName, NetworkCredential credentials, Action<StateChangedEventArgs> onStateChangedCallback, CancellationToken cancellationToken)
+        public RasDialContext(string phoneBookPath, string entryName, NetworkCredential credentials, Action<DialStateChangedEventArgs> onStateChangedCallback, CancellationToken cancellationToken)
         {
             PhoneBookPath = phoneBookPath;
             EntryName = entryName;

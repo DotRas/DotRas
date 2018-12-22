@@ -57,7 +57,7 @@ namespace DotRas
         /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
         /// an active connection has been disconnected outside of an attempt to dial.
         /// </remarks>
-        public event EventHandler<StateChangedEventArgs> StateChanged;
+        public event EventHandler<DialStateChangedEventArgs> DialStateChanged;
 
         #endregion
 
@@ -156,14 +156,14 @@ namespace DotRas
             return Credentials;
         }
 
-        private void RaiseDialStateChanged(StateChangedEventArgs e)
+        private void RaiseDialStateChanged(DialStateChangedEventArgs e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            StateChanged?.Invoke(this, e);
+            DialStateChanged?.Invoke(this, e);
         }
 
         protected override void Dispose(bool disposing)
