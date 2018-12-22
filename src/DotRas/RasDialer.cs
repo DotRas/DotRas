@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
 
@@ -21,6 +20,11 @@ namespace DotRas
         private readonly IRasGetCredentials rasGetCredentials;
         private readonly IFileSystem fileSystem;
         private readonly IPhoneBookEntryValidator validator;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is currently dialing a connection.
+        /// </summary>
+        public bool IsBusy => api.IsBusy;
 
         /// <summary>
         /// Gets or sets the name of the entry within the phone book.
@@ -138,7 +142,7 @@ namespace DotRas
 
             if (string.IsNullOrWhiteSpace(EntryName) || !validator.VerifyEntryExists(EntryName, PhoneBookPath))
             {
-                throw new RasDialerConfigurationException($"The {nameof(EntryName)} has not been set, or the entry does not exist within the phone book specified.");
+                throw new RasEntryNotFoundException($"The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
             }
         }
 

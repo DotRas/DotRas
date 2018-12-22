@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.Design;
-using DotRas.Internal.Factories.Devices;
+using DotRas.Internal.DependencyInjection.Factories.Devices;
 
 namespace DotRas.Internal.DependencyInjection
 {

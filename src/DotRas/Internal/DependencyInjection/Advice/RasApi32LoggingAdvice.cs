@@ -11,8 +11,8 @@ namespace DotRas.Internal.DependencyInjection.Advice
 {
     internal class RasApi32LoggingAdvice : LoggingAdvice<IRasApi32>, IRasApi32
     {
-        public RasApi32LoggingAdvice(IRasApi32 instance, IEventLoggingPolicy eventLoggingPolicy)
-            : base(instance, eventLoggingPolicy)
+        public RasApi32LoggingAdvice(IRasApi32 attachedObject, IEventLoggingPolicy eventLoggingPolicy)
+            : base(attachedObject, eventLoggingPolicy)
         {
         }
 
@@ -22,7 +22,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
@@ -44,7 +44,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
@@ -74,7 +74,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
@@ -96,7 +96,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasGetErrorString(uErrorValue, lpszErrorString, cBufSize);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
@@ -118,7 +118,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasHangUp(hRasConn);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
@@ -138,7 +138,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             var result = AttachedObject.RasValidateEntryName(lpszPhonebook, lpszEntryName);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeCallCompletedTraceEvent
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,

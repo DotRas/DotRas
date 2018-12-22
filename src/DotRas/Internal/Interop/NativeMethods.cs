@@ -12,18 +12,21 @@ namespace DotRas.Internal.Interop
         public struct RASCONN
         {
             [SizeOf]
-            public int size;
-            public IntPtr handle;
+            public int dwSize;
+            public IntPtr hrasconn;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxEntryName + 1)]
-            public string entryName;
+            public string szEntryName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
-            public string deviceType;
+            public string szDeviceType;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceName + 1)]
-            public string deviceName;
+            public string szDeviceName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-            public string phoneBook;
-            public int subEntryId;
-            public Guid entryId;
+            public string szPhonebook;
+            public int dwSubEntry;
+            public Guid guidEntry;
+            public RASCF dwFlags;
+            public Luid luid;
+            public Guid guidCorrelationId;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]

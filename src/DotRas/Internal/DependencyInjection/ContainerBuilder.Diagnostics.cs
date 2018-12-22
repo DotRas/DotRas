@@ -15,10 +15,15 @@ namespace DotRas.Internal.DependencyInjection
 
             container.AddService(typeof(ILog), (c, _) =>
                 Logger.Current ?? new TraceLog(
-                    c.GetRequiredService<IFormatterAdapter>(),
+                    c.GetRequiredService<IEventFormatterAdapter>(),
                     c.GetRequiredService<IConverter<EventLevel, TraceEventType>>()));
 
-            container.AddService(typeof(IFormatterAdapter), (c, _) => new FormatterAdapter());
+            container.AddService(typeof(IEventFormatterFactory), (c, _) => new ConventionBasedEventFormatterFactory());
+
+            container.AddService(typeof(IEventFormatterAdapter), 
+                (c, _) => new EventFormatterAdapter(
+                    c.GetRequiredService<IEventFormatterFactory>()));
+
             container.AddService(typeof(IConverter<EventLevel, TraceEventType>), (c, _) => new EventLevelConverter());
         }
     }

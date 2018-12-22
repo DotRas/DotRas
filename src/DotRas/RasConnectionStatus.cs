@@ -1,4 +1,6 @@
-﻿namespace DotRas
+﻿using System;
+
+namespace DotRas
 {
     /// <summary>
     /// Represents the current status of a remote access connection.
@@ -16,6 +18,11 @@
         public virtual RasDevice Device { get; }
 
         /// <summary>
+        /// Gets the error information indicating the reason for failure.
+        /// </summary>
+        public virtual Win32ErrorInformation ErrorInformation { get; }
+
+        /// <summary>
         /// Gets the phone number dialed for this specific connection.
         /// </summary>
         public virtual string PhoneNumber { get; }
@@ -24,12 +31,14 @@
         /// Initializes a new instance of the <see cref="RasConnectionState"/> class.
         /// </summary>
         /// <param name="connectionState">The state of the connection.</param>
+        /// <param name="errorInformation">The information about the error which caused a failure.</param>
         /// <param name="device">The device through which the connection has been established.</param>
         /// <param name="phoneNumber">The phone number dialed for this specific connection.</param>
-        public RasConnectionStatus(RasConnectionState connectionState, RasDevice device, string phoneNumber)
+        public RasConnectionStatus(RasConnectionState connectionState, Win32ErrorInformation errorInformation, RasDevice device, string phoneNumber)
         {
             ConnectionState = connectionState;
-            Device = device;
+            ErrorInformation = errorInformation;
+            Device = device ?? throw new ArgumentNullException(nameof(device));
             PhoneNumber = phoneNumber;
         }
 

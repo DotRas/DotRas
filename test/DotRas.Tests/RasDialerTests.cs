@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Internal.Abstractions.Providers;
 using DotRas.Internal.Abstractions.Services;
 using Moq;
 using NUnit.Framework;
@@ -311,7 +310,10 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+
+            Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
+            Assert.AreEqual(null, ex.EntryName);
         }
 
         [Test]
@@ -371,9 +373,40 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<RasDialerConfigurationException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+
+            Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
+            Assert.AreEqual(EntryName, ex.EntryName);
 
             validator.Verify();
+        }
+
+        [Test]
+        public void IndicatesTheObjectIsBusyAsExpected()
+        {
+            var api = new Mock<IRasDial>();
+            api.Setup(o => o.IsBusy).Returns(true);
+
+            var rasGetCredentials = new Mock<IRasGetCredentials>();
+            var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
+
+            var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object);
+            Assert.True(target.IsBusy);
+        }
+
+        [Test]
+        public void IndicatesTheObjectIsNotBusyAsExpected()
+        {
+            var api = new Mock<IRasDial>();
+            api.Setup(o => o.IsBusy).Returns(false);
+
+            var rasGetCredentials = new Mock<IRasGetCredentials>();
+            var fileSystem = new Mock<IFileSystem>();
+            var validator = new Mock<IPhoneBookEntryValidator>();
+
+            var target = new RasDialer(api.Object, rasGetCredentials.Object, fileSystem.Object, validator.Object);
+            Assert.False(target.IsBusy);
         }
     }
 }

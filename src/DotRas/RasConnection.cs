@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
 
@@ -10,6 +10,7 @@ namespace DotRas
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
+    [DebuggerDisplay("EntryName = {EntryName}")]
     public class RasConnection
     {
         #region Fields and Properties
@@ -40,16 +41,31 @@ namespace DotRas
         /// <summary>
         /// Gets the one-based sub-entry index of the connected link in a multi-link connection.
         /// </summary>
-        public int SubEntryId { get; }
+        public virtual int SubEntryId { get; }
 
         /// <summary>
-        /// Gets the <see cref="System.Guid"/> that represents the phone book entry.
+        /// Gets the <see cref="Guid"/> that represents the phone book entry.
         /// </summary>
-        public Guid EntryId { get; }
+        public virtual Guid EntryId { get; }
+
+        /// <summary>
+        /// Gets the connection options.
+        /// </summary>
+        public virtual RasConnectionOptions Options { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Luid"/> that represents the logon session in which the connection was established.
+        /// </summary>
+        public virtual Luid SessionId { get; }
+
+        /// <summary>
+        /// Gets the correlation id.
+        /// </summary>
+        public virtual Guid CorrelationId { get; }
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -78,11 +94,14 @@ namespace DotRas
             Device = device ?? throw new ArgumentNullException(nameof(device));
             SubEntryId = subEntryId;
             EntryId = entryId;
+            Options = options ?? throw new ArgumentNullException(nameof(options));
+            SessionId = sessionId;
+            CorrelationId = correlationId;
 
             this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnection"/> class.
         /// </summary>
@@ -121,22 +140,11 @@ namespace DotRas
             hangUpService.HangUp(Handle, cancellationToken);
         }
 
-        /// <summary>
-        /// Terminates the remote access connection asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-        public virtual Task HangUpAsync(CancellationToken cancellationToken)
-        {
-            GuardHandleMustBeValid();
-
-            return Task.Run(() => HangUp(cancellationToken), cancellationToken);
-        }
-
         private void GuardHandleMustBeValid()
         {
             if (Handle.IsClosed || Handle.IsInvalid)
             {
-                throw new Exception("The handle is invalid.");
+                throw new InvalidHandleException("The handle is invalid.");
             }
         }
     }

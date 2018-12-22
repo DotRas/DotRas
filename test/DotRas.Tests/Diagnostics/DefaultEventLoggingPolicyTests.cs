@@ -31,7 +31,7 @@ namespace DotRas.Tests.Diagnostics
             var log = new Mock<ILog>();
 
             var target = new DefaultEventLoggingPolicy(log.Object);
-            target.LogEvent(EventLevel.Error, new PInvokeCallCompletedTraceEvent());
+            target.LogEvent(EventLevel.Error, new PInvokeInt32CallCompletedTraceEvent());
 
             log.Verify(o => o.Log(EventLevel.Error, It.IsAny<TraceEvent>()), Times.Once);
         }
@@ -43,7 +43,7 @@ namespace DotRas.Tests.Diagnostics
             log.Setup(o => o.Log(EventLevel.Error, It.IsAny<TraceEvent>())).Throws<Exception>().Verifiable();
 
             var target = new DefaultEventLoggingPolicy(log.Object);
-            target.LogEvent(EventLevel.Error, new PInvokeCallCompletedTraceEvent());
+            target.LogEvent(EventLevel.Error, new PInvokeInt32CallCompletedTraceEvent());
 
             log.Verify();
         }
