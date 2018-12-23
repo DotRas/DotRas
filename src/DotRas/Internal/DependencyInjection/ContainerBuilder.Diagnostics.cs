@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Design;
-using System.Diagnostics;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Tracing;
 
@@ -16,7 +15,7 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(ILog), (c, _) =>
                 Logger.Current ?? new TraceLog(
                     c.GetRequiredService<IEventFormatterAdapter>(),
-                    c.GetRequiredService<IConverter<EventLevel, TraceEventType>>()));
+                    c.GetRequiredService<IEventLevelConverter>()));
 
             container.AddService(typeof(IEventFormatterFactory), (c, _) => new ConventionBasedEventFormatterFactory());
 
@@ -24,7 +23,7 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new EventFormatterAdapter(
                     c.GetRequiredService<IEventFormatterFactory>()));
 
-            container.AddService(typeof(IConverter<EventLevel, TraceEventType>), (c, _) => new EventLevelConverter());
+            container.AddService(typeof(IEventLevelConverter), (c, _) => new EventLevelConverter());
         }
     }
 }

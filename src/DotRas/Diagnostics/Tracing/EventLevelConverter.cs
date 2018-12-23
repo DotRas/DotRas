@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace DotRas.Diagnostics.Tracing
 {
-    internal class EventLevelConverter : IConverter<EventLevel, TraceEventType>
+    internal class EventLevelConverter : IEventLevelConverter
     {
         public TraceEventType Convert(EventLevel input)
         {
