@@ -62,6 +62,7 @@ namespace DotRas.Internal.Interop
         [Flags]
         public enum RDEOPT
         {
+            None = 0x0,
             UsePrefixSuffix = 0x1,
             PausedStates = 0x2,
             IgnoreModemSpeaker = 0x4,

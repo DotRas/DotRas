@@ -74,7 +74,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Credentials = new NetworkCredential(
                     "User",
                     "Password"),
-                InterfaceIndex = 0
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 0
+                }
             };
 
             var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
@@ -105,7 +108,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Credentials = new NetworkCredential(
                     "User",
                     "Password"),
-                InterfaceIndex = 0
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 0
+                }
             };
 
             using (var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object))
@@ -155,7 +161,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Credentials = new NetworkCredential(
                     userName,
                     password),
-                InterfaceIndex = interfaceIndex
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = interfaceIndex
+                }
             };
 
             var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
@@ -198,7 +207,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Credentials = new NetworkCredential(
                     "User",
                     "Password"),
-                InterfaceIndex = 0
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 0
+                }
             };
 
             var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);
@@ -241,7 +253,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Credentials = new NetworkCredential(
                     "User",
                     "Password"),
-                InterfaceIndex = 0
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 0
+                }
             };
 
             var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object);

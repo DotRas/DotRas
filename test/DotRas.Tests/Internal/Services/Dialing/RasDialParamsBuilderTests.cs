@@ -40,7 +40,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var context = new RasDialContext
             {
-                InterfaceIndex = 1
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 1
+                }
             };
 
             var target = new RasDialParamsBuilder(structFactory.Object);

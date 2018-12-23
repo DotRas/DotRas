@@ -14,5 +14,10 @@
         /// Gets or sets the interface index on top of which the Virtual Private Network (VPN) connection will be dialed.
         /// </summary>
         public int InterfaceIndex { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the prefix and suffix that is in the phone book should be used.
+        /// </summary>
+        public bool UsePrefixSuffix { get; set; }
     }
 }

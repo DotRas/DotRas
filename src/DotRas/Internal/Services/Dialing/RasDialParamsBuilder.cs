@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Services;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -18,13 +19,19 @@ namespace DotRas.Internal.Services.Dialing
         {
             var rasDialParams = structFactory.Create<RASDIALPARAMS>();
             rasDialParams.szEntryName = context.EntryName;
-            rasDialParams.dwIfIndex = context.InterfaceIndex;
-            
-            if (context.Credentials != null)
+
+            RasDialerOptions options;
+            if ((options = context.Options) != null)
             {
-                rasDialParams.szUserName = context.Credentials.UserName;
-                rasDialParams.szPassword = context.Credentials.Password;
-                rasDialParams.szDomain = context.Credentials.Domain;
+                rasDialParams.dwIfIndex = options.InterfaceIndex;
+            }
+
+            NetworkCredential credentials;
+            if ((credentials = context.Credentials) != null)
+            {
+                rasDialParams.szUserName = credentials.UserName;
+                rasDialParams.szPassword = credentials.Password;
+                rasDialParams.szDomain = credentials.Domain;
             }
 
             return rasDialParams;

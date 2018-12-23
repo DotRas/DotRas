@@ -10,7 +10,7 @@ namespace DotRas.Internal.Abstractions.Services
         public string EntryName { get; set; }
         public NetworkCredential Credentials { get; set; }
         public Action<DialStateChangedEventArgs> OnStateChangedCallback { get; set; }
-        public int InterfaceIndex { get; set; }
+        public RasDialerOptions Options { get; set; }
         public CancellationToken CancellationToken { get; set; }        
     }
 }

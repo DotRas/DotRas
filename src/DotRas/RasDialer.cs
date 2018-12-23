@@ -136,7 +136,7 @@ namespace DotRas
                 EntryName = EntryName,
                 Credentials = GetCredentials(),
                 CancellationToken = cancellationToken,
-                InterfaceIndex = Options.InterfaceIndex,
+                Options = Options,
                 OnStateChangedCallback = RaiseDialStateChanged
             });
         }        
