@@ -76,7 +76,8 @@ namespace DotRas.Internal.DependencyInjection
 
             container.AddService(typeof(IRasDialParamsBuilder),
                 (c, _) => new RasDialParamsBuilder(
-                    c.GetRequiredService<IStructFactory>()));
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IRasGetCredentials>()));
 
             container.AddService(typeof(IRasDial),
                 (c, _) => new RasDialService(

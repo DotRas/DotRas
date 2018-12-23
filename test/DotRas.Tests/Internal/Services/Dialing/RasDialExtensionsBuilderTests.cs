@@ -18,6 +18,25 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
+        public void ConfiguresTheAuthenticationCookieAsExpected()
+        {
+            var expected = new IntPtr(1);
+
+            var factory = new Mock<IStructFactory>();
+
+            var target = new RasDialExtensionsBuilder(factory.Object);
+            var result = target.Build(new RasDialContext
+            {
+                Credentials = new RasDialerCredentials
+                {
+                    AuthenticationCookie = expected
+                }
+            });
+
+            Assert.AreEqual(expected, result.RasEapInfo.pbEapInfo);
+        }
+
+        [Test]
         public void ConfiguresTheSkipPppAuthenticationAsExpected()
         {
             var factory = new Mock<IStructFactory>();

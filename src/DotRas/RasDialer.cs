@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
@@ -17,7 +16,6 @@ namespace DotRas
         #region Fields and Properties
 
         private readonly IRasDial api;
-        private readonly IRasGetCredentials rasGetCredentials;
         private readonly IFileSystem fileSystem;
         private readonly IPhoneBookEntryValidator validator;
 
@@ -37,9 +35,9 @@ namespace DotRas
         public string PhoneBookPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the credentials.
+        /// Gets the credentials used to dial the connection.
         /// </summary>
-        public NetworkCredential Credentials { get; set; }
+        public RasDialerCredentials Credentials { get; } = new RasDialerCredentials();
 
         /// <summary>
         /// Gets the options configurable for a dial attempt.
@@ -66,16 +64,14 @@ namespace DotRas
         /// </summary>
         public RasDialer() : this(
                 Container.Default.GetRequiredService<IRasDial>(), 
-                Container.Default.GetRequiredService<IRasGetCredentials>(), 
                 Container.Default.GetRequiredService<IFileSystem>(), 
                 Container.Default.GetRequiredService<IPhoneBookEntryValidator>())
         {
         }
 
-        internal RasDialer(IRasDial api, IRasGetCredentials rasGetCredentials, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
+        internal RasDialer(IRasDial api, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
-            this.rasGetCredentials = rasGetCredentials ?? throw new ArgumentNullException(nameof(rasGetCredentials));
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
@@ -134,7 +130,7 @@ namespace DotRas
             {
                 PhoneBookPath = PhoneBookPath,
                 EntryName = EntryName,
-                Credentials = GetCredentials(),
+                Credentials = Credentials,
                 CancellationToken = cancellationToken,
                 Options = Options,
                 OnStateChangedCallback = RaiseDialStateChanged
@@ -152,16 +148,6 @@ namespace DotRas
             {
                 throw new RasEntryNotFoundException($"The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
             }
-        }
-
-        private NetworkCredential GetCredentials()
-        {
-            if (Options.AllowUseStoredCredentials && Credentials == null)
-            {
-                return rasGetCredentials.GetNetworkCredential(EntryName, PhoneBookPath);
-            }
-
-            return Credentials;
         }
 
         private void RaiseDialStateChanged(DialStateChangedEventArgs e)
