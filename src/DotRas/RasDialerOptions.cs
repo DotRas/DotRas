@@ -21,11 +21,6 @@
         public int InterfaceIndex { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether point-to-point (PPP) authentication is skipped.
-        /// </summary>
-        public bool SkipPppAuthentication { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the prefix and suffix that is in the phone book should be used.
         /// </summary>
         public bool UsePrefixSuffix { get; set; }

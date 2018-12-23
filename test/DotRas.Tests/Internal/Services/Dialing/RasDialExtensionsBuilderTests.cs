@@ -15,43 +15,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void ThrowsAnExceptionWhenStructFactoryIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => new RasDialExtensionsBuilder(null));
-        }
-
-        [Test]
-        public void ConfiguresTheAuthenticationCookieAsExpected()
-        {
-            var expected = new IntPtr(1);
-
-            var factory = new Mock<IStructFactory>();
-
-            var target = new RasDialExtensionsBuilder(factory.Object);
-            var result = target.Build(new RasDialContext
-            {
-                Credentials = new RasDialerCredentials
-                {
-                    AuthenticationCookie = expected
-                }
-            });
-
-            Assert.AreEqual(expected, result.RasEapInfo.pbEapInfo);
-        }
-
-        [Test]
-        public void ConfiguresTheSkipPppAuthenticationAsExpected()
-        {
-            var factory = new Mock<IStructFactory>();
-
-            var target = new RasDialExtensionsBuilder(factory.Object);
-            var result = target.Build(new RasDialContext
-            {
-                Options = new RasDialerOptions
-                {
-                    SkipPppAuthentication = true
-                }
-            });
-
-            Assert.True(result.fSkipPppAuth);
-        }
+        }        
 
         [Test]
         public void ConfiguresNoOptionsByDefault()

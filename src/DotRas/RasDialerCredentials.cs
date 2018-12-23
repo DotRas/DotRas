@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
 namespace DotRas
 {
@@ -12,10 +11,5 @@ namespace DotRas
         /// Gets or sets the user name and password to use during authentication.
         /// </summary>
         public NetworkCredential UserName { get; set; }
-
-        /// <summary>
-        /// Gets or sets a pointer to the authentication cookie.
-        /// </summary>
-        public IntPtr AuthenticationCookie { get; set; }
     }
 }

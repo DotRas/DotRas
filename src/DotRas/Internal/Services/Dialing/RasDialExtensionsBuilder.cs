@@ -23,14 +23,7 @@ namespace DotRas.Internal.Services.Dialing
             if ((options = context.Options) != null)
             {
                 rasDialExtensions.dwfOptions = BuildOptions(options);
-                rasDialExtensions.fSkipPppAuth = options.SkipPppAuthentication;
-            }
-
-            RasDialerCredentials credentials;
-            if ((credentials = context.Credentials) != null)
-            {
-                rasDialExtensions.RasEapInfo = BuildEapInfo(credentials);
-            }
+            }           
 
             return rasDialExtensions;
         }
@@ -52,14 +45,6 @@ namespace DotRas.Internal.Services.Dialing
             builder.AppendFlagIfTrue(options.UseCustomScripting, RDEOPT.UseCustomScripting);
 
             return builder.Result;
-        }
-
-        private RASEAPINFO BuildEapInfo(RasDialerCredentials credentials)
-        {
-            var rasEapInfo = structFactory.Create<RASEAPINFO>();
-            rasEapInfo.pbEapInfo = credentials.AuthenticationCookie;
-
-            return rasEapInfo;
         }
     }
 }
