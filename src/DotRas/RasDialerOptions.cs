@@ -1,4 +1,6 @@
-﻿namespace DotRas
+﻿using System.Windows.Forms;
+
+namespace DotRas
 {
     /// <summary>
     /// Provides options available to a <see cref="RasDialer"/> for use while dialing a connection.
@@ -9,6 +11,12 @@
         /// Gets or sets a value indicating whether stored credentials will be allowed if the credentials have not been provided.
         /// </summary>
         public bool AllowUseStoredCredentials { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent window.
+        /// </summary>
+        /// <remarks>This object is used for dialog box creation and centering when a security DLL has been defined.</remarks>
+        public IWin32Window Owner { get; set; }
 
         /// <summary>
         /// Gets or sets the one-based index of the subentry to dial.
