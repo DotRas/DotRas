@@ -34,6 +34,25 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
+        public void BuildsTheStructureWithTheSubEntryId()
+        {
+            var structFactory = new Mock<IStructFactory>();
+
+            var context = new RasDialContext
+            {
+                Options = new RasDialerOptions
+                {
+                    SubEntryId = 1
+                }
+            };
+
+            var target = new RasDialParamsBuilder(structFactory.Object);
+            var result = target.Build(context);
+
+            Assert.AreEqual(1, result.dwSubEntry);
+        }
+
+        [Test]
         public void BuildsTheStructureWithTheInterfaceIndex()
         {
             var structFactory = new Mock<IStructFactory>();

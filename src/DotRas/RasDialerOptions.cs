@@ -11,6 +11,11 @@
         public bool AllowUseStoredCredentials { get; set; }
 
         /// <summary>
+        /// Gets or sets the one-based index of the subentry to dial.
+        /// </summary>
+        public int SubEntryId { get; set; }
+
+        /// <summary>
         /// Gets or sets the interface index on top of which the Virtual Private Network (VPN) connection will be dialed.
         /// </summary>
         public int InterfaceIndex { get; set; }

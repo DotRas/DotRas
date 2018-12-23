@@ -24,6 +24,7 @@ namespace DotRas.Internal.Services.Dialing
             if ((options = context.Options) != null)
             {
                 rasDialParams.dwIfIndex = options.InterfaceIndex;
+                rasDialParams.dwSubEntry = options.SubEntryId;
             }
 
             NetworkCredential credentials;
