@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 
 namespace DotRas.Internal.Abstractions.Services
@@ -7,7 +8,7 @@ namespace DotRas.Internal.Abstractions.Services
     {
         public string PhoneBookPath { get; set; }
         public string EntryName { get; set; }
-        public RasDialerCredentials Credentials { get; set; }
+        public NetworkCredential Credentials { get; set; }
         public Action<DialStateChangedEventArgs> OnStateChangedCallback { get; set; }
         public RasDialerOptions Options { get; set; }
         public CancellationToken CancellationToken { get; set; }        

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
@@ -35,9 +36,9 @@ namespace DotRas
         public string PhoneBookPath { get; set; }
 
         /// <summary>
-        /// Gets the credentials used to dial the connection.
+        /// Gets or sets the credentials to use while dialing the connection.
         /// </summary>
-        public RasDialerCredentials Credentials { get; } = new RasDialerCredentials();
+        public NetworkCredential Credentials { get; set; }
 
         /// <summary>
         /// Gets the options configurable for a dial attempt.

@@ -70,10 +70,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 EntryName = entryName,
                 PhoneBookPath = phoneBookPath,
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = null
-                },
+                Credentials = null,
                 Options = new RasDialerOptions
                 {
                     AllowUseStoredCredentials = true
@@ -153,10 +150,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var context = new RasDialContext
             {
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Pass")
-                }
+                Credentials = new NetworkCredential("User", "Pass")
             };
 
             var target = new RasDialParamsBuilder(structFactory.Object, rasGetCredentials.Object);
@@ -174,10 +168,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var context = new RasDialContext
             {
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Pass", "Domain")
-                }
+                Credentials = new NetworkCredential("User", "Pass", "Domain")
             };
 
             var target = new RasDialParamsBuilder(structFactory.Object, rasGetCredentials.Object);

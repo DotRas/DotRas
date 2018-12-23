@@ -47,10 +47,7 @@ namespace DotRas.Tests
             {
                 EntryName = EntryName,
                 PhoneBookPath = PhoneBookPath,
-                Credentials =
-                {
-                    UserName = new NetworkCredential("TEST", "USER")
-                }
+                Credentials = new NetworkCredential("TEST", "USER")
             };
 
             var result = target.Dial(cancellationToken);
@@ -82,10 +79,7 @@ namespace DotRas.Tests
             {
                 EntryName = EntryName,
                 PhoneBookPath = PhoneBookPath,
-                Credentials =
-                {
-                    UserName = new NetworkCredential("TEST", "USER")
-                }
+                Credentials = new NetworkCredential("TEST", "USER")
             };
 
             var result = target.Dial();
@@ -117,10 +111,7 @@ namespace DotRas.Tests
             {
                 EntryName = EntryName,
                 PhoneBookPath = PhoneBookPath,
-                Credentials =
-                {
-                    UserName = new NetworkCredential("TEST", "USER")
-                }
+                Credentials = new NetworkCredential("TEST", "USER")
             };
 
             await target.DialAsync();
@@ -139,7 +130,7 @@ namespace DotRas.Tests
             api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
             {
                 Assert.AreEqual(cancellationToken, c.CancellationToken);
-                Assert.AreEqual(credentials, c.Credentials.UserName);
+                Assert.AreEqual(credentials, c.Credentials);
                 Assert.AreEqual(EntryName, c.EntryName);
                 Assert.AreEqual(PhoneBookPath, c.PhoneBookPath);
 
@@ -154,10 +145,7 @@ namespace DotRas.Tests
 
             var target = new RasDialer(api.Object, fileSystem.Object, validator.Object)
             {
-                Credentials =
-                {
-                    UserName = credentials
-                },
+                Credentials = credentials,
                 EntryName = EntryName,
                 PhoneBookPath = PhoneBookPath
             };

@@ -47,7 +47,7 @@ namespace DotRas.Internal.Services.Dialing
                 return rasGetCredentials.GetNetworkCredential(context.EntryName, context.PhoneBookPath);
             }
 
-            return context.Credentials?.UserName;
+            return context.Credentials;
         }
 
         private static bool ShouldUseStoredCredentials(RasDialContext context)
@@ -57,8 +57,7 @@ namespace DotRas.Internal.Services.Dialing
                 return false;
             }
 
-            return context.Options.AllowUseStoredCredentials && 
-                   (context.Credentials == null || (context.Credentials != null && context.Credentials.UserName == null));
+            return context.Options.AllowUseStoredCredentials && context.Credentials == null;
         }
     }
 }

@@ -71,10 +71,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 PhoneBookPath = @"C:\Test.pbk",
                 EntryName = "Entry",
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Password")
-                },
+                Credentials = new NetworkCredential("User", "Password"),
                 Options = new RasDialerOptions
                 {
                     InterfaceIndex = 0
@@ -106,10 +103,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 PhoneBookPath = @"C:\Test.pbk",
                 EntryName = "Entry",
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Password")
-                },
+                Credentials = new NetworkCredential("User", "Password"),
                 Options = new RasDialerOptions
                 {
                     InterfaceIndex = 0
@@ -160,10 +154,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 PhoneBookPath = phoneBookPath,
                 EntryName = entryName,
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential(userName, password)
-                },
+                Credentials = new NetworkCredential(userName, password),
                 Options = new RasDialerOptions
                 {
                     InterfaceIndex = interfaceIndex
@@ -207,10 +198,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 PhoneBookPath = @"C:\Test.pbk",
                 EntryName = "Entry",
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Password")
-                },
+                Credentials = new NetworkCredential("User", "Password"),
                 Options = new RasDialerOptions
                 {
                     InterfaceIndex = 0
@@ -254,10 +242,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             {
                 PhoneBookPath = @"C:\Test.pbk",
                 EntryName = "Entry",
-                Credentials = new RasDialerCredentials
-                {
-                    UserName = new NetworkCredential("User", "Password")
-                },
+                Credentials = new NetworkCredential("User", "Password"),
                 Options = new RasDialerOptions
                 {
                     InterfaceIndex = 0

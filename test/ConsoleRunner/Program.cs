@@ -19,10 +19,7 @@ namespace ConsoleRunner
             {
                 EntryName = Config.EntryName,
                 PhoneBookPath = Config.PhoneBookPath,
-                Credentials =
-                {
-                    UserName = new NetworkCredential(Config.Username, Config.Password)
-                }
+                Credentials = new NetworkCredential(Config.Username, Config.Password)
             };
 
             dialer.DialStateChanged += OnStateChanged;
