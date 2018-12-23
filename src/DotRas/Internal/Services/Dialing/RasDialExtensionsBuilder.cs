@@ -18,20 +18,32 @@ namespace DotRas.Internal.Services.Dialing
         public RASDIALEXTENSIONS Build(RasDialContext context)
         {
             var rasDialExtensions = structFactory.Create<RASDIALEXTENSIONS>();
-            rasDialExtensions.dwfOptions = BuildOptions(context.Options);          
+
+            RasDialerOptions options;
+            if ((options = context.Options) != null)
+            {
+                rasDialExtensions.dwfOptions = BuildOptions(options);
+                rasDialExtensions.fSkipPppAuth = options.SkipPppAuthentication;
+            }            
 
             return rasDialExtensions;
         }
 
         private static RDEOPT BuildOptions(RasDialerOptions options)
         {
-            if (options == null)
-            {
-                return RDEOPT.None;
-            }
-
             var builder = new RasDialExtensionsOptionsBuilder();
+
             builder.AppendFlagIfTrue(options.UsePrefixSuffix, RDEOPT.UsePrefixSuffix);
+            builder.AppendFlagIfTrue(options.PausedStates, RDEOPT.PausedStates);
+            builder.AppendFlagIfTrue(options.SetModemSpeaker, RDEOPT.SetModemSpeaker);
+            builder.AppendFlagIfTrue(options.SetSoftwareCompression, RDEOPT.SetSoftwareCompression);
+            builder.AppendFlagIfTrue(options.DisableConnectedUI, RDEOPT.DisableConnectedUI);
+            builder.AppendFlagIfTrue(options.DisableReconnectUI, RDEOPT.DisableReconnectUI);
+            builder.AppendFlagIfTrue(options.DisableReconnect, RDEOPT.DisableReconnect);
+            builder.AppendFlagIfTrue(options.NoUser, RDEOPT.NoUser);
+            builder.AppendFlagIfTrue(options.Router, RDEOPT.Router);
+            builder.AppendFlagIfTrue(options.CustomDial, RDEOPT.CustomDial);
+            builder.AppendFlagIfTrue(options.UseCustomScripting, RDEOPT.UseCustomScripting);
 
             return builder.Result;
         }
