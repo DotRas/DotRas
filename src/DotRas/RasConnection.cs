@@ -15,9 +15,10 @@ namespace DotRas
     {
         #region Fields and Properties
 
-        private readonly IRasGetConnectStatus getConnectStatusService;
+        private readonly IRasGetConnectStatus statusService;
         private readonly IRasHangUp hangUpService;
-        private readonly IRasGetConnectionStatistics getConnectionStatisticsService;
+        private readonly IRasGetConnectionStatistics connectionStatisticsService;
+        private readonly IRasGetLinkStatistics linkStatisticsService;
 
         /// <summary>
         /// Gets the handle of the connection.
@@ -66,7 +67,7 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasGetConnectionStatistics getConnectionStatisticsService, IRasHangUp hangUpService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasGetLinkStatistics linkStatisticsService)
         {
             if (handle == IntPtr.Zero)
             {
@@ -91,9 +92,10 @@ namespace DotRas
             SessionId = sessionId;
             CorrelationId = correlationId;
 
-            this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
-            this.getConnectionStatisticsService = getConnectionStatisticsService ?? throw new ArgumentNullException(nameof(getConnectionStatisticsService));
+            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
+            this.connectionStatisticsService = connectionStatisticsService ?? throw new ArgumentNullException(nameof(connectionStatisticsService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
+            this.linkStatisticsService = linkStatisticsService ?? throw new ArgumentNullException(nameof(linkStatisticsService));
         }
 
         /// <summary>
@@ -118,7 +120,15 @@ namespace DotRas
         /// </summary>
         public virtual RasConnectionStatistics GetStatistics()
         {
-            return getConnectionStatisticsService.GetConnectionStatistics(this);
+            return connectionStatisticsService.GetConnectionStatistics(this);
+        }
+
+        /// <summary>
+        /// Retrieves accumulated statistics for a link in a multi-link connection.
+        /// </summary>
+        public virtual RasConnectionStatistics GetLinkStatistics()
+        {
+            return linkStatisticsService.GetLinkStatistics(this, SubEntryId);
         }
 
         /// <summary>
@@ -126,7 +136,7 @@ namespace DotRas
         /// </summary>
         public virtual RasConnectionStatus GetStatus()
         {
-            return getConnectStatusService.GetConnectionStatus(this);
+            return statusService.GetConnectionStatus(this);
         }
 
         /// <summary>

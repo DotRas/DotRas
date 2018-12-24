@@ -37,6 +37,11 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
         }
 
+        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
+        {
+            return SafeNativeMethods.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
+        }
+
         public int RasHangUp(IntPtr hRasConn)
         {
             return UnsafeNativeMethods.RasHangUp(hRasConn);

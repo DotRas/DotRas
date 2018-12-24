@@ -77,6 +77,12 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
+            container.AddService(typeof(IRasGetLinkStatistics),
+                (c, _) => new RasGetLinkStatisticsService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
             container.AddService(typeof(IRasDialExtensionsBuilder),
                 (c, _) => new RasDialExtensionsBuilder(
                     c.GetRequiredService<IStructFactory>()));

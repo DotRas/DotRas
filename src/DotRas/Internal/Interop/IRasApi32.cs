@@ -38,6 +38,11 @@ namespace DotRas.Internal.Interop
             IntPtr hRasConn,
             [In, Out] ref RAS_STATS lpStatistics);
 
+        int RasGetLinkStatistics(
+            IntPtr hRasConn, 
+            int dwSubEntry, 
+            ref RAS_STATS lpStatistics);
+
         int RasHangUp(IntPtr hRasConn);
 
         int RasValidateEntryName(

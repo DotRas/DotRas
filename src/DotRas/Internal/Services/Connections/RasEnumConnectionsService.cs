@@ -85,7 +85,8 @@ namespace DotRas.Internal.Services.Connections
                 hRasConn.guidCorrelationId,
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasGetConnectionStatistics>(),
-                serviceLocator.GetRequiredService<IRasHangUp>());
+                serviceLocator.GetRequiredService<IRasHangUp>(),
+                serviceLocator.GetRequiredService<IRasGetLinkStatistics>());
         }
 
         private RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)
