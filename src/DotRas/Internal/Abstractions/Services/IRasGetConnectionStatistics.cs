@@ -2,6 +2,6 @@
 {
     internal interface IRasGetConnectionStatistics
     {
-        RasConnectionStatistics GetConnectionStatistics(RasHandle handle);
+        RasConnectionStatistics GetConnectionStatistics(IRasConnection connection);
     }
 }

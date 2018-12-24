@@ -19,24 +19,28 @@ namespace DotRas.Internal.Services.Connections
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
         }
 
-        public void HangUp(RasHandle handle, CancellationToken cancellationToken)
+        public void HangUp(IRasConnection connection, CancellationToken cancellationToken)
         {
-            if (handle == null)
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            HangUp(connection.Handle, cancellationToken);
+        }
+
+        public void HangUp(IntPtr handle, CancellationToken cancellationToken)
+        {
+            if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
-            }
-            else if (handle.IsClosed || handle.IsInvalid)
-            {
-                throw new ArgumentException("The handle is invalid.", nameof(handle));
             }
 
             CloseAllConnectionsToTheHandle(handle, cancellationToken);
             EnsurePortHasBeenReleased();
-
-            handle.SetHandleAsInvalid();
         }
 
-        private void CloseAllConnectionsToTheHandle(RasHandle handle, CancellationToken cancellationToken)
+        private void CloseAllConnectionsToTheHandle(IntPtr handle, CancellationToken cancellationToken)
         {
             int ret;
 

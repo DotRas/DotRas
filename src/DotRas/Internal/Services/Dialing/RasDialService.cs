@@ -67,11 +67,11 @@ namespace DotRas.Internal.Services.Dialing
         private void InitializeCallbackHandler(ITaskCompletionSource<RasConnection> completionSource, RasDialContext context)
         {
             callbackHandler.Initialize(completionSource, context.OnStateChangedCallback, SetNotBusy, context.CancellationToken);
-        }   
+        }
 
         private void BeginDial(RasDialContext context)
         {
-            RasHandle lphRasConn = null;
+            var lphRasConn = IntPtr.Zero;
 
             try
             {
@@ -91,8 +91,6 @@ namespace DotRas.Internal.Services.Dialing
             catch (Exception)
             {
                 SetNotBusy();
-
-                lphRasConn?.Dispose();
                 throw;
             }
         }

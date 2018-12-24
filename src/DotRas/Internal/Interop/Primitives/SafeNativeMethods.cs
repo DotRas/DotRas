@@ -37,12 +37,12 @@ namespace DotRas.Internal.Interop.Primitives
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetConnectionStatistics(
-            RasHandle hRasConn,
+            IntPtr hRasConn,
             [In, Out] ref RAS_STATS lpStatistics);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetConnectStatus(
-            RasHandle hrasconn,
+            IntPtr hrasconn,
             [In, Out] ref RASCONNSTATUS lpRasConnStatus);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]

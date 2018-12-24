@@ -9,15 +9,15 @@ namespace DotRas.Tests.Internal.Stubs
 {
     internal class StubDefaultRasDialCallbackHandler : DefaultRasDialCallbackHandler
     {
-        private readonly Func<RasHandle, RasConnection> connectionFactory;
+        private readonly Func<IntPtr, RasConnection> connectionFactory;
 
-        public StubDefaultRasDialCallbackHandler(Func<RasHandle, RasConnection> connectionFactory, IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<RasHandle> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public StubDefaultRasDialCallbackHandler(Func<IntPtr, RasConnection> connectionFactory, IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
             : base(rasHangUp, rasEnumConnections, exceptionPolicy, handle, cancellationSourceFactory)
         {
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        protected override RasConnection CreateConnection(RasHandle handle)
+        protected override RasConnection CreateConnection(IntPtr handle)
         {
             return connectionFactory(handle);
         }

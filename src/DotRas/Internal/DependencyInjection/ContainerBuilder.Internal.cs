@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.ComponentModel.Design;
 using DotRas.Diagnostics;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
@@ -100,7 +101,7 @@ namespace DotRas.Internal.DependencyInjection
                         c.GetRequiredService<IRasHangUp>(),
                         c.GetRequiredService<IRasEnumConnections>(),
                         c.GetRequiredService<IExceptionPolicy>(),
-                        c.GetRequiredService<IValueWaiter<RasHandle>>(),
+                        c.GetRequiredService<IValueWaiter<IntPtr>>(),
                         c.GetRequiredService<ITaskCancellationSourceFactory>()),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 

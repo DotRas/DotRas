@@ -18,7 +18,7 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasHangUp rasHangUp;
         private readonly IRasEnumConnections rasEnumConnections;
         private readonly IExceptionPolicy exceptionPolicy;
-        private readonly IValueWaiter<RasHandle> handle;
+        private readonly IValueWaiter<IntPtr> handle;
         private readonly ITaskCancellationSourceFactory cancellationSourceFactory;
 
         private ITaskCancellationSource cancellationSource;
@@ -32,7 +32,7 @@ namespace DotRas.Internal.Services.Dialing
 
         #endregion
 
-        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<RasHandle> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
         {
             this.rasHangUp = rasHangUp ?? throw new ArgumentNullException(nameof(rasHangUp));
             this.rasEnumConnections = rasEnumConnections ?? throw new ArgumentNullException(nameof(rasEnumConnections));
@@ -176,7 +176,7 @@ namespace DotRas.Internal.Services.Dialing
             FlagRequestAsCompleted();
         }
 
-        protected virtual RasConnection CreateConnection(RasHandle handle)
+        protected virtual RasConnection CreateConnection(IntPtr handle)
         {
             return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle.Equals(handle));
         }
@@ -208,15 +208,15 @@ namespace DotRas.Internal.Services.Dialing
             handle.WaitForValue(cancellationSource.Token);
         }
 
-        public void SetHandle(RasHandle value)
+        public void SetHandle(IntPtr handle)
         {
-            if (value == null)
+            if (handle == IntPtr.Zero)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(handle));
             }
 
             GuardHandleMustBeNull();
-            handle.Set(value);
+            this.handle.Set(handle);
         }        
 
         private void GuardHandleMustBeNull()

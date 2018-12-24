@@ -67,12 +67,6 @@ namespace DotRas.Internal.Services.Connections
 
         private RasConnection CreateConnection(RASCONN hRasConn)
         {
-            var handle = CreateHandleFromPtr(hRasConn.hrasconn);
-            if (handle == null)
-            {
-                throw new InvalidOperationException("The handle was not created.");
-            }
-
             var device = deviceTypeFactory.Create(hRasConn.szDeviceName, hRasConn.szDeviceType);
             if (device == null)
             {
@@ -80,7 +74,7 @@ namespace DotRas.Internal.Services.Connections
             }
 
             return new RasConnection(
-                handle,
+                hRasConn.hrasconn,
                 device,
                 hRasConn.szEntryName,
                 hRasConn.szPhonebook,
@@ -92,11 +86,6 @@ namespace DotRas.Internal.Services.Connections
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasGetConnectionStatistics>(),
                 serviceLocator.GetRequiredService<IRasHangUp>());
-        }
-
-        protected virtual RasHandle CreateHandleFromPtr(IntPtr hRasConn)
-        {
-            return RasHandle.FromPtr(hRasConn);
         }
 
         private RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)

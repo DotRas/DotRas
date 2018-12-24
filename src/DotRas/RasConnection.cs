@@ -11,7 +11,7 @@ namespace DotRas
     /// Represents a remote access connection.
     /// </summary>
     [DebuggerDisplay("EntryName = {EntryName}")]
-    public class RasConnection
+    public class RasConnection : IRasConnection
     {
         #region Fields and Properties
 
@@ -22,7 +22,7 @@ namespace DotRas
         /// <summary>
         /// Gets the handle of the connection.
         /// </summary>
-        protected internal virtual RasHandle Handle { get; }
+        public virtual IntPtr Handle { get; }
 
         /// <summary>
         /// Gets the device through which the connection has been established.
@@ -35,7 +35,7 @@ namespace DotRas
         public virtual string EntryName { get; }
 
         /// <summary>
-        /// Gets the full path and filename to the phone book (PBK) containing the entry for this connection.
+        /// Gets the full path (including filename) to the phone book containing the entry for this connection.
         /// </summary>
         public virtual string PhoneBookPath { get; }
 
@@ -66,19 +66,11 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasGetConnectionStatistics getConnectionStatisticsService, IRasHangUp hangUpService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasGetConnectionStatistics getConnectionStatisticsService, IRasHangUp hangUpService)
         {
-            if (handle == null)
+            if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
-            }
-            else if (handle.IsClosed)
-            {
-                throw new ArgumentException("The handle provided must not be closed.", nameof(handle));
-            }
-            else if (handle.IsInvalid)
-            {
-                throw new ArgumentException("The handle is invalid.", nameof(handle));
             }
             else if (string.IsNullOrWhiteSpace(entryName))
             {
@@ -126,9 +118,7 @@ namespace DotRas
         /// </summary>
         public virtual RasConnectionStatistics GetStatistics()
         {
-            GuardHandleMustBeValid();
-
-            return getConnectionStatisticsService.GetConnectionStatistics(Handle);
+            return getConnectionStatisticsService.GetConnectionStatistics(this);
         }
 
         /// <summary>
@@ -136,9 +126,7 @@ namespace DotRas
         /// </summary>
         public virtual RasConnectionStatus GetStatus()
         {
-            GuardHandleMustBeValid();
-
-            return getConnectStatusService.GetConnectionStatus(Handle);
+            return getConnectStatusService.GetConnectionStatus(this);
         }
 
         /// <summary>
@@ -147,17 +135,7 @@ namespace DotRas
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         public virtual void HangUp(CancellationToken cancellationToken)
         {
-            GuardHandleMustBeValid();
-
-            hangUpService.HangUp(Handle, cancellationToken);
-        }
-
-        private void GuardHandleMustBeValid()
-        {
-            if (Handle.IsClosed || Handle.IsInvalid)
-            {
-                throw new InvalidHandleException("The handle is invalid.");
-            }
+            hangUpService.HangUp(this, cancellationToken);
         }
     }
 }

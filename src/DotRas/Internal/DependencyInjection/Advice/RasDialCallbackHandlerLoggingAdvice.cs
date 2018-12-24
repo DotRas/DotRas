@@ -42,7 +42,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public void SetHandle(RasHandle value)
+        public void SetHandle(IntPtr value)
         {
             AttachedObject.SetHandle(value);
         }

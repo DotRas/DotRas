@@ -65,7 +65,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheHandle()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -86,7 +86,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheDevice()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -107,7 +107,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheEntryName()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -128,7 +128,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnThePhoneBook()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -149,7 +149,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheSubEntryId()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -170,7 +170,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheEntryId()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -191,7 +191,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheOptions()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -212,7 +212,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheSessionId()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -233,7 +233,7 @@ namespace DotRas.Tests
         [Test]
         public void ReturnTheCorrelationId()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -269,62 +269,14 @@ namespace DotRas.Tests
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasConnection(null, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
-            });
-        }
-
-        [Test]
-        public void ConstructorThrowsExceptionWhenHandleIsClosed()
-        {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
-            handle.Close();
-
-            var device = new TestDevice("Test");
-            var entryName = "Test";
-            var phoneBook = @"C:\Test.pbk";
-            var subEntryId = 1;
-            var entryId = Guid.NewGuid();
-            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
-            var sessionId = new Luid(1, 1);
-            var correlationId = Guid.NewGuid();
-
-            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            var rasHangUp = new Mock<IRasHangUp>();
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var unused = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
-            });
-        }
-
-        [Test]
-        public void ConstructorThrowsExceptionWhenHandleIsInvalid()
-        {
-            var handle = RasHandle.FromPtr(new IntPtr(-1));
-            var device = new TestDevice("Test");
-            var entryName = "Test";
-            var phoneBook = @"C:\Test.pbk";
-            var subEntryId = 1;
-            var entryId = Guid.NewGuid();
-            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
-            var sessionId = new Luid(1, 1);
-            var correlationId = Guid.NewGuid();
-
-            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            var rasHangUp = new Mock<IRasHangUp>();
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var unused = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
+                var unused = new RasConnection(IntPtr.Zero, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
             });
         }
 
         [Test]
         public void ConstructorThrowsExceptionWhenDeviceIsNull()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
             var subEntryId = 1;
@@ -346,7 +298,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenEntryNameIsNull()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
             var subEntryId = 1;
@@ -368,7 +320,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenEntryNameIsEmpty()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
             var subEntryId = 1;
@@ -390,7 +342,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenEntryNameIsWhitespace()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
             var subEntryId = 1;
@@ -412,7 +364,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenPhoneBookIsNull()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -434,7 +386,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenPhoneBookIsEmpty()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -456,7 +408,7 @@ namespace DotRas.Tests
         [Test]
         public void ConstructorThrowsExceptionWhenPhoneBookIsWhitespace()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -478,7 +430,7 @@ namespace DotRas.Tests
         [Test]
         public void RetrievesTheStatusAsExpected()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -491,12 +443,12 @@ namespace DotRas.Tests
             var status = new Mock<RasConnectionStatus>();
 
             var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            rasGetConnectStatus.Setup(o => o.GetConnectionStatus(handle)).Returns(status.Object).Verifiable();
-
             var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
             var rasHangUp = new Mock<IRasHangUp>();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
+            rasGetConnectStatus.Setup(o => o.GetConnectionStatus(target)).Returns(status.Object).Verifiable();
+
             var result = target.GetStatus();
 
             Assert.AreEqual(status.Object, result);
@@ -506,7 +458,7 @@ namespace DotRas.Tests
         [Test]
         public void RetrievesTheStatisticsAsExpected()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -520,11 +472,12 @@ namespace DotRas.Tests
 
             var rasConnectionStatistics = new Mock<RasConnectionStatistics>();
             var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            rasGetConnectionStatistics.Setup(o => o.GetConnectionStatistics(handle)).Returns(rasConnectionStatistics.Object).Verifiable();
 
             var rasHangUp = new Mock<IRasHangUp>();
-
             var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
+
+            rasGetConnectionStatistics.Setup(o => o.GetConnectionStatistics(target)).Returns(rasConnectionStatistics.Object).Verifiable();
+
             var result = target.GetStatistics();
 
             Assert.AreEqual(rasConnectionStatistics.Object, result);
@@ -534,7 +487,7 @@ namespace DotRas.Tests
         [Test]
         public void HangUpTheConnectionAsExpected()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
             var subEntryId = 1;
@@ -553,79 +506,7 @@ namespace DotRas.Tests
             var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
             target.HangUp(cancellationToken);
 
-            rasHangUp.Verify(o => o.HangUp(handle, cancellationToken), Times.Once);
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsInvalidDuringGetStatus()
-        {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
-            var device = new TestDevice("Test");
-            var entryName = "Test";
-            var subEntryId = 1;
-            var phoneBook = @"C:\Test.pbk";
-            var entryId = Guid.NewGuid();
-            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
-            var sessionId = new Luid(1, 1);
-            var correlationId = Guid.NewGuid();
-
-            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            var rasHangUp = new Mock<IRasHangUp>();
-
-            var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
-
-            handle.SetHandleAsInvalid();
-
-            Assert.Throws<InvalidHandleException>(() => target.GetStatus());
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsInvalidDuringGetStatistics()
-        {        
-            var handle = RasHandle.FromPtr(new IntPtr(1));
-            var device = new TestDevice("Test");
-            var entryName = "Test";
-            var subEntryId = 1;
-            var phoneBook = @"C:\Test.pbk";
-            var entryId = Guid.NewGuid();
-            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
-            var sessionId = new Luid(1, 1);
-            var correlationId = Guid.NewGuid();
-
-            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            var rasHangUp = new Mock<IRasHangUp>();
-
-            var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
-
-            handle.SetHandleAsInvalid();
-
-            Assert.Throws<InvalidHandleException>(() => target.GetStatistics());
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsInvalidDuringHangUp()
-        {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
-            var device = new TestDevice("Test");
-            var entryName = "Test";
-            var subEntryId = 1;
-            var phoneBook = @"C:\Test.pbk";
-            var entryId = Guid.NewGuid();
-            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
-            var sessionId = new Luid(1, 1);
-            var correlationId = Guid.NewGuid();
-
-            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
-            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
-            var rasHangUp = new Mock<IRasHangUp>();
-
-            var target = new RasConnection(handle, device, entryName, phoneBook, subEntryId, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object);
-
-            handle.SetHandleAsInvalid();
-
-            Assert.Throws<InvalidHandleException>(() => target.HangUp(CancellationToken.None));
+            rasHangUp.Verify(o => o.HangUp(target, cancellationToken), Times.Once);
         }
     }
 }

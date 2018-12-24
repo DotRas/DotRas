@@ -2,6 +2,6 @@
 {
     internal interface IRasGetConnectStatus
     {
-        RasConnectionStatus GetConnectionStatus(RasHandle handle);
+        RasConnectionStatus GetConnectionStatus(IRasConnection connection);
     }
 }

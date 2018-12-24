@@ -19,13 +19,13 @@ namespace DotRas.Tests.Internal.Services.Dialing
     [TestFixture]
     public class RasDialServiceTests
     {
-        private delegate void RasDialCallback(
+        private delegate int RasDialCallback(
             ref RASDIALEXTENSIONS rasDialExtensions, 
             string lpszPhoneBook, 
             ref RASDIALPARAMS rasDialParams, 
             Ras.NotifierType notifierType, 
             RasDialFunc2 rasDialFunc, 
-            out RasHandle handle);
+            out IntPtr handle);
 
         [Test]
         public void ThrowAnExceptionWhenTheApiIsNull()
@@ -121,7 +121,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public async Task DialTheConnection()
         {
-            var handle = new RasHandle();
+            var handle = new IntPtr(1);
             var phoneBookPath = @"C:\Test.pbk";
             var entryName = "Entry";
             var userName = "User";
@@ -130,11 +130,13 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var api = new Mock<IRasApi32>();
 
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<RasHandle>.IsAny)).Callback(new RasDialCallback(
-                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams, Ras.NotifierType notifierType, RasDialFunc2 o5, out RasHandle o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams, Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
                 {
                     Assert.AreEqual(phoneBookPath, lpszPhoneBook);
                     o6 = handle;
+
+                    return SUCCESS;
                 }));
 
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
@@ -174,11 +176,13 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void ThrowsAnExceptionWhenNonSuccessIsReturnedFromWin32()
         {
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<RasHandle>.IsAny)).Callback(new RasDialCallback(
-                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out RasHandle o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out IntPtr o6) =>
                 {
-                    o6 = null;
-                })).Returns(ERROR_INVALID_PARAMETER);
+                    o6 = IntPtr.Zero;
+
+                    return ERROR_INVALID_PARAMETER;
+                }));
 
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
@@ -210,19 +214,21 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             Assert.IsFalse(target.IsBusy);
             callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<DialStateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
-            callbackHandler.Verify(o => o.SetHandle(It.IsAny<RasHandle>()), Times.Never);
+            callbackHandler.Verify(o => o.SetHandle(It.IsAny<IntPtr>()), Times.Never);
         }
 
         [Test]
         public async Task ThrowsAnExceptionWhenAttemptingToDialWhileAlreadyBusy()
         {
-            var handle = new RasHandle();
+            var handle = new IntPtr(1);
 
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<RasHandle>.IsAny)).Callback(new RasDialCallback(
-                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out RasHandle o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out IntPtr o6) =>
                 {
                     o6 = handle;
+
+                    return SUCCESS;
                 }));
 
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();

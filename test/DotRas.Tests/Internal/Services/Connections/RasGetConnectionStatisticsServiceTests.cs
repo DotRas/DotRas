@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
@@ -16,7 +15,7 @@ namespace DotRas.Tests.Internal.Services.Connections
     public class RasGetConnectionStatisticsServiceTests
     {
         private delegate int RasGetConnectionStatisticsCallback(
-            RasHandle handle, 
+            IntPtr handle, 
             ref RAS_STATS statistics);
 
         [Test]
@@ -51,10 +50,10 @@ namespace DotRas.Tests.Internal.Services.Connections
         [Test]
         public void ReturnsTheStatisticsAsExpected()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetConnectionStatistics(handle, ref It.Ref<RAS_STATS>.IsAny)).Returns(new RasGetConnectionStatisticsCallback(
-                (RasHandle h, ref RAS_STATS stats) =>
+                (IntPtr h, ref RAS_STATS stats) =>
                 {
                     stats.dwBytesXmited = 1;
                     stats.dwBytesRcved = 2;
@@ -74,13 +73,16 @@ namespace DotRas.Tests.Internal.Services.Connections
                     return SUCCESS;
                 }));
 
+            var connection = new Mock<IRasConnection>();
+            connection.Setup(o => o.Handle).Returns(handle);
+
             var structFactory = new Mock<IStructFactory>();
             structFactory.Setup(o => o.Create<RAS_STATS>()).Returns(new RAS_STATS());
 
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasGetConnectionStatisticsService(api.Object, structFactory.Object, exceptionPolicy.Object);
-            var result = target.GetConnectionStatistics(handle);
+            var result = target.GetConnectionStatistics(connection.Object);
 
             Assert.AreEqual(1, result.BytesTransmitted);
             Assert.AreEqual(2, result.BytesReceived);
@@ -101,18 +103,21 @@ namespace DotRas.Tests.Internal.Services.Connections
         [Test]
         public void ThrowsAnExceptionWhenTheApiResultIsNonZero()
         {
-            var handle = RasHandle.FromPtr(new IntPtr(1));
+            var handle = new IntPtr(1);
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetConnectionStatistics(handle, ref It.Ref<RAS_STATS>.IsAny)).Returns(ERROR_INVALID_PARAMETER);
 
             var structFactory = new Mock<IStructFactory>();
             structFactory.Setup(o => o.Create<RAS_STATS>()).Returns(new RAS_STATS());
 
+            var connection = new Mock<IRasConnection>();
+            connection.Setup(o => o.Handle).Returns(handle);
+
             var exceptionPolicy = new Mock<IExceptionPolicy>();
             exceptionPolicy.Setup(o => o.Create(ERROR_INVALID_PARAMETER)).Returns(new TestException());
 
             var target = new RasGetConnectionStatisticsService(api.Object, structFactory.Object, exceptionPolicy.Object);
-            Assert.Throws<TestException>(() => target.GetConnectionStatistics(handle));
+            Assert.Throws<TestException>(() => target.GetConnectionStatistics(connection.Object));
         }
     }
 }

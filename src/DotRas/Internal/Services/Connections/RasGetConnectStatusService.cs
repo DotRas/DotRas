@@ -28,14 +28,14 @@ namespace DotRas.Internal.Services.Connections
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));
         }
 
-        public RasConnectionStatus GetConnectionStatus(RasHandle handle)
+        public RasConnectionStatus GetConnectionStatus(IRasConnection connection)
         {
-            if (handle == null)
+            if (connection == null)
             {
-                throw new ArgumentNullException(nameof(handle));
+                throw new ArgumentNullException(nameof(connection));
             }
 
-            var rasConnStatus = GetConnectionStatusByHandle(handle);
+            var rasConnStatus = GetConnectionStatusByHandle(connection.Handle);
 
             return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
@@ -47,7 +47,7 @@ namespace DotRas.Internal.Services.Connections
                 rasConnStatus.rasconnsubstate);
         }
 
-        private RASCONNSTATUS GetConnectionStatusByHandle(RasHandle handle)
+        private RASCONNSTATUS GetConnectionStatusByHandle(IntPtr handle)
         {
             var rasConnStatus = structFactory.Create<RASCONNSTATUS>();
 

@@ -37,46 +37,32 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsInvalidOrClosed()
-        {
-            var api = new Mock<IRasApi32>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-
-            using (var handle = new RasHandle())
-            {
-                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                Assert.Throws<ArgumentException>(() => target.HangUp(handle, CancellationToken.None));
-            }
-        }
-
-        [Test]
         [Timeout(10000)]
         public void CallsHangUpUntilAllConnectionsHaveBeenClosed()
         {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            using (var handle = RasHandle.FromPtr(new IntPtr(1)))
+            var handle = new IntPtr(1);
+
+            var counter = 0;
+            api.Setup(o => o.RasHangUp(handle)).Returns(() =>
             {
-                var counter = 0;
-                api.Setup(o => o.RasHangUp(handle)).Returns(() =>
+                counter++;
+                if (counter < 3)
                 {
-                    counter++;
-                    if (counter < 3)
-                    {
-                        return SUCCESS;
-                    }
-                    else
-                    {
-                        return ERROR_NO_CONNECTION;
-                    }
-                });
+                    return SUCCESS;
+                }
+                else
+                {
+                    return ERROR_NO_CONNECTION;
+                }
+            });
 
-                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                target.HangUp(handle, CancellationToken.None);
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            target.HangUp(handle, CancellationToken.None);
 
-                api.Verify(o => o.RasHangUp(handle), Times.Exactly(3));
-            }
+            api.Verify(o => o.RasHangUp(handle), Times.Exactly(3));
         }
 
         [Test]
@@ -85,8 +71,9 @@ namespace DotRas.Tests.Internal.Services.Connections
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
-            using (var cancellationSource = new CancellationTokenSource())
-            using (var handle = RasHandle.FromPtr(new IntPtr(1)))
+            var handle = new IntPtr(1);
+
+            using (var cancellationSource = new CancellationTokenSource())            
             {
                 cancellationSource.Cancel();                
 
@@ -104,15 +91,14 @@ namespace DotRas.Tests.Internal.Services.Connections
             var exceptionPolicy = new Mock<IExceptionPolicy>();
             exceptionPolicy.Setup(o => o.Create(-1)).Returns(new TestException());
 
-            using (var handle = RasHandle.FromPtr(new IntPtr(1)))
-            {
-                api.Setup(o => o.RasHangUp(handle)).Returns(-1);
+            var handle = new IntPtr(1);
 
-                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                Assert.Throws<TestException>(() => target.HangUp(handle, CancellationToken.None));
+            api.Setup(o => o.RasHangUp(handle)).Returns(-1);
 
-                api.Verify(o => o.RasHangUp(handle), Times.Once);
-            }
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            Assert.Throws<TestException>(() => target.HangUp(handle, CancellationToken.None));
+
+            api.Verify(o => o.RasHangUp(handle), Times.Once);
         }
     }
 }

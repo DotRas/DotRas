@@ -15,9 +15,9 @@ namespace DotRas.Internal.Interop.Primitives
             [In] ref RASDIALPARAMS lpRasDialParams,
             NotifierType dwNotifierType,
             Delegate lpvNotifier,
-            out RasHandle lphRasConn);
+            out IntPtr lphRasConn);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
-        public static extern int RasHangUp(RasHandle hRasConn);
+        public static extern int RasHangUp(IntPtr hRasConn);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DotRas.Devices;
 using DotRas.Internal.Abstractions.Factories;
@@ -9,7 +8,6 @@ using DotRas.Internal.DependencyInjection.Factories;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
-using DotRas.Tests.Internal.Stubs;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
@@ -209,46 +207,7 @@ namespace DotRas.Tests.Internal.Services.Connections
 
             var target = new RasEnumConnectionsService(api.Object, deviceTypeFactory.Object, exceptionPolicy.Object, structFactory.Object, serviceLocator.Object);
             Assert.Throws<TestException>(() => target.EnumerateConnections().ToArray());
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenTheHandleReturnsIsNull()
-        {
-            var entryName = "Test";
-            var phoneBookPath = @"C:\Test.pbk";
-            var deviceName = "WAN";
-
-            var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasEnumConnections(It.IsAny<RASCONN[]>(), ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny)).Returns(new RasEnumConnectionsCallback(
-                (RASCONN[] o1, ref int o2, ref int o3) =>
-                {
-                    o1[0].hrasconn = new IntPtr(1);
-                    o1[0].szDeviceName = deviceName;
-                    o1[0].szDeviceType = RASDT_Vpn;
-                    o1[0].szEntryName = entryName;
-                    o1[0].szPhonebook = phoneBookPath;
-
-                    o2 = 1;
-                    o3 = 1;
-
-                    return SUCCESS;
-                }));
-
-            var deviceTypeFactory = new Mock<IDeviceTypeFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-            var structFactory = new Mock<IStructArrayFactory>();
-            structFactory.Setup(o => o.CreateArray<RASCONN>(1, out It.Ref<int>.IsAny)).Returns(new RASCONN[1]);
-
-            var serviceLocator = new Mock<IServiceProvider>();
-
-            var target = new TestableRasEnumConnectionsService(api.Object, deviceTypeFactory.Object, exceptionPolicy.Object, structFactory.Object, serviceLocator.Object)
-            {
-                OnCreateHandleFromPtrCallback = (ptr) => null
-            };
-
-            var ex = Assert.Throws<InvalidOperationException>(() => target.EnumerateConnections().Single());
-            Assert.AreEqual("The handle was not created.", ex.Message);
-        }
+        }        
 
         [Test]
         public void ThrowsAnExceptionWhenTheDeviceIsNull()
