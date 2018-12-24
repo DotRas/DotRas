@@ -9,6 +9,11 @@ namespace DotRas
     {
         private bool disposed;
 
+        /// <summary>
+        /// Gets an object used for thread synchronization.
+        /// </summary>
+        protected object SyncRoot { get; } = new object();
+
         ~DisposableObject()
         {
             Dispose(false);
@@ -17,8 +22,16 @@ namespace DotRas
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (disposed)
+            {
+                return;
+            }
+
+            lock (SyncRoot)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
         }
 
         /// <summary>

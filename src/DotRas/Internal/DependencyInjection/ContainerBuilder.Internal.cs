@@ -93,7 +93,8 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasDialParamsBuilder>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IRasDialCallbackHandler>(),
-                    c.GetRequiredService<ITaskCompletionSourceFactory>()));
+                    c.GetRequiredService<ITaskCompletionSourceFactory>(),
+                    c.GetRequiredService<ITaskCancellationSourceFactory>()));
 
             container.AddService(typeof(IRasDialCallbackHandler),
                 (c, _) => new RasDialCallbackHandlerLoggingAdvice(

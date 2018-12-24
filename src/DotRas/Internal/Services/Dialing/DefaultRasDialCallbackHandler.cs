@@ -26,8 +26,8 @@ namespace DotRas.Internal.Services.Dialing
         private ITaskCompletionSource<RasConnection> completionSource;
         private Action<DialStateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
-        private bool completed;
-
+        
+        public bool Completed { get; private set; }
         public bool Initialized { get; private set; }
 
         #endregion
@@ -82,8 +82,8 @@ namespace DotRas.Internal.Services.Dialing
                 this.onCompletedCallback = onCompletedCallback;
 
                 handle.Reset();
-                completed = false;
 
+                Completed = false;
                 Initialized = true;
             }
         }
@@ -125,13 +125,13 @@ namespace DotRas.Internal.Services.Dialing
             }
             finally
             {
-                if (HasCompleted())
+                if (Completed)
                 {
                     RunPostCompleted();
                 }
             }
 
-            return !completed;
+            return !Completed;
         }
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
@@ -155,11 +155,6 @@ namespace DotRas.Internal.Services.Dialing
         private void RunPostCompleted()
         {
             onCompletedCallback();
-        }
-
-        private bool HasCompleted()
-        {
-            return completed;
         }
 
         private void SetConnectionResult()
@@ -187,7 +182,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void FlagRequestAsCompleted()
         {
-            completed = true;
+            Completed = true;
         }
 
         private void GuardMustBeInitialized()
