@@ -83,9 +83,6 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public RasConnection Dial()
         {
-            GuardMustNotBeDisposed();
-            ValidateConfigurationPriorToDialAttempt();
-
             return Dial(CancellationToken.None);
         }
 
@@ -96,9 +93,6 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public RasConnection Dial(CancellationToken cancellationToken)
         {
-            GuardMustNotBeDisposed();
-            ValidateConfigurationPriorToDialAttempt();
-
             using (var task = DialAsync(cancellationToken))
             {
                 return task.Result;
@@ -111,9 +105,6 @@ namespace DotRas
         /// <returns>The connection instance.</returns>
         public Task<RasConnection> DialAsync()
         {
-            GuardMustNotBeDisposed();
-            ValidateConfigurationPriorToDialAttempt();
-
             return DialAsync(CancellationToken.None);
         }
 
