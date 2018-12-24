@@ -9,7 +9,7 @@ using NUnit.Framework;
 using static DotRas.Internal.Interop.RasError;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Services
+namespace DotRas.Tests.Internal.Services.Connections
 {
     [TestFixture]
     public class RasHangUpTests
