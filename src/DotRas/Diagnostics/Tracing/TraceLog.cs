@@ -9,9 +9,9 @@ namespace DotRas.Diagnostics.Tracing
         private readonly TraceSource source = new TraceSource("DotRas", SourceLevels.Off);
 
         private readonly IEventFormatterAdapter formatter;
-        private readonly IConverter<EventLevel, TraceEventType> eventLevelConverter;
+        private readonly IEventLevelConverter eventLevelConverter;
 
-        public TraceLog(IEventFormatterAdapter formatter, IConverter<EventLevel, TraceEventType> eventLevelConverter)
+        public TraceLog(IEventFormatterAdapter formatter, IEventLevelConverter eventLevelConverter)
         {
             this.formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
             this.eventLevelConverter = eventLevelConverter ?? throw new ArgumentNullException(nameof(eventLevelConverter));

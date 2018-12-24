@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Text;
 using static DotRas.Internal.Interop.NativeMethods;
 
 namespace DotRas.Internal.Interop
@@ -31,6 +32,10 @@ namespace DotRas.Internal.Interop
             int uErrorValue,
             StringBuilder lpszErrorString,
             int cBufSize);
+
+        int RasGetConnectionStatistics(
+            RasHandle hRasConn,
+            [In, Out] ref RAS_STATS lpStatistics);
 
         int RasHangUp(RasHandle hRasConn);
 

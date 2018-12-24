@@ -2,13 +2,13 @@
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
-using DotRas.Internal.Services;
+using DotRas.Internal.Services.Security;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Tests.Internal.Services
+namespace DotRas.Tests.Internal.Services.Security
 {
     [TestFixture]
     public class RasGetCredentialsServiceTests

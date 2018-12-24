@@ -11,7 +11,7 @@ namespace DotRas.Internal.Services.Dialing
 {
     internal class DefaultRasDialCallbackHandler : DisposableObject, IRasDialCallbackHandler
     {
-        #region Fields
+        #region Fields and Properties
 
         private readonly object syncRoot = new object();
 
@@ -24,7 +24,7 @@ namespace DotRas.Internal.Services.Dialing
         private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
         private ITaskCompletionSource<RasConnection> completionSource;
-        private Action<StateChangedEventArgs> onStateChangedCallback;
+        private Action<DialStateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
         private bool completed;
 
@@ -52,7 +52,7 @@ namespace DotRas.Internal.Services.Dialing
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -138,7 +138,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
         {
-            onStateChangedCallback(new StateChangedEventArgs(connectionState));
+            onStateChangedCallback(new DialStateChangedEventArgs(connectionState));
         }
 
         private void GuardErrorCodeMustBeZero(int errorCode)

@@ -22,7 +22,7 @@ namespace ConsoleRunner
                 Credentials = new NetworkCredential(Config.Username, Config.Password)
             };
 
-            dialer.StateChanged += OnStateChanged;
+            dialer.DialStateChanged += OnStateChanged;
         }
 
         private async Task RunAsync()
@@ -46,6 +46,11 @@ namespace ConsoleRunner
             if (connection != null)
             {
                 SetConnected();
+
+                var stats = connection.GetStatistics();
+                if (stats != null)
+                {
+                }
             }
         }
 
@@ -70,7 +75,7 @@ namespace ConsoleRunner
             return !IsConnected && !CancellationSource.IsCancellationRequested;
         }
 
-        private void OnStateChanged(object sender, StateChangedEventArgs e)
+        private void OnStateChanged(object sender, DialStateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
         }

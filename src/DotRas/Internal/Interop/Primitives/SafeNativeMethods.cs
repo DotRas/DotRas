@@ -36,6 +36,11 @@ namespace DotRas.Internal.Interop.Primitives
             int cBufSize);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasGetConnectionStatistics(
+            RasHandle hRasConn,
+            [In, Out] ref RAS_STATS lpStatistics);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetConnectStatus(
             RasHandle hrasconn,
             [In, Out] ref RASCONNSTATUS lpRasConnStatus);

@@ -5,7 +5,7 @@ using DotRas.Diagnostics.Events;
 namespace DotRas.Diagnostics
 {
     /// <summary>
-    /// Provides a factory which uses an attribute-based convention for identifying the factory for a type.
+    /// Provides a factory which uses an attribute-based convention for identifying the formatter for a type.
     /// </summary>
     public class ConventionBasedEventFormatterFactory : IEventFormatterFactory
     {

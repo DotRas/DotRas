@@ -62,6 +62,7 @@ namespace DotRas.Internal.Interop
         [Flags]
         public enum RDEOPT
         {
+            None = 0x0,
             UsePrefixSuffix = 0x1,
             PausedStates = 0x2,
             IgnoreModemSpeaker = 0x4,
@@ -75,9 +76,7 @@ namespace DotRas.Internal.Interop
             PauseOnScript = 0x400,
             Router = 0x800,
             CustomDial = 0x1000,
-            UseCustomScripting = 0x2000,
-            IgnoreAutoTriggerCredentialUI = 0x4000,
-            EapInfoCryptInCapable = 0x8000
+            UseCustomScripting = 0x2000
         }
 
         public enum NotifierType

@@ -6,19 +6,11 @@ namespace DotRas.Internal.Abstractions.Services
 {
     internal struct RasDialContext
     {
-        public string PhoneBookPath { get; }
-        public string EntryName { get; }
-        public NetworkCredential Credentials { get; }
-        public Action<StateChangedEventArgs> OnStateChangedCallback { get; }
-        public CancellationToken CancellationToken { get; }
-
-        public RasDialContext(string phoneBookPath, string entryName, NetworkCredential credentials, Action<StateChangedEventArgs> onStateChangedCallback, CancellationToken cancellationToken)
-        {
-            PhoneBookPath = phoneBookPath;
-            EntryName = entryName;
-            Credentials = credentials;
-            OnStateChangedCallback = onStateChangedCallback;
-            CancellationToken = cancellationToken;
-        }
+        public string PhoneBookPath { get; set; }
+        public string EntryName { get; set; }
+        public NetworkCredential Credentials { get; set; }
+        public Action<DialStateChangedEventArgs> OnStateChangedCallback { get; set; }
+        public RasDialerOptions Options { get; set; }
+        public CancellationToken CancellationToken { get; set; }        
     }
 }

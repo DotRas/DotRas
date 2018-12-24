@@ -112,6 +112,27 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
+        public int RasGetConnectionStatistics(RasHandle hRasConn, ref RAS_STATS lpStatistics)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasGetConnectionStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.OutArgs.Add(nameof(lpStatistics), lpStatistics);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
         public int RasHangUp(RasHandle hRasConn)
         {
             var stopwatch = Stopwatch.StartNew();

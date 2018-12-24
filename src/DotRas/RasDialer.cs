@@ -17,7 +17,6 @@ namespace DotRas
         #region Fields and Properties
 
         private readonly IRasDial api;
-        private readonly IRasGetCredentials rasGetCredentials;
         private readonly IFileSystem fileSystem;
         private readonly IPhoneBookEntryValidator validator;
 
@@ -37,14 +36,14 @@ namespace DotRas
         public string PhoneBookPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the credentials.
+        /// Gets or sets the credentials to use while dialing the connection.
         /// </summary>
         public NetworkCredential Credentials { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether stored credentials will be allowed if the credentials have not been provided.
+        /// Gets the options configurable for a dial attempt.
         /// </summary>
-        public bool AllowUseStoredCredentials { get; set; }
+        public RasDialerOptions Options { get; } = new RasDialerOptions();
 
         #endregion
 
@@ -57,7 +56,7 @@ namespace DotRas
         /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
         /// an active connection has been disconnected outside of an attempt to dial.
         /// </remarks>
-        public event EventHandler<StateChangedEventArgs> StateChanged;
+        public event EventHandler<DialStateChangedEventArgs> DialStateChanged;
 
         #endregion
 
@@ -66,16 +65,14 @@ namespace DotRas
         /// </summary>
         public RasDialer() : this(
                 Container.Default.GetRequiredService<IRasDial>(), 
-                Container.Default.GetRequiredService<IRasGetCredentials>(), 
                 Container.Default.GetRequiredService<IFileSystem>(), 
                 Container.Default.GetRequiredService<IPhoneBookEntryValidator>())
         {
         }
 
-        internal RasDialer(IRasDial api, IRasGetCredentials rasGetCredentials, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
+        internal RasDialer(IRasDial api, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
-            this.rasGetCredentials = rasGetCredentials ?? throw new ArgumentNullException(nameof(rasGetCredentials));
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
@@ -130,8 +127,16 @@ namespace DotRas
             GuardMustNotBeDisposed();
             ValidateConfigurationPriorToDialAttempt();
 
-            return api.DialAsync(new RasDialContext(PhoneBookPath, EntryName, GetCredentials(), RaiseDialStateChanged, cancellationToken));
-        }
+            return api.DialAsync(new RasDialContext
+            {
+                PhoneBookPath = PhoneBookPath,
+                EntryName = EntryName,
+                Credentials = Credentials,
+                CancellationToken = cancellationToken,
+                Options = Options,
+                OnStateChangedCallback = RaiseDialStateChanged
+            });
+        }        
 
         private void ValidateConfigurationPriorToDialAttempt()
         {
@@ -146,24 +151,14 @@ namespace DotRas
             }
         }
 
-        private NetworkCredential GetCredentials()
-        {
-            if (AllowUseStoredCredentials && Credentials == null)
-            {
-                return rasGetCredentials.GetNetworkCredential(EntryName, PhoneBookPath);
-            }
-
-            return Credentials;
-        }
-
-        private void RaiseDialStateChanged(StateChangedEventArgs e)
+        private void RaiseDialStateChanged(DialStateChangedEventArgs e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            StateChanged?.Invoke(this, e);
+            DialStateChanged?.Invoke(this, e);
         }
 
         protected override void Dispose(bool disposing)

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace DotRas.Diagnostics
 {
     /// <summary>
-    /// Thrown when an exception occurs while attempting to find the correct formatter for a particular type of event.
+    /// Thrown when an exception occurs while attempting to find the formatter for an event.
     /// </summary>
     [Serializable]
     public class FormatterNotFoundException : Exception

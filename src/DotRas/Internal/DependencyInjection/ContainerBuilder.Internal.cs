@@ -11,6 +11,7 @@ using DotRas.Internal.Services.Connections;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Internal.Services.ErrorHandling;
 using DotRas.Internal.Services.PhoneBooks;
+using DotRas.Internal.Services.Security;
 
 namespace DotRas.Internal.DependencyInjection
 {
@@ -50,6 +51,12 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
+            container.AddService(typeof(IRasGetConnectionStatistics),
+                (c, _) => new RasGetConnectionStatisticsService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
             container.AddService(typeof(IRasGetConnectStatus),
                 (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
@@ -69,10 +76,20 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
+            container.AddService(typeof(IRasDialExtensionsBuilder),
+                (c, _) => new RasDialExtensionsBuilder(
+                    c.GetRequiredService<IStructFactory>()));
+
+            container.AddService(typeof(IRasDialParamsBuilder),
+                (c, _) => new RasDialParamsBuilder(
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IRasGetCredentials>()));
+
             container.AddService(typeof(IRasDial),
                 (c, _) => new RasDialService(
                     c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IRasDialExtensionsBuilder>(),
+                    c.GetRequiredService<IRasDialParamsBuilder>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IRasDialCallbackHandler>(),
                     c.GetRequiredService<ITaskCompletionSourceFactory>()));
