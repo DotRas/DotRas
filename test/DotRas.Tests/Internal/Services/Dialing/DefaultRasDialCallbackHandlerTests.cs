@@ -143,7 +143,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             }
 
             rasHangUp.Verify(o => o.HangUp(handle, It.IsAny<CancellationToken>()), Times.Once);
-            completionSource.Verify(o => o.SetExceptionAsynchronously(It.IsAny<OperationCanceledException>()), Times.Once);
+            completionSource.Verify(o => o.SetException(It.IsAny<OperationCanceledException>()), Times.Once);
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 632, 0);
 
             Assert.IsFalse(result);
-            completionSource.Verify(o => o.SetExceptionAsynchronously(It.IsAny<Exception>()), Times.Once);
+            completionSource.Verify(o => o.SetException(It.IsAny<Exception>()), Times.Once);
         }
 
         [Test]
@@ -297,7 +297,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
-            completionSource.Verify(o => o.SetExceptionAsynchronously(It.IsAny<InvalidOperationException>()), Times.Once);
+            completionSource.Verify(o => o.SetException(It.IsAny<InvalidOperationException>()), Times.Once);
         }
 
         [Test]
@@ -333,7 +333,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
-            completionSource.Verify(o => o.SetResultAsynchronously(It.IsAny<RasConnection>()), Times.Once);
+            completionSource.Verify(o => o.SetResult(It.IsAny<RasConnection>()), Times.Once);
         }
 
         [Test]

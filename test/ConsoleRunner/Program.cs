@@ -29,14 +29,23 @@ namespace ConsoleRunner
         {
             while (ShouldContinueExecution())
             {
-                using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
+                try
                 {
-                    await ConnectAsync(tcs.Token);
-                    if (IsConnected)
+                    using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
                     {
-                        DisconnectAsync(tcs.Token);
-                    }                 
+                        await ConnectAsync(tcs.Token);
+                        if (IsConnected)
+                        {
+                            DisconnectAsync(tcs.Token);
+                        }
+
+                        tcs.Token.WaitHandle.WaitOne(500);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }                
             }
         }
 
@@ -78,6 +87,16 @@ namespace ConsoleRunner
         private void OnStateChanged(object sender, DialStateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
+            RandomlyThrowException();
+        }
+
+        private void RandomlyThrowException()
+        {
+            var rand = new Random();
+            if (rand.Next(1, 100) >= 98)
+            {
+                throw new Exception("A random exception occurred.");
+            }
         }
     }
 }

@@ -58,13 +58,11 @@ namespace DotRas.Internal.Services.Dialing
             {
                 throw new ArgumentNullException(nameof(completionSource));
             }
-
-            if (onStateChangedCallback == null)
+            else if (onStateChangedCallback == null)
             {
                 throw new ArgumentNullException(nameof(onStateChangedCallback));
             }
-
-            if (onCompletedCallback == null)
+            else if (onCompletedCallback == null)
             {
                 throw new ArgumentNullException(nameof(onCompletedCallback));
             }
@@ -172,18 +170,18 @@ namespace DotRas.Internal.Services.Dialing
                 throw new InvalidOperationException("The connection was not created.");
             }
 
-            completionSource.SetResultAsynchronously(connection);
+            completionSource.SetResult(connection);
             FlagRequestAsCompleted();
         }
 
         protected virtual RasConnection CreateConnection(IntPtr handle)
         {
-            return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle.Equals(handle));
+            return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle == handle);
         }
 
         private void SetExceptionResult(Exception exception)
         {
-            completionSource.SetExceptionAsynchronously(exception);
+            completionSource.SetException(exception);
             FlagRequestAsCompleted();
         }
 
