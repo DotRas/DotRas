@@ -46,6 +46,11 @@ namespace ConsoleRunner
             if (connection != null)
             {
                 SetConnected();
+
+                var stats = connection.GetStatistics();
+                if (stats != null)
+                {
+                }
             }
         }
 

@@ -114,6 +114,27 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
+        public struct RAS_STATS
+        {
+            [SizeOf]
+            public int dwSize;
+            public uint dwBytesXmited;
+            public uint dwBytesRcved;
+            public uint dwFramesXmited;
+            public uint dwFramesRcved;
+            public uint dwCrcErr;
+            public uint dwTimeoutErr;
+            public uint dwAlignmentErr;
+            public uint dwHardwareOverrunErr;
+            public uint dwFramingErr;
+            public uint dwBufferOverrunErr;
+            public uint dwCompressionRatioIn;
+            public uint dwCompressionRatioOut;
+            public uint dwBps;
+            public uint dwConnectDuration;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct RASTUNNELENDPOINT
         {
             public RASTUNNELENDPOINTTYPE type;

@@ -51,6 +51,12 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IExceptionPolicy>()));
 
+            container.AddService(typeof(IRasGetConnectionStatistics),
+                (c, _) => new RasGetConnectionStatisticsService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
             container.AddService(typeof(IRasGetConnectStatus),
                 (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),

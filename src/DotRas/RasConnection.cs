@@ -17,11 +17,12 @@ namespace DotRas
 
         private readonly IRasGetConnectStatus getConnectStatusService;
         private readonly IRasHangUp hangUpService;
+        private readonly IRasGetConnectionStatistics getConnectionStatisticsService;
 
         /// <summary>
         /// Gets the handle of the connection.
         /// </summary>
-        public virtual RasHandle Handle { get; }
+        protected internal virtual RasHandle Handle { get; }
 
         /// <summary>
         /// Gets the device through which the connection has been established.
@@ -65,7 +66,7 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasHangUp hangUpService)
+        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasGetConnectionStatistics getConnectionStatisticsService, IRasHangUp hangUpService)
         {
             if (handle == null)
             {
@@ -99,6 +100,7 @@ namespace DotRas
             CorrelationId = correlationId;
 
             this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
+            this.getConnectionStatisticsService = getConnectionStatisticsService ?? throw new ArgumentNullException(nameof(getConnectionStatisticsService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
         }
 
@@ -120,9 +122,19 @@ namespace DotRas
         }
 
         /// <summary>
+        /// Retrieves accumulated statistics for the connection.
+        /// </summary>
+        public virtual RasConnectionStatistics GetStatistics()
+        {
+            GuardHandleMustBeValid();
+
+            return getConnectionStatisticsService.GetConnectionStatistics(Handle);
+        }
+
+        /// <summary>
         /// Retrieves the connection status.
         /// </summary>
-        public virtual RasConnectionStatus GetConnectionStatus()
+        public virtual RasConnectionStatus GetStatus()
         {
             GuardHandleMustBeValid();
 
