@@ -86,7 +86,9 @@ namespace DotRas.Internal.Services.Connections
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasGetConnectionStatistics>(),
                 serviceLocator.GetRequiredService<IRasHangUp>(),
-                serviceLocator.GetRequiredService<IRasGetLinkStatistics>());
+                serviceLocator.GetRequiredService<IRasGetLinkStatistics>(),
+                serviceLocator.GetRequiredService<IRasClearConnectionStatistics>(),
+                serviceLocator.GetRequiredService<IRasClearLinkStatistics>());
         }
 
         private RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)

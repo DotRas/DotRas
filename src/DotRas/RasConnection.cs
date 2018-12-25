@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
@@ -10,7 +9,6 @@ namespace DotRas
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
-    [DebuggerDisplay("EntryName = {EntryName}")]
     public class RasConnection : IRasConnection
     {
         #region Fields and Properties
@@ -19,6 +17,8 @@ namespace DotRas
         private readonly IRasHangUp hangUpService;
         private readonly IRasGetConnectionStatistics connectionStatisticsService;
         private readonly IRasGetLinkStatistics linkStatisticsService;
+        private readonly IRasClearConnectionStatistics clearConnectionStatisticsService;
+        private readonly IRasClearLinkStatistics clearLinkStatisticsService;
 
         /// <summary>
         /// Gets the handle of the connection.
@@ -67,7 +67,7 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasGetLinkStatistics linkStatisticsService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasGetLinkStatistics linkStatisticsService, IRasClearConnectionStatistics clearConnectionStatisticsService, IRasClearLinkStatistics clearLinkStatisticsService)
         {
             if (handle == IntPtr.Zero)
             {
@@ -96,6 +96,8 @@ namespace DotRas
             this.connectionStatisticsService = connectionStatisticsService ?? throw new ArgumentNullException(nameof(connectionStatisticsService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
             this.linkStatisticsService = linkStatisticsService ?? throw new ArgumentNullException(nameof(linkStatisticsService));
+            this.clearConnectionStatisticsService = clearConnectionStatisticsService ?? throw new ArgumentNullException(nameof(clearConnectionStatisticsService));
+            this.clearLinkStatisticsService = clearLinkStatisticsService ?? throw new ArgumentNullException(nameof(clearLinkStatisticsService));
         }
 
         /// <summary>
@@ -113,6 +115,22 @@ namespace DotRas
         {
             return Container.Default.GetRequiredService<IRasEnumConnections>()
                 .EnumerateConnections();
+        }
+
+        /// <summary>
+        /// Clears the accumulated statistics for the connection.
+        /// </summary>
+        public virtual void ClearStatistics()
+        {
+            clearConnectionStatisticsService.ClearConnectionStatistics(this);
+        }
+
+        /// <summary>
+        /// Clears the accumulated statistics for a link in a multi-link connection.
+        /// </summary>
+        public virtual void ClearLinkStatistics()
+        {
+            clearLinkStatisticsService.ClearLinkStatistics(this, SubEntryId);
         }
 
         /// <summary>

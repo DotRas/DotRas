@@ -47,6 +47,16 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new PhoneBookEntryNameValidationService(
                     c.GetRequiredService<IRasApi32>()));
 
+            container.AddService(typeof(IRasClearConnectionStatistics),
+                (c, _) => new RasClearConnectionStatisticsService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
+            container.AddService(typeof(IRasClearLinkStatistics),
+                (c, _) => new RasClearLinkStatisticsService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IExceptionPolicy>()));
+
             container.AddService(typeof(IRasHangUp),
                 (c, _) => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),

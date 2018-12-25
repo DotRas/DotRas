@@ -26,10 +26,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             ref int lpCb,
             ref int lpConnections);
 
-        private delegate RASCONN[] StructFactoryCallback(
-            int count, 
-            out int size);
-
         [Test]
         public void ThrowsAnExceptionWhenApiIsNull()
         {
@@ -120,12 +116,16 @@ namespace DotRas.Tests.Internal.Services.Connections
             var getConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
             var hangUp = new Mock<IRasHangUp>();
             var getLinkStatistics = new Mock<IRasGetLinkStatistics>();
+            var clearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+            var clearLinkStatistics = new Mock<IRasClearLinkStatistics>();
 
             var serviceLocator = new Mock<IServiceProvider>();
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetConnectStatus))).Returns(getConnectStatus.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetConnectionStatistics))).Returns(getConnectionStatistics.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasHangUp))).Returns(hangUp.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetLinkStatistics))).Returns(getLinkStatistics.Object);
+            serviceLocator.Setup(o => o.GetService(typeof(IRasClearConnectionStatistics))).Returns(clearConnectionStatistics.Object);
+            serviceLocator.Setup(o => o.GetService(typeof(IRasClearLinkStatistics))).Returns(clearLinkStatistics.Object);
 
             var target = new RasEnumConnectionsService(api.Object, deviceTypeFactory.Object, exceptionPolicy.Object, structFactory.Object, serviceLocator.Object);
             var result = target.EnumerateConnections().Single();
@@ -181,12 +181,16 @@ namespace DotRas.Tests.Internal.Services.Connections
             var getConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
             var hangUp = new Mock<IRasHangUp>();
             var getLinkStatistics = new Mock<IRasGetLinkStatistics>();
+            var clearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+            var clearLinkStatistics = new Mock<IRasClearLinkStatistics>();
 
             var serviceLocator = new Mock<IServiceProvider>();
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetConnectStatus))).Returns(getConnectStatus.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetConnectionStatistics))).Returns(getConnectionStatistics.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasHangUp))).Returns(hangUp.Object);
             serviceLocator.Setup(o => o.GetService(typeof(IRasGetLinkStatistics))).Returns(getLinkStatistics.Object);
+            serviceLocator.Setup(o => o.GetService(typeof(IRasClearConnectionStatistics))).Returns(clearConnectionStatistics.Object);
+            serviceLocator.Setup(o => o.GetService(typeof(IRasClearLinkStatistics))).Returns(clearLinkStatistics.Object);
 
             var target = new RasEnumConnectionsService(api.Object, deviceTypeFactory.Object, exceptionPolicy.Object, structFactory, serviceLocator.Object);
             var result = target.EnumerateConnections().ToArray();

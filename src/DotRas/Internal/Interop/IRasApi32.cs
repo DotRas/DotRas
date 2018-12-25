@@ -7,6 +7,13 @@ namespace DotRas.Internal.Interop
 {
     internal interface IRasApi32
     {
+        int RasClearConnectionStatistics(
+            IntPtr hRasConn);
+
+        int RasClearLinkStatistics(
+            IntPtr hRasConn, 
+            int dwSubEntry);
+
         int RasEnumConnections(
             RASCONN[] lpRasConn,
             ref int lpCb,

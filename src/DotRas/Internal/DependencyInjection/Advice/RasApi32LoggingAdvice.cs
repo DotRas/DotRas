@@ -17,6 +17,47 @@ namespace DotRas.Internal.DependencyInjection.Advice
         {
         }
 
+        public int RasClearConnectionStatistics(IntPtr hRasConn)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasClearConnectionStatistics(hRasConn);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasClearConnectionStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasClearLinkStatistics(hRasConn, dwSubEntry);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasClearLinkStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             var stopwatch = Stopwatch.StartNew();

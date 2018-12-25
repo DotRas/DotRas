@@ -45,7 +45,7 @@ namespace ConsoleRunner
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                }                
+                }
             }
         }
 
@@ -65,6 +65,9 @@ namespace ConsoleRunner
                 if (linkStats != null)
                 {
                 }
+
+                connection.ClearLinkStatistics();
+                connection.ClearStatistics();
             }
         }
 

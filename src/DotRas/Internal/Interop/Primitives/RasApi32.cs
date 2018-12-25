@@ -7,6 +7,16 @@ namespace DotRas.Internal.Interop.Primitives
 {
     internal class RasApi32 : IRasApi32
     {
+        public int RasClearConnectionStatistics(IntPtr hRasConn)
+        {
+            return UnsafeNativeMethods.RasClearConnectionStatistics(hRasConn);
+        }
+
+        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
+        {
+            return UnsafeNativeMethods.RasClearLinkStatistics(hRasConn, dwSubEntry);
+        }
+
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             return SafeNativeMethods.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
