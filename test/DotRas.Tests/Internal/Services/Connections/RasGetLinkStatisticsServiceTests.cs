@@ -89,12 +89,12 @@ namespace DotRas.Tests.Internal.Services.Connections
             Assert.AreEqual(2, result.BytesReceived);
             Assert.AreEqual(3, result.FramesTransmitted);
             Assert.AreEqual(4, result.FramesReceived);
-            Assert.AreEqual(5, result.CrcError);
-            Assert.AreEqual(6, result.TimeoutError);
-            Assert.AreEqual(7, result.AlignmentError);
-            Assert.AreEqual(8, result.HardwareOverrunError);
-            Assert.AreEqual(9, result.FramingError);
-            Assert.AreEqual(10, result.BufferOverrunError);
+            Assert.AreEqual(5, result.CrcErrors);
+            Assert.AreEqual(6, result.TimeoutErrors);
+            Assert.AreEqual(7, result.AlignmentErrors);
+            Assert.AreEqual(8, result.HardwareOverrunErrors);
+            Assert.AreEqual(9, result.FramingErrors);
+            Assert.AreEqual(10, result.BufferOverrunErrors);
             Assert.AreEqual(11, result.CompressionRatioIn);
             Assert.AreEqual(12, result.CompressionRatioOut);
             Assert.AreEqual(13, result.LinkSpeed);

@@ -15,12 +15,12 @@ namespace DotRas.Tests
             Assert.AreEqual(2, target.BytesReceived);
             Assert.AreEqual(3, target.FramesTransmitted);
             Assert.AreEqual(4, target.FramesReceived);
-            Assert.AreEqual(5, target.CrcError);
-            Assert.AreEqual(6, target.TimeoutError);
-            Assert.AreEqual(7, target.AlignmentError);
-            Assert.AreEqual(8, target.HardwareOverrunError);
-            Assert.AreEqual(9, target.FramingError);
-            Assert.AreEqual(10, target.BufferOverrunError);
+            Assert.AreEqual(5, target.CrcErrors);
+            Assert.AreEqual(6, target.TimeoutErrors);
+            Assert.AreEqual(7, target.AlignmentErrors);
+            Assert.AreEqual(8, target.HardwareOverrunErrors);
+            Assert.AreEqual(9, target.FramingErrors);
+            Assert.AreEqual(10, target.BufferOverrunErrors);
             Assert.AreEqual(11, target.CompressionRatioIn);
             Assert.AreEqual(12, target.CompressionRatioOut);
             Assert.AreEqual(13, target.LinkSpeed);
