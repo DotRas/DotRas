@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
+using Container = DotRas.Internal.DependencyInjection.Container;
 
 namespace DotRas
 {
@@ -120,6 +122,7 @@ namespace DotRas
         /// <summary>
         /// Clears the accumulated statistics for the connection.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual void ClearStatistics()
         {
             clearConnectionStatisticsService.ClearConnectionStatistics(this);
@@ -128,6 +131,7 @@ namespace DotRas
         /// <summary>
         /// Clears the accumulated statistics for a link in a multi-link connection.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual void ClearLinkStatistics()
         {
             clearLinkStatisticsService.ClearLinkStatistics(this, SubEntryId);
@@ -136,6 +140,7 @@ namespace DotRas
         /// <summary>
         /// Retrieves accumulated statistics for the connection.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatistics GetStatistics()
         {
             return connectionStatisticsService.GetConnectionStatistics(this);
@@ -144,6 +149,7 @@ namespace DotRas
         /// <summary>
         /// Retrieves accumulated statistics for a link in a multi-link connection.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatistics GetLinkStatistics()
         {
             return linkStatisticsService.GetLinkStatistics(this, SubEntryId);
@@ -152,6 +158,7 @@ namespace DotRas
         /// <summary>
         /// Retrieves the connection status.
         /// </summary>
+        /// <exception cref="Win32Exception">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatus GetStatus()
         {
             return statusService.GetConnectionStatus(this);
