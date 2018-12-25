@@ -23,22 +23,16 @@ namespace DotRas.Internal.Services.ErrorHandling
 
         public string GetErrorString(int errorCode)
         {
-            if (errorCode <= 0)
-            {
-                throw new ArgumentException("The error code must be a positive value.", nameof(errorCode));
-            }
-
             var errorBuilder = new StringBuilder(DefaultBufferSize);
 
             var ret = api.RasGetErrorString(errorCode, errorBuilder, errorBuilder.Capacity);
-            if (ret == ERROR_INVALID_PARAMETER)
-            {
-                return null;
-            }
-
-            if (ret != SUCCESS)
+            if (ret == ERROR_INSUFFICIENT_BUFFER)
             {
                 throw new Win32Exception(ret);
+            }
+            else if (ret != SUCCESS)
+            {
+                return null;
             }
 
             return errorBuilder.ToString();

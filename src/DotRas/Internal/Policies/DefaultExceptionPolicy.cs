@@ -11,9 +11,9 @@ namespace DotRas.Internal.Policies
     {
         private readonly IRasGetErrorString rasGetErrorString;
 
-        public DefaultExceptionPolicy(IRasGetErrorString getErrorString)
+        public DefaultExceptionPolicy(IRasGetErrorString rasGetErrorString)
         {
-            this.rasGetErrorString = getErrorString ?? throw new ArgumentNullException(nameof(getErrorString));
+            this.rasGetErrorString = rasGetErrorString ?? throw new ArgumentNullException(nameof(rasGetErrorString));
         }
 
         public Exception Create(int error)
@@ -27,14 +27,19 @@ namespace DotRas.Internal.Policies
             {
                 return new NotSupportedException("The operating system does not support the operation being requested. Please check the compatibility matrix for features supported with this operating system.");
             }
-
-            var message = rasGetErrorString.GetErrorString(error);
-            if (string.IsNullOrWhiteSpace(message))
+            else if (TryGetMessageFromRas(error, out var message))
             {
-                return new Win32Exception(error);
+                return new RasException(error, message);
             }
 
-            return new RasException(error, message);
+            return new Win32Exception(error);
+        }
+
+        private bool TryGetMessageFromRas(int error, out string message)
+        {
+            message = rasGetErrorString.GetErrorString(error);
+
+            return !string.IsNullOrWhiteSpace(message);
         }
     }
 }
