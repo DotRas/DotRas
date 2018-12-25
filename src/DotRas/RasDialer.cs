@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
+using Container = DotRas.Internal.DependencyInjection.Container;
 
 namespace DotRas
 {
@@ -81,6 +83,8 @@ namespace DotRas
         /// Dials the connection.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial()
         {
             return Dial(CancellationToken.None);
@@ -91,6 +95,8 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial(CancellationToken cancellationToken)
         {
             using (var task = DialAsync(cancellationToken))
@@ -103,6 +109,8 @@ namespace DotRas
         /// Dials the connection asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync()
         {
             return DialAsync(CancellationToken.None);
@@ -113,6 +121,8 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
