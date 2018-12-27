@@ -39,6 +39,19 @@ namespace DotRas.Tests.Internal.Policies
         }
 
         [Test]
+        public void ReturnsAnUnknownErrorForRasExceptionsWithNoMessage()
+        {
+            var rasGetErrorString = new Mock<IRasGetErrorString>();
+            rasGetErrorString.Setup(o => o.GetErrorString(600)).Returns("").Verifiable();
+
+            var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
+            var result = target.Create(600) as RasException;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Unknown error.", result.Message);
+        }
+
+        [Test]
         public void ReturnsAWin32ExceptionWhenTheMessageIsNotFoundInRas()
         {
             var rasGetErrorString = new Mock<IRasGetErrorString>();
@@ -46,7 +59,7 @@ namespace DotRas.Tests.Internal.Policies
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(int.MinValue);
 
-            rasGetErrorString.Verify(o => o.GetErrorString(int.MinValue), Times.Once);
+            rasGetErrorString.Verify(o => o.GetErrorString(int.MinValue), Times.Never);
             Assert.IsInstanceOf<Win32Exception>(result);
         }
 

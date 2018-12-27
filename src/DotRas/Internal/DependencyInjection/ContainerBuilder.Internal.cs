@@ -7,6 +7,7 @@ using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Advice;
 using DotRas.Internal.Interop;
+using DotRas.Internal.Policies;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
 using DotRas.Internal.Services.Dialing;
@@ -117,7 +118,7 @@ namespace DotRas.Internal.DependencyInjection
                     new DefaultRasDialCallbackHandler(
                         c.GetRequiredService<IRasHangUp>(),
                         c.GetRequiredService<IRasEnumConnections>(),
-                        c.GetRequiredService<IExceptionPolicy>(),
+                        c.GetRequiredService<RasDialCallbackExceptionPolicy>(),
                         c.GetRequiredService<IValueWaiter<IntPtr>>(),
                         c.GetRequiredService<ITaskCancellationSourceFactory>()),
                     c.GetRequiredService<IEventLoggingPolicy>()));

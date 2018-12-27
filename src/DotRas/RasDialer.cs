@@ -83,6 +83,7 @@ namespace DotRas
         /// Dials the connection.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial()
@@ -95,6 +96,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial(CancellationToken cancellationToken)
@@ -109,6 +111,7 @@ namespace DotRas
         /// Dials the connection asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync()
@@ -121,6 +124,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
@@ -148,7 +152,7 @@ namespace DotRas
 
             if (string.IsNullOrWhiteSpace(EntryName) || !validator.VerifyEntryExists(EntryName, PhoneBookPath))
             {
-                throw new RasEntryNotFoundException($"The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
+                throw new RasEntryNotFoundException("The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
             }
         }
 
