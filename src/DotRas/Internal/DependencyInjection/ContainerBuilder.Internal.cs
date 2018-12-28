@@ -2,7 +2,6 @@
 using System.ComponentModel.Design;
 using DotRas.Diagnostics;
 using DotRas.Internal.Abstractions.Factories;
-using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection.Advice;
@@ -32,7 +31,7 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new RasEnumConnectionsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IDeviceTypeFactory>(),
-                    c.GetRequiredService<IExceptionPolicy>(),
+                    c.GetRequiredService<DefaultExceptionPolicy>(),
                     c.GetRequiredService<IStructArrayFactory>(),
                     c));
 
@@ -51,31 +50,30 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(IRasClearConnectionStatistics),
                 (c, _) => new RasClearConnectionStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasClearLinkStatistics),
                 (c, _) => new RasClearLinkStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasHangUp),
                 (c, _) => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasGetConnectionStatistics),
                 (c, _) => new RasGetConnectionStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasGetConnectStatus),
                 (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IWin32ErrorInformation>(),
                     c.GetRequiredService<IIPAddressConverter>(),
-                    c.GetRequiredService<IExceptionPolicy>(),
+                    c.GetRequiredService<RasGetConnectStatusExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
 
             container.AddService(typeof(IRasGetErrorString),
@@ -86,13 +84,13 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new RasGetCredentialsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasGetLinkStatistics),
                 (c, _) => new RasGetLinkStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
 
             container.AddService(typeof(IRasDialExtensionsBuilder),
                 (c, _) => new RasDialExtensionsBuilder(
@@ -108,7 +106,7 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IRasDialExtensionsBuilder>(),
                     c.GetRequiredService<IRasDialParamsBuilder>(),
-                    c.GetRequiredService<IExceptionPolicy>(),
+                    c.GetRequiredService<DefaultExceptionPolicy>(),
                     c.GetRequiredService<IRasDialCallbackHandler>(),
                     c.GetRequiredService<ITaskCompletionSourceFactory>(),
                     c.GetRequiredService<ITaskCancellationSourceFactory>()));
@@ -127,11 +125,6 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new Win32FormatMessageService(
                     c.GetRequiredService<IKernel32>(),
                     c.GetRequiredService<IMarshaller>()));
-
-            container.AddService(typeof(IWin32ErrorInformation),
-                (c, _) => new Win32ErrorInformationService(
-                    c.GetRequiredService<IRasGetErrorString>(),
-                    c.GetRequiredService<IWin32FormatMessage>()));
         }
     }
 }

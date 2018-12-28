@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
@@ -158,7 +157,7 @@ namespace DotRas
         /// <summary>
         /// Retrieves the connection status.
         /// </summary>
-        /// <exception cref="Win32Exception">Thrown if the connection has been terminated.</exception>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatus GetStatus()
         {
             return statusService.GetConnectionStatus(this);
@@ -168,6 +167,7 @@ namespace DotRas
         /// Terminates the remote access connection.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         public virtual void HangUp(CancellationToken cancellationToken)
         {
             hangUpService.HangUp(this, cancellationToken);
