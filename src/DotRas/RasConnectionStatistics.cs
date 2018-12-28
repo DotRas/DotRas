@@ -14,28 +14,28 @@ namespace DotRas
         /// <param name="bytesReceived">The number of bytes received.</param>
         /// <param name="framesTransmitted">The number of frames transmitted.</param>
         /// <param name="framesReceived">The number of frames received.</param>
-        /// <param name="crcError">The number of cyclic redundancy check (CRC) errors that have occurred.</param>
-        /// <param name="timeoutError">The number of timeout errors that have occurred.</param>
-        /// <param name="alignmentError">The number of alignment errors that have occurred.</param>
-        /// <param name="hardwareOverrunError">The number of hardware overrun errors that have occurred.</param>
-        /// <param name="framingError">The number of framing errors that have occurred.</param>
-        /// <param name="bufferOverrunError">The number of buffer overrun errors that have occurred.</param>
+        /// <param name="crcErrors">The number of cyclic redundancy check (CRC) errors that have occurred.</param>
+        /// <param name="timeoutErrors">The number of timeout errors that have occurred.</param>
+        /// <param name="alignmentErrors">The number of alignment errors that have occurred.</param>
+        /// <param name="hardwareOverrunErrors">The number of hardware overrun errors that have occurred.</param>
+        /// <param name="framingErrors">The number of framing errors that have occurred.</param>
+        /// <param name="bufferOverrunErrors">The number of buffer overrun errors that have occurred.</param>
         /// <param name="compressionRatioIn">The compression ratio for data received on this connection or link.</param>
         /// <param name="compressionRatioOut">The compression ratio for data transmitted on this connection or link.</param>
         /// <param name="linkSpeed">The speed of the link, in bits per second.</param>
         /// <param name="connectionDuration">The length of time that the connection has been connected.</param>
-        public RasConnectionStatistics(long bytesTransmitted, long bytesReceived, long framesTransmitted, long framesReceived, long crcError, long timeoutError, long alignmentError, long hardwareOverrunError, long framingError, long bufferOverrunError, long compressionRatioIn, long compressionRatioOut, long linkSpeed, TimeSpan connectionDuration)
+        public RasConnectionStatistics(long bytesTransmitted, long bytesReceived, long framesTransmitted, long framesReceived, long crcErrors, long timeoutErrors, long alignmentErrors, long hardwareOverrunErrors, long framingErrors, long bufferOverrunErrors, long compressionRatioIn, long compressionRatioOut, long linkSpeed, TimeSpan connectionDuration)
         {
             BytesTransmitted = bytesTransmitted;
             BytesReceived = bytesReceived;
             FramesTransmitted = framesTransmitted;
             FramesReceived = framesReceived;
-            CrcError = crcError;
-            TimeoutError = timeoutError;
-            AlignmentError = alignmentError;
-            HardwareOverrunError = hardwareOverrunError;
-            FramingError = framingError;
-            BufferOverrunError = bufferOverrunError;
+            CrcErrors = crcErrors;
+            TimeoutErrors = timeoutErrors;
+            AlignmentErrors = alignmentErrors;
+            HardwareOverrunErrors = hardwareOverrunErrors;
+            FramingErrors = framingErrors;
+            BufferOverrunErrors = bufferOverrunErrors;
             CompressionRatioIn = compressionRatioIn;
             CompressionRatioOut = compressionRatioOut;
             LinkSpeed = linkSpeed;
@@ -69,32 +69,32 @@ namespace DotRas
         /// <summary>
         /// Gets the number of cyclic redundancy check (CRC) errors that have occurred.
         /// </summary>
-        public virtual long CrcError { get; }
+        public virtual long CrcErrors { get; }
 
         /// <summary>
         /// Gets the number of timeout errors that have occurred.
         /// </summary>
-        public virtual long TimeoutError { get; }
+        public virtual long TimeoutErrors { get; }
 
         /// <summary>
         /// Gets the number of alignment errors that have occurred.
         /// </summary>
-        public virtual long AlignmentError { get; }
+        public virtual long AlignmentErrors { get; }
 
         /// <summary>
         /// Gets the number of hardware overrun errors that have occurred.
         /// </summary>
-        public virtual long HardwareOverrunError { get; }
+        public virtual long HardwareOverrunErrors { get; }
 
         /// <summary>
         /// Gets the number of framing errors that have occurred.
         /// </summary>
-        public virtual long FramingError { get; }
+        public virtual long FramingErrors { get; }
 
         /// <summary>
         /// Gets the number of buffer overrun errors that have occurred.
         /// </summary>
-        public virtual long BufferOverrunError { get; }
+        public virtual long BufferOverrunErrors { get; }
 
         /// <summary>
         /// Gets the compression ratio for data received on this connection or link.

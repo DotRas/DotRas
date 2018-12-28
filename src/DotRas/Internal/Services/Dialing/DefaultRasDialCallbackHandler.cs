@@ -18,7 +18,7 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasHangUp rasHangUp;
         private readonly IRasEnumConnections rasEnumConnections;
         private readonly IExceptionPolicy exceptionPolicy;
-        private readonly IValueWaiter<RasHandle> handle;
+        private readonly IValueWaiter<IntPtr> handle;
         private readonly ITaskCancellationSourceFactory cancellationSourceFactory;
 
         private ITaskCancellationSource cancellationSource;
@@ -26,13 +26,13 @@ namespace DotRas.Internal.Services.Dialing
         private ITaskCompletionSource<RasConnection> completionSource;
         private Action<DialStateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
-        private bool completed;
-
+        
+        public bool Completed { get; private set; }
         public bool Initialized { get; private set; }
 
         #endregion
 
-        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<RasHandle> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
         {
             this.rasHangUp = rasHangUp ?? throw new ArgumentNullException(nameof(rasHangUp));
             this.rasEnumConnections = rasEnumConnections ?? throw new ArgumentNullException(nameof(rasEnumConnections));
@@ -58,13 +58,11 @@ namespace DotRas.Internal.Services.Dialing
             {
                 throw new ArgumentNullException(nameof(completionSource));
             }
-
-            if (onStateChangedCallback == null)
+            else if (onStateChangedCallback == null)
             {
                 throw new ArgumentNullException(nameof(onStateChangedCallback));
             }
-
-            if (onCompletedCallback == null)
+            else if (onCompletedCallback == null)
             {
                 throw new ArgumentNullException(nameof(onCompletedCallback));
             }
@@ -84,8 +82,8 @@ namespace DotRas.Internal.Services.Dialing
                 this.onCompletedCallback = onCompletedCallback;
 
                 handle.Reset();
-                completed = false;
 
+                Completed = false;
                 Initialized = true;
             }
         }
@@ -94,7 +92,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             WaitForHandleToBeTransferred();
 
-            rasHangUp.HangUp(handle.Value, CancellationToken.None);
+            rasHangUp.UnsafeHangUp(handle.Value, CancellationToken.None);
         }
 
         public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
@@ -127,13 +125,13 @@ namespace DotRas.Internal.Services.Dialing
             }
             finally
             {
-                if (HasCompleted())
+                if (Completed)
                 {
                     RunPostCompleted();
                 }
             }
 
-            return !completed;
+            return !Completed;
         }
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
@@ -159,11 +157,6 @@ namespace DotRas.Internal.Services.Dialing
             onCompletedCallback();
         }
 
-        private bool HasCompleted()
-        {
-            return completed;
-        }
-
         private void SetConnectionResult()
         {
             var connection = CreateConnection(handle.Value);
@@ -172,24 +165,24 @@ namespace DotRas.Internal.Services.Dialing
                 throw new InvalidOperationException("The connection was not created.");
             }
 
-            completionSource.SetResultAsynchronously(connection);
+            completionSource.SetResult(connection);
             FlagRequestAsCompleted();
         }
 
-        protected virtual RasConnection CreateConnection(RasHandle handle)
+        protected virtual RasConnection CreateConnection(IntPtr handle)
         {
-            return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle.Equals(handle));
+            return rasEnumConnections.EnumerateConnections().SingleOrDefault(o => o.Handle == handle);
         }
 
         private void SetExceptionResult(Exception exception)
         {
-            completionSource.SetExceptionAsynchronously(exception);
+            completionSource.SetException(exception);
             FlagRequestAsCompleted();
         }
 
         private void FlagRequestAsCompleted()
         {
-            completed = true;
+            Completed = true;
         }
 
         private void GuardMustBeInitialized()
@@ -208,15 +201,15 @@ namespace DotRas.Internal.Services.Dialing
             handle.WaitForValue(cancellationSource.Token);
         }
 
-        public void SetHandle(RasHandle value)
+        public void SetHandle(IntPtr handle)
         {
-            if (value == null)
+            if (handle == IntPtr.Zero)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(handle));
             }
 
             GuardHandleMustBeNull();
-            handle.Set(value);
+            this.handle.Set(handle);
         }        
 
         private void GuardHandleMustBeNull()

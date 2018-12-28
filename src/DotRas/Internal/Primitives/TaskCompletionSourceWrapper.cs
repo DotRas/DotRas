@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
+using static System.Threading.Tasks.Task;
 
 namespace DotRas.Internal.Primitives
 {
@@ -15,24 +16,14 @@ namespace DotRas.Internal.Primitives
 
         public Task<T> Task => completionSource.Task;
 
-        public void SetResultAsynchronously(T result)
-        {
-            System.Threading.Tasks.Task.Run(() => SetResult(result));
-        }
-
         public void SetResult(T result)
         {
-            completionSource.SetResult(result);
-        }
-
-        public void SetExceptionAsynchronously(Exception exception)
-        {
-            System.Threading.Tasks.Task.Run(() => SetException(exception));
+            Run(() => completionSource.SetResult(result));
         }
 
         public void SetException(Exception exception)
         {
-            completionSource.SetException(exception);
+            Run(() => completionSource.SetException(exception));        
         }
     }
 }

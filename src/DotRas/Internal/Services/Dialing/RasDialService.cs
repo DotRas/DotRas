@@ -13,19 +13,20 @@ namespace DotRas.Internal.Services.Dialing
 {
     internal class RasDialService : DisposableObject, IRasDial
     {
-        private readonly object syncRoot = new object();
-
         private readonly IRasApi32 api;
         private readonly IRasDialExtensionsBuilder extensionsBuilder;
         private readonly IRasDialParamsBuilder paramsBuilder;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IRasDialCallbackHandler callbackHandler;
         private readonly ITaskCompletionSourceFactory completionSourceFactory;
+        private readonly ITaskCancellationSourceFactory cancellationSourceFactory;
         private readonly RasDialFunc2 callback;
 
+        public ITaskCancellationSource CancellationSource { get; private set; }
+        public ITaskCompletionSource<RasConnection> CompletionSource { get; private set; }
         public bool IsBusy { get; private set; }
 
-        public RasDialService(IRasApi32 api, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory)
+        public RasDialService(IRasApi32 api, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory, ITaskCancellationSourceFactory cancellationSourceFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.extensionsBuilder = extensionsBuilder ?? throw new ArgumentNullException(nameof(extensionsBuilder));
@@ -33,6 +34,7 @@ namespace DotRas.Internal.Services.Dialing
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
             this.completionSourceFactory = completionSourceFactory ?? throw new ArgumentNullException(nameof(completionSourceFactory));
+            this.cancellationSourceFactory = cancellationSourceFactory ?? throw new ArgumentNullException(nameof(cancellationSourceFactory));
 
             callback = callbackHandler.OnCallback;
         }
@@ -42,37 +44,44 @@ namespace DotRas.Internal.Services.Dialing
             GuardMustNotBeDisposed();
             GuardMustNotAlreadyBeBusy();
 
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 GuardMustNotAlreadyBeBusy();
 
-                var completionSource = CreateCompletionSource();
-                if (completionSource == null)
-                {
-                    throw new InvalidOperationException("The completion source was not created.");
-                }
+                CompletionSource = CreateCompletionSource();
+                SetUpCancellationSource(context);
 
-                InitializeCallbackHandler(completionSource, context);
+                InitializeCallbackHandler(context);
                 BeginDial(context);
 
-                return completionSource.Task;
+                return CompletionSource.Task;
             }
         }
 
         private ITaskCompletionSource<RasConnection> CreateCompletionSource()
         {
-            return completionSourceFactory.Create<RasConnection>();
+            var completionSource = completionSourceFactory.Create<RasConnection>();
+            if (completionSource == null)
+            {
+                throw new InvalidOperationException("The completion source was not created.");
+            }
+
+            return completionSource;
         }
 
-        private void InitializeCallbackHandler(ITaskCompletionSource<RasConnection> completionSource, RasDialContext context)
+        private void InitializeCallbackHandler(RasDialContext context)
         {
-            callbackHandler.Initialize(completionSource, context.OnStateChangedCallback, SetNotBusy, context.CancellationToken);
-        }   
+            callbackHandler.Initialize(CompletionSource, context.OnStateChangedCallback, SetNotBusy, CancellationSource.Token);
+        }
+
+        private void SetUpCancellationSource(RasDialContext context)
+        {
+            CancellationSource?.DisposeIfNecessary();
+            CancellationSource = cancellationSourceFactory.Create(context.CancellationToken);
+        }
 
         private void BeginDial(RasDialContext context)
         {
-            RasHandle lphRasConn = null;
-
             try
             {
                 SetBusy();
@@ -80,19 +89,17 @@ namespace DotRas.Internal.Services.Dialing
                 var rasDialExtensions = ConvertToRasDialExtensions(context);
                 var rasDialParams = ConvertToRasDialParams(context);
 
-                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out lphRasConn);
+                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out var handle);
                 if (ret != SUCCESS)
                 {
                     throw exceptionPolicy.Create(ret);
                 }
 
-                callbackHandler.SetHandle(lphRasConn);
+                callbackHandler.SetHandle(handle);
             }
             catch (Exception)
             {
                 SetNotBusy();
-
-                lphRasConn?.Dispose();
                 throw;
             }
         }
@@ -129,6 +136,12 @@ namespace DotRas.Internal.Services.Dialing
         {
             if (disposing)
             {
+                if (IsBusy)
+                {
+                    CancellationSource.Cancel();
+                }
+
+                CancellationSource.DisposeIfNecessary();            
                 callbackHandler.DisposeIfNecessary();
             }
 

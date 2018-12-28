@@ -22,5 +22,13 @@ namespace DotRas.Diagnostics
         {
             current = locator ?? throw new ArgumentNullException(nameof(locator));
         }
+
+        /// <summary>
+        /// Clears the locator for a logger.
+        /// </summary>
+        public static void Clear()
+        {
+            current = null;
+        }
     }
 }

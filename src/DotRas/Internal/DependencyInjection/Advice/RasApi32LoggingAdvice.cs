@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
@@ -14,6 +15,47 @@ namespace DotRas.Internal.DependencyInjection.Advice
         public RasApi32LoggingAdvice(IRasApi32 attachedObject, IEventLoggingPolicy eventLoggingPolicy)
             : base(attachedObject, eventLoggingPolicy)
         {
+        }
+
+        public int RasClearConnectionStatistics(IntPtr hRasConn)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasClearConnectionStatistics(hRasConn);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasClearConnectionStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasClearLinkStatistics(hRasConn, dwSubEntry);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasClearLinkStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
+
+            LogVerbose(callEvent);
+            return result;
         }
 
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
@@ -38,7 +80,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out RasHandle lphRasConn)
+        public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
@@ -63,9 +105,25 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasGetConnectStatus(RasHandle hRasConn, ref RASCONNSTATUS lpRasConnStatus)
+        public int RasGetConnectStatus(IntPtr hRasConn, ref RASCONNSTATUS lpRasConnStatus)
         {
-            return AttachedObject.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasDial),
+                Result = result,
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.OutArgs.Add(nameof(lpRasConnStatus), lpRasConnStatus);
+
+            LogVerbose(callEvent);
+            return result;
         }
 
         public int RasGetCredentials(string lpszPhonebook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
@@ -112,7 +170,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasGetConnectionStatistics(RasHandle hRasConn, ref RAS_STATS lpStatistics)
+        public int RasGetConnectionStatistics(IntPtr hRasConn, ref RAS_STATS lpStatistics)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
@@ -133,7 +191,29 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasHangUp(RasHandle hRasConn)
+        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasGetLinkStatistics),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
+            callEvent.OutArgs.Add(nameof(lpStatistics), lpStatistics);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasHangUp(IntPtr hRasConn)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.RasHangUp(hRasConn);

@@ -49,25 +49,25 @@ namespace DotRas.Tests.Internal.Services.ErrorHandling
         }
 
         [Test]
-        public void ThrowAnArgumentExceptionWhenTheErrorCodeIsZero()
+        public void MustNotThrowAnExceptionWhenTheErrorCodeIsZero()
         {
             var api = new Mock<IRasApi32>();
 
             var target = new RasGetErrorStringService(api.Object);
-            Assert.Throws<ArgumentException>(() => target.GetErrorString(0));
+            Assert.DoesNotThrow(() => target.GetErrorString(0));
 
-            api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Never);
+            api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Once);
         }
 
         [Test]
-        public void ThrowAnArgumentExceptionWhenTheErrorCodeIsLessThanZero()
+        public void MustNotThrowAnExceptionWhenTheErrorCodeIsLessThanZero()
         {
             var api = new Mock<IRasApi32>();
-
+            
             var target = new RasGetErrorStringService(api.Object);
-            Assert.Throws<ArgumentException>(() => target.GetErrorString(-1));
+            Assert.DoesNotThrow(() => target.GetErrorString(-1));
 
-            api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Never);
+            api.Verify(o => o.RasGetErrorString(It.IsAny<int>(), It.IsAny<StringBuilder>(), It.IsAny<int>()), Times.Once);
         }
 
         [Test]

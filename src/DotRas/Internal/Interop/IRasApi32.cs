@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using static DotRas.Internal.Interop.NativeMethods;
 
@@ -6,6 +7,13 @@ namespace DotRas.Internal.Interop
 {
     internal interface IRasApi32
     {
+        int RasClearConnectionStatistics(
+            IntPtr hRasConn);
+
+        int RasClearLinkStatistics(
+            IntPtr hRasConn, 
+            int dwSubEntry);
+
         int RasEnumConnections(
             RASCONN[] lpRasConn,
             ref int lpCb,
@@ -17,10 +25,10 @@ namespace DotRas.Internal.Interop
             ref RASDIALPARAMS lpRasDialParams,
             Ras.NotifierType dwNotifierType,
             RasDialFunc2 lpvNotifier,
-            out RasHandle lphRasConn);
+            out IntPtr lphRasConn);
 
         int RasGetConnectStatus(
-            RasHandle hRasConn,
+            IntPtr hRasConn,
             ref RASCONNSTATUS lpRasConnStatus);
 
         int RasGetCredentials(
@@ -34,10 +42,15 @@ namespace DotRas.Internal.Interop
             int cBufSize);
 
         int RasGetConnectionStatistics(
-            RasHandle hRasConn,
+            IntPtr hRasConn,
             [In, Out] ref RAS_STATS lpStatistics);
 
-        int RasHangUp(RasHandle hRasConn);
+        int RasGetLinkStatistics(
+            IntPtr hRasConn, 
+            int dwSubEntry, 
+            ref RAS_STATS lpStatistics);
+
+        int RasHangUp(IntPtr hRasConn);
 
         int RasValidateEntryName(
             string lpszPhonebook,

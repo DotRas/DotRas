@@ -1,28 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
+using Container = DotRas.Internal.DependencyInjection.Container;
 
 namespace DotRas
 {
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
-    [DebuggerDisplay("EntryName = {EntryName}")]
-    public class RasConnection
+    public class RasConnection : IRasConnection
     {
         #region Fields and Properties
 
-        private readonly IRasGetConnectStatus getConnectStatusService;
+        private readonly IRasGetConnectStatus statusService;
         private readonly IRasHangUp hangUpService;
-        private readonly IRasGetConnectionStatistics getConnectionStatisticsService;
+        private readonly IRasGetConnectionStatistics connectionStatisticsService;
+        private readonly IRasGetLinkStatistics linkStatisticsService;
+        private readonly IRasClearConnectionStatistics clearConnectionStatisticsService;
+        private readonly IRasClearLinkStatistics clearLinkStatisticsService;
 
         /// <summary>
         /// Gets the handle of the connection.
         /// </summary>
-        protected internal virtual RasHandle Handle { get; }
+        public virtual IntPtr Handle { get; }
 
         /// <summary>
         /// Gets the device through which the connection has been established.
@@ -35,7 +37,7 @@ namespace DotRas
         public virtual string EntryName { get; }
 
         /// <summary>
-        /// Gets the full path and filename to the phone book (PBK) containing the entry for this connection.
+        /// Gets the full path (including filename) to the phone book containing the entry for this connection.
         /// </summary>
         public virtual string PhoneBookPath { get; }
 
@@ -66,19 +68,11 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(RasHandle handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus getConnectStatusService, IRasGetConnectionStatistics getConnectionStatisticsService, IRasHangUp hangUpService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasGetLinkStatistics linkStatisticsService, IRasClearConnectionStatistics clearConnectionStatisticsService, IRasClearLinkStatistics clearLinkStatisticsService)
         {
-            if (handle == null)
+            if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
-            }
-            else if (handle.IsClosed)
-            {
-                throw new ArgumentException("The handle provided must not be closed.", nameof(handle));
-            }
-            else if (handle.IsInvalid)
-            {
-                throw new ArgumentException("The handle is invalid.", nameof(handle));
             }
             else if (string.IsNullOrWhiteSpace(entryName))
             {
@@ -99,9 +93,12 @@ namespace DotRas
             SessionId = sessionId;
             CorrelationId = correlationId;
 
-            this.getConnectStatusService = getConnectStatusService ?? throw new ArgumentNullException(nameof(getConnectStatusService));
-            this.getConnectionStatisticsService = getConnectionStatisticsService ?? throw new ArgumentNullException(nameof(getConnectionStatisticsService));
+            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
+            this.connectionStatisticsService = connectionStatisticsService ?? throw new ArgumentNullException(nameof(connectionStatisticsService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
+            this.linkStatisticsService = linkStatisticsService ?? throw new ArgumentNullException(nameof(linkStatisticsService));
+            this.clearConnectionStatisticsService = clearConnectionStatisticsService ?? throw new ArgumentNullException(nameof(clearConnectionStatisticsService));
+            this.clearLinkStatisticsService = clearLinkStatisticsService ?? throw new ArgumentNullException(nameof(clearLinkStatisticsService));
         }
 
         /// <summary>
@@ -122,42 +119,58 @@ namespace DotRas
         }
 
         /// <summary>
+        /// Clears the accumulated statistics for the connection.
+        /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
+        public virtual void ClearStatistics()
+        {
+            clearConnectionStatisticsService.ClearConnectionStatistics(this);
+        }
+
+        /// <summary>
+        /// Clears the accumulated statistics for a link in a multi-link connection.
+        /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
+        public virtual void ClearLinkStatistics()
+        {
+            clearLinkStatisticsService.ClearLinkStatistics(this, SubEntryId);
+        }
+
+        /// <summary>
         /// Retrieves accumulated statistics for the connection.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatistics GetStatistics()
         {
-            GuardHandleMustBeValid();
+            return connectionStatisticsService.GetConnectionStatistics(this);
+        }
 
-            return getConnectionStatisticsService.GetConnectionStatistics(Handle);
+        /// <summary>
+        /// Retrieves accumulated statistics for a link in a multi-link connection.
+        /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
+        public virtual RasConnectionStatistics GetLinkStatistics()
+        {
+            return linkStatisticsService.GetLinkStatistics(this, SubEntryId);
         }
 
         /// <summary>
         /// Retrieves the connection status.
         /// </summary>
+        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatus GetStatus()
         {
-            GuardHandleMustBeValid();
-
-            return getConnectStatusService.GetConnectionStatus(Handle);
+            return statusService.GetConnectionStatus(this);
         }
 
         /// <summary>
         /// Terminates the remote access connection.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         public virtual void HangUp(CancellationToken cancellationToken)
         {
-            GuardHandleMustBeValid();
-
-            hangUpService.HangUp(Handle, cancellationToken);
-        }
-
-        private void GuardHandleMustBeValid()
-        {
-            if (Handle.IsClosed || Handle.IsInvalid)
-            {
-                throw new InvalidHandleException("The handle is invalid.");
-            }
+            hangUpService.HangUp(this, cancellationToken);
         }
     }
 }

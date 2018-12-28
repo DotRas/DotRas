@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.ComponentModel.Design;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Primitives;
 
@@ -11,8 +12,8 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(IManualResetEvent),
                 (c, _) => new ManualResetEvent());
 
-            container.AddService(typeof(IValueWaiter<RasHandle>),
-                (c, _) => new ValueWaiter<RasHandle>(
+            container.AddService(typeof(IValueWaiter<IntPtr>),
+                (c, _) => new ValueWaiter<IntPtr>(
                     c.GetRequiredService<IManualResetEvent>()));
 
             container.AddService(typeof(IFileSystem),

@@ -11,12 +11,12 @@ namespace DotRas.Internal.Policies
     {
         private readonly IRasGetErrorString rasGetErrorString;
 
-        public DefaultExceptionPolicy(IRasGetErrorString getErrorString)
+        public DefaultExceptionPolicy(IRasGetErrorString rasGetErrorString)
         {
-            this.rasGetErrorString = getErrorString ?? throw new ArgumentNullException(nameof(getErrorString));
+            this.rasGetErrorString = rasGetErrorString ?? throw new ArgumentNullException(nameof(rasGetErrorString));
         }
 
-        public Exception Create(int error)
+        public virtual Exception Create(int error)
         {
             if (error == SUCCESS)
             {
@@ -28,10 +28,25 @@ namespace DotRas.Internal.Policies
                 return new NotSupportedException("The operating system does not support the operation being requested. Please check the compatibility matrix for features supported with this operating system.");
             }
 
+            if (ShouldGetMessageFromRas(error))
+            {
+                return CreateExceptionFromRas(error);
+            }
+
+            return new Win32Exception(error);
+        }
+
+        private bool ShouldGetMessageFromRas(int error)
+        {
+            return error >= RASBASE && error <= ERROR_DEVICE_COMPLIANCE;
+        }
+
+        private Exception CreateExceptionFromRas(int error)
+        {
             var message = rasGetErrorString.GetErrorString(error);
             if (string.IsNullOrWhiteSpace(message))
             {
-                return new Win32Exception(error);
+                message = "Unknown error.";
             }
 
             return new RasException(error, message);

@@ -23,5 +23,18 @@ namespace DotRas.Tests
             var ex = Assert.Throws<ObjectDisposedException>(() => target.GuardMustNotBeDisposed());
             Assert.AreEqual(typeof(StubDisposableObject).FullName, ex.ObjectName);
         }
+
+        [Test]
+        public void DoesNotDisposeTheObjectMoreThanOnce()
+        {
+            var target = new StubDisposableObject();
+            target.Dispose();
+
+            Assert.AreEqual(1, target.Counter);
+
+            target.Dispose();
+
+            Assert.AreEqual(1, target.Counter);
+        }
     }
 }

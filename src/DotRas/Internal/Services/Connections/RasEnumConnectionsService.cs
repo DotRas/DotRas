@@ -39,15 +39,16 @@ namespace DotRas.Internal.Services.Connections
             }
         }
 
-        protected virtual RASCONN[] GetConnections(out int count)
+        private RASCONN[] GetConnections(out int count)
         {
             RASCONN[] lpRasConns;
-            var retry = false;
+            bool retry;
 
             count = 1;
 
             do
             {
+                retry = false;
                 lpRasConns = structFactory.CreateArray<RASCONN>(count, out var lpCb);
 
                 var ret = api.RasEnumConnections(lpRasConns, ref lpCb, ref count);
@@ -64,10 +65,8 @@ namespace DotRas.Internal.Services.Connections
             return lpRasConns;
         }
 
-        protected virtual RasConnection CreateConnection(RASCONN hRasConn)
+        private RasConnection CreateConnection(RASCONN hRasConn)
         {
-            var handle = RasHandle.FromPtr(hRasConn.hrasconn);
-
             var device = deviceTypeFactory.Create(hRasConn.szDeviceName, hRasConn.szDeviceType);
             if (device == null)
             {
@@ -75,7 +74,7 @@ namespace DotRas.Internal.Services.Connections
             }
 
             return new RasConnection(
-                handle,
+                hRasConn.hrasconn,
                 device,
                 hRasConn.szEntryName,
                 hRasConn.szPhonebook,
@@ -86,10 +85,13 @@ namespace DotRas.Internal.Services.Connections
                 hRasConn.guidCorrelationId,
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasGetConnectionStatistics>(),
-                serviceLocator.GetRequiredService<IRasHangUp>());
+                serviceLocator.GetRequiredService<IRasHangUp>(),
+                serviceLocator.GetRequiredService<IRasGetLinkStatistics>(),
+                serviceLocator.GetRequiredService<IRasClearConnectionStatistics>(),
+                serviceLocator.GetRequiredService<IRasClearLinkStatistics>());
         }
 
-        protected virtual RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)
+        private RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)
         {
             return new RasConnectionOptions(hRasConn.dwFlags);
         }

@@ -10,6 +10,6 @@ namespace DotRas.Internal.Abstractions.Services
 
         bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError);
 
-        void SetHandle(RasHandle value);
+        void SetHandle(IntPtr handle);
     }
 }

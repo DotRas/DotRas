@@ -21,14 +21,14 @@ namespace DotRas.Internal.Services.Connections
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
         }
 
-        public RasConnectionStatistics GetConnectionStatistics(RasHandle handle)
+        public RasConnectionStatistics GetConnectionStatistics(IRasConnection connection)
         {
-            if (handle == null)
+            if (connection == null)
             {
-                throw new ArgumentNullException(nameof(handle));
+                throw new ArgumentNullException(nameof(connection));
             }
 
-            var stats = GetConnectionStatisticsByHandle(handle);
+            var stats = GetConnectionStatisticsByHandle(connection.Handle);
 
             return new RasConnectionStatistics(
                 stats.dwBytesXmited,
@@ -47,7 +47,7 @@ namespace DotRas.Internal.Services.Connections
                 TimeSpan.FromMilliseconds(stats.dwConnectDuration));
         }
 
-        private RAS_STATS GetConnectionStatisticsByHandle(RasHandle handle)
+        private RAS_STATS GetConnectionStatisticsByHandle(IntPtr handle)
         {
             var statistics = structFactory.Create<RAS_STATS>();
 
