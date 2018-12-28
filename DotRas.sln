@@ -21,6 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas.Tests", "test\DotRas
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Includes", "Includes", "{48D5F528-BF5E-4B79-B6A2-3CD77E28C482}"
 	ProjectSection(SolutionItems) = preProject
+		includes\um\EapHostError.h = includes\um\EapHostError.h
 		includes\shared\lmcons.h = includes\shared\lmcons.h
 		includes\um\Ras.h = includes\um\Ras.h
 		includes\um\RasDlg.h = includes\um\RasDlg.h

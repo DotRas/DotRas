@@ -83,6 +83,7 @@ namespace DotRas
         /// Dials the connection.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
@@ -99,6 +100,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
@@ -117,6 +119,7 @@ namespace DotRas
         /// Dials the connection asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
@@ -133,6 +136,7 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
@@ -164,7 +168,7 @@ namespace DotRas
 
             if (string.IsNullOrWhiteSpace(EntryName) || !validator.VerifyEntryExists(EntryName, PhoneBookPath))
             {
-                throw new RasEntryNotFoundException($"The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
+                throw new RasEntryNotFoundException("The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
             }
         }
 

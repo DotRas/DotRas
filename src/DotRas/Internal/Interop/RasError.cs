@@ -11,5 +11,9 @@
         public const int ERROR_INVALID_SIZE = RASBASE + 32;
 
         public const int ERROR_NO_CONNECTION = RASBASE + 68;
+
+        public const int ERROR_AUTHENTICATION_FAILURE = RASBASE + 91;
+
+        public const int ERROR_DEVICE_COMPLIANCE = RASBASE + 275;
     }
 }

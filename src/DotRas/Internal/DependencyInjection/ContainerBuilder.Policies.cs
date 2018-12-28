@@ -11,7 +11,11 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(DefaultExceptionPolicy),
                 (c, _) => new DefaultExceptionPolicy(
                     c.GetRequiredService<IRasGetErrorString>()));
-
+          
+            container.AddService(typeof(RasDialCallbackExceptionPolicy),
+                (c, _) => new RasDialCallbackExceptionPolicy(
+                    c.GetRequiredService<IRasGetErrorString>()));
+          
             container.AddService(typeof(RasGetConnectStatusExceptionPolicy),
                 (c, _) => new RasGetConnectStatusExceptionPolicy(
                     c.GetRequiredService<IRasGetErrorString>()));

@@ -116,7 +116,7 @@ namespace DotRas.Internal.DependencyInjection
                     new DefaultRasDialCallbackHandler(
                         c.GetRequiredService<IRasHangUp>(),
                         c.GetRequiredService<IRasEnumConnections>(),
-                        c.GetRequiredService<DefaultExceptionPolicy>(),
+                        c.GetRequiredService<RasDialCallbackExceptionPolicy>(),
                         c.GetRequiredService<IValueWaiter<IntPtr>>(),
                         c.GetRequiredService<ITaskCancellationSourceFactory>()),
                     c.GetRequiredService<IEventLoggingPolicy>()));
