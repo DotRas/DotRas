@@ -27,13 +27,60 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsNull()
+        public void ThrowsAnExceptionWhenTheConnectionIsNull()
         {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
             Assert.Throws<ArgumentNullException>(() => target.HangUp(null, CancellationToken.None));
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenTheHandleIsZero()
+        {
+            var api = new Mock<IRasApi32>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            Assert.Throws<ArgumentNullException>(() => target.UnsafeHangUp(IntPtr.Zero, CancellationToken.None));
+        }
+
+        [Test]
+        [Timeout(10000)]
+        public void HangsUpTheConnectionAsExpected()
+        {
+            var handle = new IntPtr(1);
+
+            var connection = new Mock<IRasConnection>();
+            connection.Setup(o => o.Handle).Returns(handle);
+
+            var api = new Mock<IRasApi32>();
+            api.Setup(o => o.RasHangUp(handle)).Returns(ERROR_NO_CONNECTION);
+
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            target.HangUp(connection.Object, CancellationToken.None);
+
+            api.Verify(o => o.RasHangUp(handle), Times.Once);
+        }
+
+        [Test]
+        [Timeout(10000)]
+        public void HangsUpTheConnectionFromPtrAsExpected()
+        {
+            var handle = new IntPtr(1);
+
+            var api = new Mock<IRasApi32>();
+            api.Setup(o => o.RasHangUp(handle)).Returns(ERROR_NO_CONNECTION);
+
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            target.UnsafeHangUp(handle, CancellationToken.None);
+
+            api.Verify(o => o.RasHangUp(handle), Times.Once);
         }
 
         [Test]
@@ -60,7 +107,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             });
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            target.HangUp(handle, CancellationToken.None);
+            target.UnsafeHangUp(handle, CancellationToken.None);
 
             api.Verify(o => o.RasHangUp(handle), Times.Exactly(3));
         }
@@ -78,7 +125,7 @@ namespace DotRas.Tests.Internal.Services.Connections
                 cancellationSource.Cancel();                
 
                 var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                Assert.Throws<OperationCanceledException>(() => target.HangUp(handle, cancellationSource.Token));
+                Assert.Throws<OperationCanceledException>(() => target.UnsafeHangUp(handle, cancellationSource.Token));
             }
         }
 
@@ -96,7 +143,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             api.Setup(o => o.RasHangUp(handle)).Returns(-1);
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            Assert.Throws<TestException>(() => target.HangUp(handle, CancellationToken.None));
+            Assert.Throws<TestException>(() => target.UnsafeHangUp(handle, CancellationToken.None));
 
             api.Verify(o => o.RasHangUp(handle), Times.Once);
         }

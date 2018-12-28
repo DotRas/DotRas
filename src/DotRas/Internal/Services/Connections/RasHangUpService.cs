@@ -26,16 +26,21 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            HangUp(connection.Handle, cancellationToken);
+            HangUpImpl(connection.Handle, cancellationToken);
         }
 
-        public void HangUp(IntPtr handle, CancellationToken cancellationToken)
+        public void UnsafeHangUp(IntPtr handle, CancellationToken cancellationToken)
         {
             if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
             }
 
+            HangUpImpl(handle, cancellationToken);
+        }
+
+        private void HangUpImpl(IntPtr handle, CancellationToken cancellationToken)
+        {
             CloseAllConnectionsToTheHandle(handle, cancellationToken);
             EnsurePortHasBeenReleased();
         }

@@ -92,7 +92,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             WaitForHandleToBeTransferred();
 
-            rasHangUp.HangUp(handle.Value, CancellationToken.None);
+            rasHangUp.UnsafeHangUp(handle.Value, CancellationToken.None);
         }
 
         public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
