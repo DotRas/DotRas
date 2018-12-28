@@ -53,6 +53,10 @@ namespace DotRas.Internal.Services
             {
                 return null;
             }
+            else if (length == 0)
+            {
+                return string.Empty;
+            }
 
             return Marshal.PtrToStringUni(ptr, length);
         }

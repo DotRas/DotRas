@@ -132,5 +132,43 @@ namespace DotRas.Tests.Internal.Services
             var target = new MarshallingService();
             Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
         }
+
+        [Test]
+        public void ReturnsNullWhenThePtrIsZero()
+        {
+            var target = new MarshallingService();
+            var result = target.PtrToUnicodeString(IntPtr.Zero, 1);
+
+            Assert.IsNull(result);
+        }
+        [Test]
+        public void ReturnsEmptyStringWhenTheLengthIsZero()
+        {
+            var target = new MarshallingService();
+            var result = target.PtrToUnicodeString(new IntPtr(1), 0);
+
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [Test]
+        public void MarshalsTheStringFromThePtrAsExpected()
+        {
+            var ptr = IntPtr.Zero;
+            var expected = "Hello";
+
+            try
+            {
+                ptr = Marshal.StringToHGlobalUni(expected);
+
+                var target = new MarshallingService();
+                var result = target.PtrToUnicodeString(ptr, expected.Length);
+
+                Assert.AreEqual(expected, result);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+        }
     }
 }
