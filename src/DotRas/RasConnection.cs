@@ -167,6 +167,7 @@ namespace DotRas
         /// Terminates the remote access connection.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         public virtual void HangUp(CancellationToken cancellationToken)
         {
             hangUpService.HangUp(this, cancellationToken);
