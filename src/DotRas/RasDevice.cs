@@ -1,7 +1,7 @@
 ﻿namespace DotRas
 {
     /// <summary>
-    /// Represents a TAPI device capable of establishing a remote access connection. This class must be inherited.
+    /// Represents a device capable of establishing a remote access connection.
     /// </summary>
     public abstract class RasDevice
     {
