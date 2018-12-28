@@ -13,16 +13,14 @@ namespace DotRas.Internal.Services.Connections
     {
         private readonly IRasApi32 api;
         private readonly IStructFactory structFactory;
-        private readonly IWin32ErrorInformation errorInformation;
         private readonly IIPAddressConverter ipAddressConverter;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IDeviceTypeFactory deviceTypeFactory;
 
-        public RasGetConnectStatusService(IRasApi32 api, IStructFactory structFactory, IWin32ErrorInformation errorInformation, IIPAddressConverter ipAddressConverter, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
+        public RasGetConnectStatusService(IRasApi32 api, IStructFactory structFactory, IIPAddressConverter ipAddressConverter, IExceptionPolicy exceptionPolicy, IDeviceTypeFactory deviceTypeFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
-            this.errorInformation = errorInformation ?? throw new ArgumentNullException(nameof(errorInformation));
             this.ipAddressConverter = ipAddressConverter ?? throw new ArgumentNullException(nameof(ipAddressConverter));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.deviceTypeFactory = deviceTypeFactory ?? throw new ArgumentNullException(nameof(deviceTypeFactory));
@@ -39,7 +37,6 @@ namespace DotRas.Internal.Services.Connections
 
             return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
-                CreateErrorInformation(rasConnStatus),
                 CreateDevice(rasConnStatus),
                 rasConnStatus.szPhoneNumber,
                 CreateLocalIPAddress(rasConnStatus),
@@ -58,11 +55,6 @@ namespace DotRas.Internal.Services.Connections
             }
 
             return rasConnStatus;
-        }
-
-        private Win32ErrorInformation CreateErrorInformation(RASCONNSTATUS rasConnStatus)
-        {
-            return errorInformation.CreateFromErrorCode(rasConnStatus.dwError);
         }
 
         private RasDevice CreateDevice(RASCONNSTATUS rasConnStatus)

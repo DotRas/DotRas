@@ -18,7 +18,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
                 null, 
                 new Mock<IStructFactory>().Object, 
-                new Mock<IWin32ErrorInformation>().Object, 
                 new Mock<IIPAddressConverter>().Object,
                 new Mock<IExceptionPolicy>().Object, 
                 new Mock<IDeviceTypeFactory>().Object));
@@ -29,19 +28,6 @@ namespace DotRas.Tests.Internal.Services.Connections
         {
             Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
                 new Mock<IRasApi32>().Object,
-                null,
-                new Mock<IWin32ErrorInformation>().Object,
-                new Mock<IIPAddressConverter>().Object,
-                new Mock<IExceptionPolicy>().Object,
-                new Mock<IDeviceTypeFactory>().Object));
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenErrorInformationIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
-                new Mock<IRasApi32>().Object,
-                new Mock<IStructFactory>().Object,
                 null,
                 new Mock<IIPAddressConverter>().Object,
                 new Mock<IExceptionPolicy>().Object,
@@ -54,7 +40,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
                 new Mock<IRasApi32>().Object,
                 new Mock<IStructFactory>().Object,
-                new Mock<IWin32ErrorInformation>().Object,
                 null,
                 new Mock<IExceptionPolicy>().Object,
                 new Mock<IDeviceTypeFactory>().Object));
@@ -66,7 +51,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
                 new Mock<IRasApi32>().Object,
                 new Mock<IStructFactory>().Object,
-                new Mock<IWin32ErrorInformation>().Object,
                 new Mock<IIPAddressConverter>().Object,
                 null,
                 new Mock<IDeviceTypeFactory>().Object));
@@ -78,7 +62,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             Assert.Throws<ArgumentNullException>(() => new RasGetConnectStatusService(
                 new Mock<IRasApi32>().Object,
                 new Mock<IStructFactory>().Object,
-                new Mock<IWin32ErrorInformation>().Object,
                 new Mock<IIPAddressConverter>().Object,
                 new Mock<IExceptionPolicy>().Object,
                 null));
@@ -89,12 +72,11 @@ namespace DotRas.Tests.Internal.Services.Connections
         {
             var api = new Mock<IRasApi32>();
             var structFactory = new Mock<IStructFactory>();
-            var win32ErrorInformation = new Mock<IWin32ErrorInformation>();
             var ipAddressConverter = new Mock<IIPAddressConverter>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
             var deviceTypeFactory = new Mock<IDeviceTypeFactory>();
 
-            var target = new RasGetConnectStatusService(api.Object, structFactory.Object, win32ErrorInformation.Object, ipAddressConverter.Object, exceptionPolicy.Object, deviceTypeFactory.Object);
+            var target = new RasGetConnectStatusService(api.Object, structFactory.Object, ipAddressConverter.Object, exceptionPolicy.Object, deviceTypeFactory.Object);
             Assert.Throws<ArgumentNullException>(() => target.GetConnectionStatus(null));
         }
     }

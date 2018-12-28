@@ -72,7 +72,6 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IWin32ErrorInformation>(),
                     c.GetRequiredService<IIPAddressConverter>(),
                     c.GetRequiredService<IExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
@@ -126,11 +125,6 @@ namespace DotRas.Internal.DependencyInjection
                 (c, _) => new Win32FormatMessageService(
                     c.GetRequiredService<IKernel32>(),
                     c.GetRequiredService<IMarshaller>()));
-
-            container.AddService(typeof(IWin32ErrorInformation),
-                (c, _) => new Win32ErrorInformationService(
-                    c.GetRequiredService<IRasGetErrorString>(),
-                    c.GetRequiredService<IWin32FormatMessage>()));
         }
     }
 }
