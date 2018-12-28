@@ -83,6 +83,9 @@ namespace DotRas
         /// Dials the connection.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
+        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial()
@@ -95,6 +98,9 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
+        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Dial(CancellationToken cancellationToken)
@@ -109,6 +115,9 @@ namespace DotRas
         /// Dials the connection asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
+        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync()
@@ -121,6 +130,9 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
+        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
