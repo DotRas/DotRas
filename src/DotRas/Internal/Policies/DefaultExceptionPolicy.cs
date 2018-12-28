@@ -16,7 +16,7 @@ namespace DotRas.Internal.Policies
             this.rasGetErrorString = rasGetErrorString ?? throw new ArgumentNullException(nameof(rasGetErrorString));
         }
 
-        public Exception Create(int error)
+        public virtual Exception Create(int error)
         {
             if (error == SUCCESS)
             {
