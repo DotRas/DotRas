@@ -142,7 +142,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 Assert.IsFalse(result);
             }
 
-            rasHangUp.Verify(o => o.UnsafeHangUp(handle), Times.Once);
+            rasHangUp.Verify(o => o.UnsafeHangUp(handle, false), Times.Once);
             completionSource.Verify(o => o.SetException(It.IsAny<OperationCanceledException>()), Times.Once);
         }
 

@@ -485,7 +485,7 @@ namespace DotRas.Tests
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
             target.HangUp(cancellationToken);
 
-            rasHangUp.Verify(o => o.HangUp(target, cancellationToken), Times.Once);
+            rasHangUp.Verify(o => o.HangUp(target, It.IsAny<bool>(), cancellationToken), Times.Once);
         }
 
         [Test]
@@ -509,6 +509,32 @@ namespace DotRas.Tests
             target.ClearStatistics();
 
             rasClearConnectionStatistics.Verify(o => o.ClearConnectionStatistics(target), Times.Once);
-        }        
+        }
+
+        /// <summary>
+        /// This ensures backwards compatible behavior with the 1.x version.
+        /// </summary>
+        [Test]
+        public void HangUpShouldCloseAllReferencesByDefault()
+        {
+            var handle = new IntPtr(1);
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
+            var sessionId = new Luid(1, 1);
+            var correlationId = Guid.NewGuid();
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
+            target.HangUp(CancellationToken.None);
+
+            rasHangUp.Verify(o => o.HangUp(target, true, CancellationToken.None), Times.Once);
+        }
     }
 }

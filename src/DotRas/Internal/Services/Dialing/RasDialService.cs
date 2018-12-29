@@ -117,7 +117,7 @@ namespace DotRas.Internal.Services.Dialing
                 return;
             }
 
-            hangUpService.UnsafeHangUp(handle);
+            hangUpService.UnsafeHangUp(handle, false);
         }
 
         private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)
