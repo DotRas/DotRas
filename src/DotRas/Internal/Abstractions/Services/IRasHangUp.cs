@@ -7,6 +7,6 @@ namespace DotRas.Internal.Abstractions.Services
     {
         void HangUp(IRasConnection connection, CancellationToken cancellationToken);
 
-        void UnsafeHangUp(IntPtr handle, CancellationToken cancellationToken);
+        void UnsafeHangUp(IntPtr handle);
     }
 }

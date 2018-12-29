@@ -93,6 +93,7 @@ namespace DotRas.Internal.DependencyInjection
             container.AddService(typeof(IRasDial),
                 (c, _) => new RasDialService(
                     c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IRasHangUp>(),
                     c.GetRequiredService<IRasDialExtensionsBuilder>(),
                     c.GetRequiredService<IRasDialParamsBuilder>(),
                     c.GetRequiredService<DefaultExceptionPolicy>(),

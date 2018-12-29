@@ -32,7 +32,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDialService(null, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                var unused = new RasDialService(null, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -41,7 +41,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                var unused = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null, new Mock<IRasDialCallbackHandler>().Object, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -50,7 +50,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, null, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                var unused = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, null, new Mock<ITaskCompletionSourceFactory>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -58,6 +58,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void ThrowsAnExceptionWhenTheCompletionSourceIsNotCreated()
         {
             var api = new Mock<IRasApi32>();
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -79,7 +80,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
             Assert.ThrowsAsync<InvalidOperationException>(() => target.DialAsync(context));
         }
 
@@ -90,6 +91,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             completionSource.Setup(o => o.Task).Returns(Task.FromResult((RasConnection)null));
 
             var api = new Mock<IRasApi32>();
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -117,7 +119,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            using (var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object))
+            using (var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object))
             {
                 await target.DialAsync(context);
             }
@@ -147,6 +149,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     return SUCCESS;
                 }));
 
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -175,7 +178,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
             var result = await target.DialAsync(context);
 
             Assert.AreSame(connection.Object, result);
@@ -196,6 +199,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     return ERROR_INVALID_PARAMETER;
                 }));
 
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -225,7 +229,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
             Assert.ThrowsAsync<TestException>(() => target.DialAsync(context));
 
             Assert.IsFalse(target.IsBusy);
@@ -247,6 +251,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     return SUCCESS;
                 }));
 
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -275,7 +280,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
             await target.DialAsync(context);
 
             Assert.IsTrue(target.IsBusy);
@@ -298,6 +303,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     return SUCCESS;
                 }));
 
+            var rasHangUp = new Mock<IRasHangUp>();
             var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
             var paramsBuilder = new Mock<IRasDialParamsBuilder>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -326,7 +332,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
             target.DialAsync(context);
 
             Assert.IsTrue(target.IsBusy);

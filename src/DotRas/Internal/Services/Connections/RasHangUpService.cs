@@ -29,14 +29,14 @@ namespace DotRas.Internal.Services.Connections
             HangUpImpl(connection.Handle, cancellationToken);
         }
 
-        public void UnsafeHangUp(IntPtr handle, CancellationToken cancellationToken)
+        public void UnsafeHangUp(IntPtr handle)
         {
             if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
             }
 
-            HangUpImpl(handle, cancellationToken);
+            HangUpImpl(handle, CancellationToken.None);
         }
 
         private void HangUpImpl(IntPtr handle, CancellationToken cancellationToken)
