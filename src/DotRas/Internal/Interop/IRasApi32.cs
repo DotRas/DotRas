@@ -10,10 +10,6 @@ namespace DotRas.Internal.Interop
         int RasClearConnectionStatistics(
             IntPtr hRasConn);
 
-        int RasClearLinkStatistics(
-            IntPtr hRasConn, 
-            int dwSubEntry);
-
         int RasEnumConnections(
             RASCONN[] lpRasConn,
             ref int lpCb,
@@ -44,11 +40,6 @@ namespace DotRas.Internal.Interop
         int RasGetConnectionStatistics(
             IntPtr hRasConn,
             [In, Out] ref RAS_STATS lpStatistics);
-
-        int RasGetLinkStatistics(
-            IntPtr hRasConn, 
-            int dwSubEntry, 
-            ref RAS_STATS lpStatistics);
 
         int RasHangUp(IntPtr hRasConn);
 

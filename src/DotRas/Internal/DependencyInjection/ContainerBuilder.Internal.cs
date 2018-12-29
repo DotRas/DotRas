@@ -52,11 +52,6 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
-            container.AddService(typeof(IRasClearLinkStatistics),
-                (c, _) => new RasClearLinkStatisticsService(
-                    c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<DefaultExceptionPolicy>()));
-
             container.AddService(typeof(IRasHangUp),
                 (c, _) => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),
@@ -82,12 +77,6 @@ namespace DotRas.Internal.DependencyInjection
 
             container.AddService(typeof(IRasGetCredentials),
                 (c, _) => new RasGetCredentialsService(
-                    c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<DefaultExceptionPolicy>()));
-
-            container.AddService(typeof(IRasGetLinkStatistics),
-                (c, _) => new RasGetLinkStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));

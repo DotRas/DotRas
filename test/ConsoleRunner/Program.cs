@@ -56,17 +56,11 @@ namespace ConsoleRunner
             {
                 SetConnected();
 
-                var connectionStats = connection.GetStatistics();
-                if (connectionStats != null)
+                var stats = connection.GetStatistics();
+                if (stats != null)
                 {
                 }
 
-                var linkStats = connection.GetLinkStatistics();
-                if (linkStats != null)
-                {
-                }
-
-                connection.ClearLinkStatistics();
                 connection.ClearStatistics();
             }
         }

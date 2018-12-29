@@ -78,7 +78,6 @@ namespace DotRas.Internal.Services.Connections
                 device,
                 hRasConn.szEntryName,
                 hRasConn.szPhonebook,
-                hRasConn.dwSubEntry,
                 hRasConn.guidEntry,
                 CreateConnectionOptions(hRasConn),
                 hRasConn.luid,
@@ -86,9 +85,7 @@ namespace DotRas.Internal.Services.Connections
                 serviceLocator.GetRequiredService<IRasGetConnectStatus>(),
                 serviceLocator.GetRequiredService<IRasGetConnectionStatistics>(),
                 serviceLocator.GetRequiredService<IRasHangUp>(),
-                serviceLocator.GetRequiredService<IRasGetLinkStatistics>(),
-                serviceLocator.GetRequiredService<IRasClearConnectionStatistics>(),
-                serviceLocator.GetRequiredService<IRasClearLinkStatistics>());
+                serviceLocator.GetRequiredService<IRasClearConnectionStatistics>());
         }
 
         private RasConnectionOptions CreateConnectionOptions(RASCONN hRasConn)

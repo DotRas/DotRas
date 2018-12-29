@@ -37,27 +37,6 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasClearLinkStatistics(hRasConn, dwSubEntry);
-            stopwatch.Stop();
-
-            var callEvent = new PInvokeInt32CallCompletedTraceEvent
-            {
-                DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasClearLinkStatistics),
-                Result = result
-            };
-
-            callEvent.Args.Add(nameof(hRasConn), hRasConn);
-            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
-
-            LogVerbose(callEvent);
-            return result;
-        }
-
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -185,28 +164,6 @@ namespace DotRas.Internal.DependencyInjection.Advice
             };
 
             callEvent.Args.Add(nameof(hRasConn), hRasConn);
-            callEvent.OutArgs.Add(nameof(lpStatistics), lpStatistics);
-
-            LogVerbose(callEvent);
-            return result;
-        }
-
-        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
-            stopwatch.Stop();
-
-            var callEvent = new PInvokeInt32CallCompletedTraceEvent
-            {
-                DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasGetLinkStatistics),
-                Result = result
-            };
-
-            callEvent.Args.Add(nameof(hRasConn), hRasConn);
-            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
             callEvent.OutArgs.Add(nameof(lpStatistics), lpStatistics);
 
             LogVerbose(callEvent);

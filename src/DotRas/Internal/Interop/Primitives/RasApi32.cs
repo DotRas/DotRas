@@ -12,11 +12,6 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasClearConnectionStatistics(hRasConn);
         }
 
-        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
-        {
-            return UnsafeNativeMethods.RasClearLinkStatistics(hRasConn, dwSubEntry);
-        }
-
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             return SafeNativeMethods.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
@@ -45,11 +40,6 @@ namespace DotRas.Internal.Interop.Primitives
         public int RasGetConnectionStatistics(IntPtr hRasConn, ref RAS_STATS lpStatistics)
         {
             return SafeNativeMethods.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
-        }
-
-        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
-        {
-            return SafeNativeMethods.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
         }
 
         public int RasHangUp(IntPtr hRasConn)
