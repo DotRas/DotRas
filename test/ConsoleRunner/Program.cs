@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas;
@@ -18,8 +17,7 @@ namespace ConsoleRunner
             dialer = new RasDialer
             {
                 EntryName = Config.EntryName,
-                PhoneBookPath = Config.PhoneBookPath,
-                Credentials = new NetworkCredential(Config.Username, Config.Password)
+                PhoneBookPath = Config.PhoneBookPath
             };
 
             dialer.DialStateChanged += OnStateChanged;

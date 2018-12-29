@@ -14,7 +14,7 @@ namespace DotRas.Tests.Internal.Services.Security
     public class RasGetCredentialsServiceTests
     {
         private delegate void RasGetCredentialsCallback(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             string lpszEntryName,
             ref RASCREDENTIALS lpCredentials);
 

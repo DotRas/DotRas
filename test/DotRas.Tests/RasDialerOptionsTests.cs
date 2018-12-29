@@ -4,18 +4,7 @@ namespace DotRas.Tests
 {
     [TestFixture]
     public class RasDialerOptionsTests
-    {
-        [Test]
-        public void ReturnsTrueForAllowUseStoredCredentials()
-        {
-            var target = new RasDialerOptions
-            {
-                AllowUseStoredCredentials = true
-            };
-
-            Assert.True(target.AllowUseStoredCredentials);
-        }
-
+    {        
         [Test]
         public void ReturnsInterfaceIndexAsExpected()
         {

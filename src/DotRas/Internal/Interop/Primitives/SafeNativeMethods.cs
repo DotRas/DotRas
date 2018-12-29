@@ -30,6 +30,12 @@ namespace DotRas.Internal.Interop.Primitives
             ref int lpConnections);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasGetEntryDialParams(
+            string lpszPhonebook,
+            [In, Out] ref RASDIALPARAMS lpDialParams,
+            [Out] out bool lpfPassword);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetErrorString(
             int uErrorValue,
             StringBuilder lpszErrorString,

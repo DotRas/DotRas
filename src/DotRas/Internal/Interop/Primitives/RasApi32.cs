@@ -32,6 +32,11 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
         }
 
+        public int RasGetEntryDialParams(string lpszPhonebook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
+        {
+            return SafeNativeMethods.RasGetEntryDialParams(lpszPhonebook, ref lpDialParams, out lpfPassword);
+        }
+
         public int RasGetErrorString(int uErrorValue, StringBuilder lpszErrorString, int cBufSize)
         {
             return SafeNativeMethods.RasGetErrorString(uErrorValue, lpszErrorString, cBufSize);
