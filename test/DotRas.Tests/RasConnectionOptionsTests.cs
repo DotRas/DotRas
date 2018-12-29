@@ -11,8 +11,8 @@ namespace DotRas.Tests
         {
             var target = new RasConnectionOptions(RASCF.AllUsers);
 
-            Assert.True(target.IsAvailableToAllUsers);
-            Assert.False(target.IsUsingDefaultCredentials);
+            Assert.True(target.AvailableToAllUsers);
+            Assert.False(target.UsingDefaultCredentials);
             Assert.False(target.IsOwnerKnown);
             Assert.False(target.IsOwnerCurrentUser);
         }
@@ -22,8 +22,8 @@ namespace DotRas.Tests
         {
             var target = new RasConnectionOptions(RASCF.GlobalCreds);
 
-            Assert.False(target.IsAvailableToAllUsers);
-            Assert.True(target.IsUsingDefaultCredentials);
+            Assert.False(target.AvailableToAllUsers);
+            Assert.True(target.UsingDefaultCredentials);
             Assert.False(target.IsOwnerKnown);
             Assert.False(target.IsOwnerCurrentUser);
         }
@@ -33,8 +33,8 @@ namespace DotRas.Tests
         {
             var target = new RasConnectionOptions(RASCF.OwnerKnown);
 
-            Assert.False(target.IsAvailableToAllUsers);
-            Assert.False(target.IsUsingDefaultCredentials);
+            Assert.False(target.AvailableToAllUsers);
+            Assert.False(target.UsingDefaultCredentials);
             Assert.True(target.IsOwnerKnown);
             Assert.False(target.IsOwnerCurrentUser);
         }
@@ -44,8 +44,8 @@ namespace DotRas.Tests
         {
             var target = new RasConnectionOptions(RASCF.OwnerMatch);
 
-            Assert.False(target.IsAvailableToAllUsers);
-            Assert.False(target.IsUsingDefaultCredentials);
+            Assert.False(target.AvailableToAllUsers);
+            Assert.False(target.UsingDefaultCredentials);
             Assert.False(target.IsOwnerKnown);
             Assert.True(target.IsOwnerCurrentUser);
         }
