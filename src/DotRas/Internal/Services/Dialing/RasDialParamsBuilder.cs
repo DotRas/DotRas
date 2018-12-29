@@ -33,21 +33,32 @@ namespace DotRas.Internal.Services.Dialing
                 throw exceptionPolicy.Create(ret);
             }
 
-            RasDialerOptions options;
-            if ((options = context.Options) != null)
-            {
-                rasDialParams.dwIfIndex = options.InterfaceIndex;
-            }
-
-            NetworkCredential credentials;
-            if ((credentials = context.Credentials) != null)
-            {
-                rasDialParams.szUserName = credentials.UserName;
-                rasDialParams.szPassword = credentials.Password;
-                rasDialParams.szDomain = credentials.Domain;
-            }
+            ConfigureOptions(context.Options, ref rasDialParams);
+            ConfigureCredentials(context.Credentials, ref rasDialParams);
 
             return rasDialParams;
+        }
+
+        private void ConfigureOptions(RasDialerOptions options, ref RASDIALPARAMS rasDialParams)
+        {
+            if (options == null)
+            {
+                return;
+            }
+
+            rasDialParams.dwIfIndex = options.InterfaceIndex;
+        }
+
+        private void ConfigureCredentials(NetworkCredential credentials, ref RASDIALPARAMS rasDialParams)
+        {
+            if (credentials == null)
+            {
+                return;
+            }
+
+            rasDialParams.szUserName = credentials.UserName;
+            rasDialParams.szPassword = credentials.Password;
+            rasDialParams.szDomain = credentials.Domain;
         }
     }
 }

@@ -5,6 +5,7 @@ using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Dialing;
+using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -36,6 +37,27 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void ThrowsAnExceptionWhenRasGetCredentialsIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenTheApiResultIsNonZero()
+        {
+            var entryName = "Test";
+            var phoneBookPath = @"C:\Test.pbk";
+
+            var api = new Mock<IRasApi32>();
+            api.Setup(o => o.RasGetEntryDialParams(phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, out It.Ref<bool>.IsAny)).Returns(ERROR_INSUFFICIENT_BUFFER);
+
+            var structFactory = new Mock<IStructFactory>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+            exceptionPolicy.Setup(o => o.Create(ERROR_INSUFFICIENT_BUFFER)).Returns(new TestException());
+
+            var target = new RasDialParamsBuilder(api.Object, structFactory.Object, exceptionPolicy.Object);
+            Assert.Throws<TestException>(() => target.Build(new RasDialContext
+            {
+                EntryName = entryName,
+                PhoneBookPath = phoneBookPath
+            }));
         }
 
         [Test]
