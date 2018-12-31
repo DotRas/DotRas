@@ -12,7 +12,7 @@ using Container = DotRas.Internal.DependencyInjection.Container;
 namespace DotRas
 {
     /// <summary>
-    /// Provides a mechanism to dial a connection.
+    /// Provides a mechanism to establish a connection to a remote network.
     /// </summary>
     public sealed class RasDialer : DisposableObject
     {
@@ -52,13 +52,13 @@ namespace DotRas
         #region Events
 
         /// <summary>
-        /// Occurs when the state changes while dialing a connection.
+        /// Occurs when the state changes while connecting to a remote network.
         /// </summary>
         /// <remarks>
-        /// Please note, this event is only raised while a connection is being dialed. It will not be raised if
-        /// an active connection has been disconnected outside of an attempt to dial.
+        /// Please note, this event is only raised while a connection is being established. It will not be raised if
+        /// an active connection has been disconnected outside of an attempt to connect.
         /// </remarks>
-        public event EventHandler<DialStateChangedEventArgs> DialStateChanged;
+        public event EventHandler<StateChangedEventArgs> StateChanged;
 
         #endregion
 
@@ -80,7 +80,7 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Dials the connection.
+        /// Connects to the remote network.
         /// </summary>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
@@ -90,13 +90,13 @@ namespace DotRas
         /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public RasConnection Dial()
+        public RasConnection Connect()
         {
-            return Dial(CancellationToken.None);
+            return Connect(CancellationToken.None);
         }
 
         /// <summary>
-        /// Dials the connection.
+        /// Connects to the remote network.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
@@ -107,16 +107,16 @@ namespace DotRas
         /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public RasConnection Dial(CancellationToken cancellationToken)
+        public RasConnection Connect(CancellationToken cancellationToken)
         {
-            using (var task = DialAsync(cancellationToken))
+            using (var task = ConnectAsync(cancellationToken))
             {
                 return task.Result;
             }
         }
 
         /// <summary>
-        /// Dials the connection asynchronously.
+        /// Connects to the remote network asynchronously.
         /// </summary>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
@@ -126,13 +126,13 @@ namespace DotRas
         /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public Task<RasConnection> DialAsync()
+        public Task<RasConnection> ConnectAsync()
         {
-            return DialAsync(CancellationToken.None);
+            return ConnectAsync(CancellationToken.None);
         }
 
         /// <summary>
-        /// Dials the connection asynchronously.
+        /// Connects to the remote network asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
@@ -143,7 +143,7 @@ namespace DotRas
         /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public Task<RasConnection> DialAsync(CancellationToken cancellationToken)
+        public Task<RasConnection> ConnectAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
             ValidateConfigurationPriorToDialAttempt();
@@ -172,14 +172,14 @@ namespace DotRas
             }
         }
 
-        private void RaiseDialStateChanged(DialStateChangedEventArgs e)
+        private void RaiseDialStateChanged(StateChangedEventArgs e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            DialStateChanged?.Invoke(this, e);
+            StateChanged?.Invoke(this, e);
         }
 
         protected override void Dispose(bool disposing)

@@ -20,7 +20,7 @@ namespace ConsoleRunner
                 PhoneBookPath = Config.PhoneBookPath
             };
 
-            dialer.DialStateChanged += OnStateChanged;
+            dialer.StateChanged += OnStateChanged;
         }
 
         private async Task RunAsync()
@@ -49,7 +49,7 @@ namespace ConsoleRunner
 
         private async Task ConnectAsync(CancellationToken cancellationToken)
         {
-            connection = await dialer.DialAsync(cancellationToken);
+            connection = await dialer.ConnectAsync(cancellationToken);
             if (connection != null)
             {
                 SetConnected();
@@ -65,7 +65,7 @@ namespace ConsoleRunner
 
         private void DisconnectAsync(CancellationToken cancellationToken)
         {
-            connection.HangUp(cancellationToken);
+            connection.Disconnect(cancellationToken);
             SetNotConnected();
         }
 
@@ -84,7 +84,7 @@ namespace ConsoleRunner
             return !IsConnected && !CancellationSource.IsCancellationRequested;
         }
 
-        private void OnStateChanged(object sender, DialStateChangedEventArgs e)
+        private void OnStateChanged(object sender, StateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
             RandomlyThrowException();

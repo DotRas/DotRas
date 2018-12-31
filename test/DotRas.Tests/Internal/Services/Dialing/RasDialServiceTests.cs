@@ -183,7 +183,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             Assert.AreSame(connection.Object, result);
             Assert.IsTrue(target.IsBusy);
-            callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<DialStateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
+            callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<StateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
             callbackHandler.Verify(o => o.SetHandle(handle), Times.Once);
         }
 
@@ -233,7 +233,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             Assert.ThrowsAsync<TestException>(() => target.DialAsync(context));
 
             Assert.IsFalse(target.IsBusy);
-            callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<DialStateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
+            callbackHandler.Verify(o => o.Initialize(completionSource.Object, It.IsAny<Action<StateChangedEventArgs>>(), It.IsAny<Action>(), It.IsAny<CancellationToken>()), Times.Once);
             callbackHandler.Verify(o => o.SetHandle(It.IsAny<IntPtr>()), Times.Never);
         }
 

@@ -136,22 +136,22 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Terminates the remote access connection.
+        /// Disconnects the remote access connection.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        public virtual void HangUp(CancellationToken cancellationToken)
+        public virtual void Disconnect(CancellationToken cancellationToken)
         {
-            HangUp(true, cancellationToken);
+            Disconnect(false, cancellationToken);
         }
 
         /// <summary>
-        /// Terminates the remote access connection.
+        /// Disconnects the remote access connection.
         /// </summary>
         /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        public virtual void HangUp(bool closeAllReferences, CancellationToken cancellationToken)
+        public virtual void Disconnect(bool closeAllReferences, CancellationToken cancellationToken)
         {
             hangUpService.HangUp(this, closeAllReferences, cancellationToken);
         }
