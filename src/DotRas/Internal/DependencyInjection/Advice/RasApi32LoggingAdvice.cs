@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
@@ -32,6 +33,28 @@ namespace DotRas.Internal.DependencyInjection.Advice
             };
 
             callEvent.Args.Add(nameof(hRasConn), hRasConn);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasConnectionNotification(IntPtr hRasConn, SafeHandle hEvent, RASCN dwFlags)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasConnectionNotification(hRasConn, hEvent, dwFlags);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasConnectionNotification),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.Args.Add(nameof(hEvent), hEvent);
+            callEvent.Args.Add(nameof(dwFlags), dwFlags);
 
             LogVerbose(callEvent);
             return result;

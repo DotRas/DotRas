@@ -52,6 +52,16 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
+            container.AddService(typeof(IRasConnectionNotification),
+                (c, _) => new RasConnectionNotificationService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IRasConnectionNotificationCallbackHandler>(),
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
+
+            container.AddService(typeof(IRasConnectionNotificationCallbackHandler),
+                (c, _) => new RasConnectionNotificationCallbackHandler(
+                    c.GetRequiredService<IRasEnumConnections>()));
+
             container.AddService(typeof(IRasHangUp),
                 (c, _) => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),

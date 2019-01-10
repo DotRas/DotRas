@@ -7,37 +7,45 @@ namespace ConsoleRunner
 {
     partial class Program
     {
-        private readonly RasDialer dialer;
+        private readonly RasDialer dialer = new RasDialer();    
+        private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
 
         private RasConnection connection;
         public bool IsConnected { get; private set; }
 
         public Program()
         {
-            dialer = new RasDialer
-            {
-                EntryName = Config.EntryName,
-                PhoneBookPath = Config.PhoneBookPath
-            };
-
+            dialer.EntryName = Config.EntryName;
+            dialer.PhoneBookPath = Config.PhoneBookPath;
             dialer.StateChanged += OnStateChanged;
+
+            watcher.Connected += OnConnected;
+            watcher.Disconnected += OnDisconnected;            
         }
 
-        private async Task RunAsync()
+        public Task RunAsync()
         {
+            return Task.Run(() => Run());
+        }
+
+        private void Run()
+        {
+            watcher.WatchAnyConnections();
+
             while (ShouldContinueExecution())
             {
                 try
                 {
                     using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
                     {
-                        await ConnectAsync(tcs.Token);
-                        if (IsConnected)
+                        try
                         {
-                            DisconnectAsync(tcs.Token);
+                            Connect(tcs.Token);
                         }
-
-                        tcs.Token.WaitHandle.WaitOne(500);
+                        finally
+                        {
+                            Disconnect();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -45,27 +53,33 @@ namespace ConsoleRunner
                     Console.WriteLine(ex);
                 }
             }
+
+            watcher.Stop();
         }
 
-        private async Task ConnectAsync(CancellationToken cancellationToken)
+        private void Connect(CancellationToken cancellationToken)
         {
-            connection = await dialer.ConnectAsync(cancellationToken);
-            if (connection != null)
-            {
-                SetConnected();
-
-                var stats = connection.GetStatistics();
-                if (stats != null)
-                {
-                }
-
-                connection.ClearStatistics();
-            }
+            Console.WriteLine("Starting connection...");
+            connection = dialer.Connect(cancellationToken);
+            Console.WriteLine("Completed connecting.");
         }
 
-        private void DisconnectAsync(CancellationToken cancellationToken)
+        private void Disconnect()
         {
-            connection.Disconnect(cancellationToken);
+            Console.WriteLine("Starting disconnect...");
+            connection.Disconnect();
+            Console.WriteLine("Completed disconnect.");
+        }
+
+        private void OnConnected(object sender, RasConnectionEventArgs e)
+        {
+            Console.WriteLine($"Connected: {e.Connection.EntryName}");
+            SetConnected();
+        }
+
+        private void OnDisconnected(object sender, RasConnectionEventArgs e)
+        {
+            Console.WriteLine($"Disconnected: {e.Connection.EntryName}");            
             SetNotConnected();
         }
 
@@ -81,7 +95,7 @@ namespace ConsoleRunner
 
         private bool ShouldContinueExecution()
         {
-            return !IsConnected && !CancellationSource.IsCancellationRequested;
+            return !CancellationSource.IsCancellationRequested;
         }
 
         private void OnStateChanged(object sender, StateChangedEventArgs e)
@@ -92,11 +106,16 @@ namespace ConsoleRunner
 
         private void RandomlyThrowException()
         {
-            var rand = new Random();
-            if (rand.Next(1, 100) >= 98)
+            if (ShouldThrowRandomException())
             {
                 throw new Exception("A random exception occurred.");
             }
+        }
+
+        private bool ShouldThrowRandomException()
+        {
+            var rand = new Random();
+            return rand.Next(1, 100) >= 98;
         }
     }
 }

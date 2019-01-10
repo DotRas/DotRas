@@ -17,6 +17,11 @@ namespace DotRas.Internal.Services.Dialing
 
         public RASDIALEXTENSIONS Build(RasDialContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             var rasDialExtensions = structFactory.Create<RASDIALEXTENSIONS>();
 
             RasDialerOptions options;

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Interop
 {
@@ -8,6 +10,11 @@ namespace DotRas.Internal.Interop
     {
         int RasClearConnectionStatistics(
             IntPtr hRasConn);
+
+        int RasConnectionNotification(
+            IntPtr hRasConn, 
+            SafeHandle hEvent, 
+            RASCN dwFlags);
 
         int RasEnumConnections(
             RASCONN[] lpRasConn,

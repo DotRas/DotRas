@@ -10,7 +10,7 @@ namespace DotRas
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
-    public class RasConnection : IRasConnection
+    public class RasConnection : IRasConnection, IEquatable<RasConnection>
     {
         #region Fields and Properties
 
@@ -138,11 +138,19 @@ namespace DotRas
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
+        public virtual void Disconnect()
+        {
+            Disconnect(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         public virtual void Disconnect(CancellationToken cancellationToken)
         {
-            Disconnect(false, cancellationToken);
+            Disconnect(true, cancellationToken);
         }
 
         /// <summary>
@@ -154,6 +162,55 @@ namespace DotRas
         public virtual void Disconnect(bool closeAllReferences, CancellationToken cancellationToken)
         {
             hangUpService.HangUp(this, closeAllReferences, cancellationToken);
+        }
+
+        public static bool operator ==(RasConnection objA, RasConnection objB)
+        {
+#pragma warning disable IDE0041 // Use 'is null' check
+            if (ReferenceEquals(objA, null) && ReferenceEquals(objB, null))
+            {
+                return true;
+            }
+            else if (ReferenceEquals(objA, null) || ReferenceEquals(objB, null))
+            {
+                return false;   
+            }
+#pragma warning restore IDE0041 // Use 'is null' check
+
+            return objA.Equals(objB);
+        }
+
+        public static bool operator !=(RasConnection objA, RasConnection objB)
+        {
+            return !(objA == objB);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            var other = obj as RasConnection;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Equals(other);
+        }
+
+        /// <inheritdoc />
+        public virtual bool Equals(RasConnection other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Handle == other.Handle;
+        }
+
+        public override int GetHashCode()
+        {
+            return Handle.GetHashCode();
         }
     }
 }

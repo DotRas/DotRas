@@ -8,6 +8,8 @@ namespace DotRas.Internal.Interop
 {
     internal static class NativeMethods
     {
+        public static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
         public struct RASCONN
         {

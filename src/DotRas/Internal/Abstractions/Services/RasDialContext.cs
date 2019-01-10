@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace DotRas.Internal.Abstractions.Services
 {
-    internal struct RasDialContext
+    internal class RasDialContext
     {
         public string PhoneBookPath { get; set; }
         public string EntryName { get; set; }

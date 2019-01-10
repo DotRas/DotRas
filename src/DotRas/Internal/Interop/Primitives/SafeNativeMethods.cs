@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Interop.Primitives
 {
@@ -24,6 +25,12 @@ namespace DotRas.Internal.Interop.Primitives
             IntPtr arguments);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasConnectionNotification(
+            IntPtr hRasConn,
+            SafeHandle hEvent,
+            RASCN dwFlags);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasEnumConnections(
             [In, Out] RASCONN[] lpRasConn,
             ref int lpCb,
@@ -31,7 +38,7 @@ namespace DotRas.Internal.Interop.Primitives
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetEntryDialParams(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             [In, Out] ref RASDIALPARAMS lpDialParams,
             [Out] out bool lpfPassword);
 
@@ -48,18 +55,18 @@ namespace DotRas.Internal.Interop.Primitives
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetConnectStatus(
-            IntPtr hrasconn,
+            IntPtr hRasConn,
             [In, Out] ref RASCONNSTATUS lpRasConnStatus);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetCredentials(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             string lpszEntryName,
             [In, Out] ref RASCREDENTIALS lpCredentials);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasValidateEntryName(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             string lpszEntryName);
     }
 }
