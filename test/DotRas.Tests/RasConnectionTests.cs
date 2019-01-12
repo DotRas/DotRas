@@ -19,13 +19,13 @@ namespace DotRas.Tests
         public void Setup()
         {
             container = new Mock<IServiceProvider>();
-            Container.Default = container.Object;
+            CompositionRoot.Default = container.Object;
         }
 
         [TearDown]
         public void TearDown()
         {
-            Container.Clear();
+            CompositionRoot.Clear();
         }
 
         [Test]

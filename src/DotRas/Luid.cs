@@ -48,7 +48,7 @@ namespace DotRas
         /// <returns>A new <see cref="Luid"/> structure.</returns>
         public static Luid NewLuid()
         {
-            return Container.Default.GetRequiredService<IAllocateLocallyUniqueId>()
+            return CompositionRoot.Default.GetRequiredService<IAllocateLocallyUniqueId>()
                 .AllocateLocallyUniqueId();
         }
 
