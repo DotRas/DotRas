@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
-using Container = DotRas.Internal.DependencyInjection.Container;
 
 namespace DotRas
 {
@@ -104,7 +103,7 @@ namespace DotRas
         /// <returns>An enumerable used to iterate through the connections.</returns>
         public static IEnumerable<RasConnection> EnumerateConnections()
         {
-            return Container.Default.GetRequiredService<IRasEnumConnections>()
+            return CompositionRoot.Default.GetRequiredService<IRasEnumConnections>()
                 .EnumerateConnections();
         }
 
