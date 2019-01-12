@@ -37,27 +37,6 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasClearLinkStatistics(hRasConn, dwSubEntry);
-            stopwatch.Stop();
-
-            var callEvent = new PInvokeInt32CallCompletedTraceEvent
-            {
-                DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasClearLinkStatistics),
-                Result = result
-            };
-
-            callEvent.Args.Add(nameof(hRasConn), hRasConn);
-            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
-
-            LogVerbose(callEvent);
-            return result;
-        }
-
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -126,10 +105,10 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasGetCredentials(string lpszPhonebook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
+        public int RasGetCredentials(string lpszPhoneBook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
         {
             var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
+            var result = AttachedObject.RasGetCredentials(lpszPhoneBook, lpszEntryName, ref lpCredentials);
             stopwatch.Stop();
 
             var callEvent = new PInvokeInt32CallCompletedTraceEvent
@@ -140,9 +119,31 @@ namespace DotRas.Internal.DependencyInjection.Advice
                 Result = result,
             };
 
-            callEvent.Args.Add(nameof(lpszPhonebook), lpszPhonebook);
+            callEvent.Args.Add(nameof(lpszPhoneBook), lpszPhoneBook);
             callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
             callEvent.OutArgs.Add(nameof(lpCredentials), lpCredentials);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasGetEntryDialParams(string lpszPhoneBook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetEntryDialParams(lpszPhoneBook, ref lpDialParams, out lpfPassword);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasGetEntryDialParams),
+                Result = result,
+            };
+
+            callEvent.Args.Add(nameof(lpszPhoneBook), lpszPhoneBook);
+            callEvent.OutArgs.Add(nameof(lpDialParams), lpDialParams);
+            callEvent.OutArgs.Add(nameof(lpfPassword), lpfPassword);
 
             LogVerbose(callEvent);
             return result;
@@ -191,28 +192,6 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
-            stopwatch.Stop();
-
-            var callEvent = new PInvokeInt32CallCompletedTraceEvent
-            {
-                DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasGetLinkStatistics),
-                Result = result
-            };
-
-            callEvent.Args.Add(nameof(hRasConn), hRasConn);
-            callEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
-            callEvent.OutArgs.Add(nameof(lpStatistics), lpStatistics);
-
-            LogVerbose(callEvent);
-            return result;
-        }
-
         public int RasHangUp(IntPtr hRasConn)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -233,10 +212,10 @@ namespace DotRas.Internal.DependencyInjection.Advice
             return result;
         }
 
-        public int RasValidateEntryName(string lpszPhonebook, string lpszEntryName)
+        public int RasValidateEntryName(string lpszPhoneBook, string lpszEntryName)
         {
             var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasValidateEntryName(lpszPhonebook, lpszEntryName);
+            var result = AttachedObject.RasValidateEntryName(lpszPhoneBook, lpszEntryName);
             stopwatch.Stop();
 
             var callEvent = new PInvokeInt32CallCompletedTraceEvent
@@ -247,7 +226,7 @@ namespace DotRas.Internal.DependencyInjection.Advice
                 Result = result
             };
 
-            callEvent.Args.Add(nameof(lpszPhonebook), lpszPhonebook);
+            callEvent.Args.Add(nameof(lpszPhoneBook), lpszPhoneBook);
             callEvent.Args.Add(nameof(lpszEntryName), lpszEntryName);
 
             LogVerbose(callEvent);

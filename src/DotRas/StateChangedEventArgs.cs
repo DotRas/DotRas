@@ -3,9 +3,9 @@
 namespace DotRas
 {
     /// <summary>
-    /// Provides event details for state changes while dialing a connection.
+    /// Provides event details for state changes while establishing a connection.
     /// </summary>
-    public class DialStateChangedEventArgs : EventArgs
+    public class StateChangedEventArgs : EventArgs
     {
         /// <summary>
         /// Gets the state of the connection.
@@ -13,10 +13,10 @@ namespace DotRas
         public RasConnectionState State { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DialStateChangedEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="StateChangedEventArgs"/> class.
         /// </summary>
         /// <param name="state">The state of the connection.</param>
-        public DialStateChangedEventArgs(RasConnectionState state)
+        public StateChangedEventArgs(RasConnectionState state)
         {
             State = state;
         }

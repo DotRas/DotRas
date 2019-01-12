@@ -24,7 +24,7 @@ namespace DotRas.Internal.Services.Dialing
         private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
         private ITaskCompletionSource<RasConnection> completionSource;
-        private Action<DialStateChangedEventArgs> onStateChangedCallback;
+        private Action<StateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
         
         public bool Completed { get; private set; }
@@ -52,7 +52,7 @@ namespace DotRas.Internal.Services.Dialing
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<DialStateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -92,7 +92,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             WaitForHandleToBeTransferred();
 
-            rasHangUp.UnsafeHangUp(handle.Value, CancellationToken.None);
+            rasHangUp.UnsafeHangUp(handle.Value, false);
         }
 
         public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
@@ -136,7 +136,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
         {
-            onStateChangedCallback(new DialStateChangedEventArgs(connectionState));
+            onStateChangedCallback(new StateChangedEventArgs(connectionState));
         }
 
         private void GuardErrorCodeMustBeZero(int errorCode)

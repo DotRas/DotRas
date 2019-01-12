@@ -24,7 +24,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DialTheConnectionSynchronouslyWithAnExistingCancellationToken()
+        public void ConnectSynchronouslyWithAnExistingCancellationToken()
         {
             var connection = new Mock<RasConnection>();
             var cancellationToken = new CancellationToken();
@@ -50,14 +50,14 @@ namespace DotRas.Tests
                 Credentials = new NetworkCredential("TEST", "USER")
             };
 
-            var result = target.Dial(cancellationToken);
-
+            var result = target.Connect(cancellationToken);
+            
             Assert.IsNotNull(result);
             api.Verify();
         }
 
         [Test]
-        public void DialsTheConnectionSynchronouslyWithoutACancellationToken()
+        public void ConnectSynchronouslyWithoutACancellationToken()
         {
             var connection = new Mock<RasConnection>();
 
@@ -82,14 +82,14 @@ namespace DotRas.Tests
                 Credentials = new NetworkCredential("TEST", "USER")
             };
 
-            var result = target.Dial();
+            var result = target.Connect();
 
             Assert.IsNotNull(result);
             api.Verify();
         }
 
         [Test]
-        public async Task DialsTheConnectionAsyncWithoutACancellationToken()
+        public async Task ConnectAsynchronouslyWithoutACancellationToken()
         {
             var result = new Mock<RasConnection>();
 
@@ -114,7 +114,7 @@ namespace DotRas.Tests
                 Credentials = new NetworkCredential("TEST", "USER")
             };
 
-            await target.DialAsync();
+            await target.ConnectAsync();
 
             api.Verify();
         }
@@ -150,7 +150,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            var connection = await target.DialAsync(cancellationToken);
+            var connection = await target.ConnectAsync(cancellationToken);
             Assert.AreSame(result.Object, connection);
         }
 
@@ -182,7 +182,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            await target.DialAsync();
+            await target.ConnectAsync();
 
             Assert.True(executed);
         }
@@ -190,7 +190,7 @@ namespace DotRas.Tests
         [Test]
         public async Task RaisesTheEventFromTheOnStateChangedCallback()
         {
-            var e = new DialStateChangedEventArgs(RasConnectionState.OpenPort);
+            var e = new StateChangedEventArgs(RasConnectionState.OpenPort);
             var result = new Mock<RasConnection>();
 
             var api = new Mock<IRasDial>();
@@ -216,13 +216,13 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            target.DialStateChanged += (sender, args) =>
+            target.StateChanged += (sender, args) =>
             {
                 Assert.AreEqual(e, args);
                 raised = true;
             };
 
-            await target.DialAsync();
+            await target.ConnectAsync();
 
             Assert.True(raised);
         }
@@ -258,7 +258,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Connect());
 
             Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
             Assert.AreEqual(null, ex.EntryName);
@@ -279,7 +279,7 @@ namespace DotRas.Tests
                 PhoneBookPath = null
             };
 
-            Assert.DoesNotThrow(() => target.Dial());
+            Assert.DoesNotThrow(() => target.Connect());
         }
 
         [Test]
@@ -297,7 +297,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            Assert.Throws<FileNotFoundException>(() => target.Dial());
+            Assert.Throws<FileNotFoundException>(() => target.Connect());
 
             fileSystem.Verify();
         }
@@ -318,7 +318,7 @@ namespace DotRas.Tests
                 PhoneBookPath = PhoneBookPath
             };
 
-            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Dial());
+            var ex = Assert.Throws<RasEntryNotFoundException>(() => target.Connect());
 
             Assert.AreEqual(PhoneBookPath, ex.PhoneBookPath);
             Assert.AreEqual(EntryName, ex.EntryName);

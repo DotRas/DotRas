@@ -1,6 +1,6 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using DotRas.Diagnostics;
+using DotRas.Internal.Abstractions.DependencyInjection;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -16,94 +16,85 @@ using DotRas.Internal.Services.Security;
 
 namespace DotRas.Internal.DependencyInjection
 {
-    internal static partial class ContainerBuilder
+    internal static partial class CompositionBuilder
     {
-        private static void RegisterInternal(IServiceContainer container)
+        private static void RegisterInternal(ICompositionRegistry registry)
         {
-            RegisterPolicies(container);
-            RegisterThreading(container);
+            RegisterPolicies(registry);
+            RegisterThreading(registry);
 
-            container.AddService(typeof(IAllocateLocallyUniqueId),
-                (c, _) => new AllocateLocallyUniqueIdService(
+            registry.RegisterCallback<IAllocateLocallyUniqueId>(
+                c => new AllocateLocallyUniqueIdService(
                     c.GetRequiredService<IAdvApi32>()));
 
-            container.AddService(typeof(IRasEnumConnections),
-                (c, _) => new RasEnumConnectionsService(
+            registry.RegisterCallback<IRasEnumConnections>(
+                c => new RasEnumConnectionsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IDeviceTypeFactory>(),
                     c.GetRequiredService<DefaultExceptionPolicy>(),
                     c.GetRequiredService<IStructArrayFactory>(),
                     c));
 
-            container.AddService(typeof(IIPAddressConverter),
-                (c, _) => new IPAddressConversionService());
+            registry.RegisterCallback<IIPAddressConverter>(
+                c => new IPAddressConversionService());
 
-            container.AddService(typeof(IMarshaller),
-                (c, _) => new MarshallerLoggingAdvice(
+            registry.RegisterCallback<IMarshaller>(
+                c => new MarshallerLoggingAdvice(
                     new MarshallingService(),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 
-            container.AddService(typeof(IPhoneBookEntryValidator),
-                (c, _) => new PhoneBookEntryNameValidationService(
+            registry.RegisterCallback<IPhoneBookEntryValidator>(
+                c => new PhoneBookEntryNameValidationService(
                     c.GetRequiredService<IRasApi32>()));
 
-            container.AddService(typeof(IRasClearConnectionStatistics),
-                (c, _) => new RasClearConnectionStatisticsService(
+            registry.RegisterCallback<IRasClearConnectionStatistics>(
+                c => new RasClearConnectionStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
-            container.AddService(typeof(IRasClearLinkStatistics),
-                (c, _) => new RasClearLinkStatisticsService(
+            registry.RegisterCallback<IRasHangUp>(
+                c => new RasHangUpService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
-            container.AddService(typeof(IRasHangUp),
-                (c, _) => new RasHangUpService(
-                    c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<DefaultExceptionPolicy>()));
-
-            container.AddService(typeof(IRasGetConnectionStatistics),
-                (c, _) => new RasGetConnectionStatisticsService(
+            registry.RegisterCallback<IRasGetConnectionStatistics>(
+                c => new RasGetConnectionStatisticsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
-            container.AddService(typeof(IRasGetConnectStatus),
-                (c, _) => new RasGetConnectStatusService(
+            registry.RegisterCallback<IRasGetConnectStatus>(
+                c => new RasGetConnectStatusService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<IIPAddressConverter>(),
                     c.GetRequiredService<RasGetConnectStatusExceptionPolicy>(),
                     c.GetRequiredService<IDeviceTypeFactory>()));
 
-            container.AddService(typeof(IRasGetErrorString),
-                (c, _) => new RasGetErrorStringService(
+            registry.RegisterCallback<IRasGetErrorString>(
+                c => new RasGetErrorStringService(
                     c.GetRequiredService<IRasApi32>()));
 
-            container.AddService(typeof(IRasGetCredentials),
-                (c, _) => new RasGetCredentialsService(
+            registry.RegisterCallback<IRasGetCredentials>(
+                c => new RasGetCredentialsService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IStructFactory>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
-            container.AddService(typeof(IRasGetLinkStatistics),
-                (c, _) => new RasGetLinkStatisticsService(
-                    c.GetRequiredService<IRasApi32>(),
-                    c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<DefaultExceptionPolicy>()));
-
-            container.AddService(typeof(IRasDialExtensionsBuilder),
-                (c, _) => new RasDialExtensionsBuilder(
+            registry.RegisterCallback<IRasDialExtensionsBuilder>(
+                c => new RasDialExtensionsBuilder(
                     c.GetRequiredService<IStructFactory>()));
 
-            container.AddService(typeof(IRasDialParamsBuilder),
-                (c, _) => new RasDialParamsBuilder(
-                    c.GetRequiredService<IStructFactory>(),
-                    c.GetRequiredService<IRasGetCredentials>()));
-
-            container.AddService(typeof(IRasDial),
-                (c, _) => new RasDialService(
+            registry.RegisterCallback<IRasDialParamsBuilder>(
+                c => new RasDialParamsBuilder(
                     c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IStructFactory>(),
+                    c.GetRequiredService<DefaultExceptionPolicy>()));
+
+            registry.RegisterCallback<IRasDial>(
+                c => new RasDialService(
+                    c.GetRequiredService<IRasApi32>(),
+                    c.GetRequiredService<IRasHangUp>(),
                     c.GetRequiredService<IRasDialExtensionsBuilder>(),
                     c.GetRequiredService<IRasDialParamsBuilder>(),
                     c.GetRequiredService<DefaultExceptionPolicy>(),
@@ -111,8 +102,8 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<ITaskCompletionSourceFactory>(),
                     c.GetRequiredService<ITaskCancellationSourceFactory>()));
 
-            container.AddService(typeof(IRasDialCallbackHandler),
-                (c, _) => new RasDialCallbackHandlerLoggingAdvice(
+            registry.RegisterCallback<IRasDialCallbackHandler>(
+                c => new RasDialCallbackHandlerLoggingAdvice(
                     new DefaultRasDialCallbackHandler(
                         c.GetRequiredService<IRasHangUp>(),
                         c.GetRequiredService<IRasEnumConnections>(),
@@ -121,8 +112,8 @@ namespace DotRas.Internal.DependencyInjection
                         c.GetRequiredService<ITaskCancellationSourceFactory>()),
                     c.GetRequiredService<IEventLoggingPolicy>()));
 
-            container.AddService(typeof(IWin32FormatMessage),
-                (c, _) => new Win32FormatMessageService(
+            registry.RegisterCallback<IWin32FormatMessage>(
+                c => new Win32FormatMessageService(
                     c.GetRequiredService<IKernel32>(),
                     c.GetRequiredService<IMarshaller>()));
         }

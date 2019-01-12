@@ -21,12 +21,12 @@ namespace DotRas
         /// <summary>
         /// Gets a value indicating whether the connection is available to all users.
         /// </summary>
-        public virtual bool IsAvailableToAllUsers => flags.HasFlag(RASCF.AllUsers);
+        public virtual bool AvailableToAllUsers => flags.HasFlag(RASCF.AllUsers);
 
         /// <summary>
         /// Gets a value indicating whether the credentials used for the connection are the default credentials.
         /// </summary>
-        public virtual bool IsUsingDefaultCredentials => flags.HasFlag(RASCF.GlobalCreds);
+        public virtual bool UsingDefaultCredentials => flags.HasFlag(RASCF.GlobalCreds);
 
         /// <summary>
         /// Gets a value indicating whether the owner of the connection is known.

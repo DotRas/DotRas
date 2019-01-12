@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Net;
 using DotRas.Internal.Abstractions.Factories;
+using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
+using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Dialing
 {
     internal class RasDialParamsBuilder : IRasDialParamsBuilder
     {
+        private readonly IRasApi32 api;
         private readonly IStructFactory structFactory;
-        private readonly IRasGetCredentials rasGetCredentials;
+        private readonly IExceptionPolicy exceptionPolicy;
 
-        public RasDialParamsBuilder(IStructFactory structFactory, IRasGetCredentials rasGetCredentials)
+        public RasDialParamsBuilder(IRasApi32 api, IStructFactory structFactory, IExceptionPolicy exceptionPolicy)
         {
+            this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.structFactory = structFactory ?? throw new ArgumentNullException(nameof(structFactory));
-            this.rasGetCredentials = rasGetCredentials ?? throw new ArgumentNullException(nameof(rasGetCredentials));
+            this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
         }
 
         public RASDIALPARAMS Build(RasDialContext context)
@@ -22,42 +27,38 @@ namespace DotRas.Internal.Services.Dialing
             var rasDialParams = structFactory.Create<RASDIALPARAMS>();
             rasDialParams.szEntryName = context.EntryName;
 
-            RasDialerOptions options;
-            if ((options = context.Options) != null)
+            var ret = api.RasGetEntryDialParams(context.PhoneBookPath, ref rasDialParams, out _);
+            if (ret != SUCCESS)
             {
-                rasDialParams.dwIfIndex = options.InterfaceIndex;
-                rasDialParams.dwSubEntry = options.SubEntryId;
+                throw exceptionPolicy.Create(ret);
             }
 
-            var networkCredentials = GetNetworkCredentials(context);
-            if (networkCredentials != null)
-            {
-                rasDialParams.szUserName = networkCredentials.UserName;
-                rasDialParams.szPassword = networkCredentials.Password;
-                rasDialParams.szDomain = networkCredentials.Domain;
-            }
+            ConfigureOptions(context.Options, ref rasDialParams);
+            ConfigureCredentials(context.Credentials, ref rasDialParams);
 
             return rasDialParams;
         }
 
-        private NetworkCredential GetNetworkCredentials(RasDialContext context)
+        private void ConfigureOptions(RasDialerOptions options, ref RASDIALPARAMS rasDialParams)
         {
-            if (ShouldUseStoredCredentials(context))
+            if (options == null)
             {
-                return rasGetCredentials.GetNetworkCredential(context.EntryName, context.PhoneBookPath);
+                return;
             }
 
-            return context.Credentials;
+            rasDialParams.dwIfIndex = options.InterfaceIndex;
         }
 
-        private static bool ShouldUseStoredCredentials(RasDialContext context)
+        private void ConfigureCredentials(NetworkCredential credentials, ref RASDIALPARAMS rasDialParams)
         {
-            if (context.Options == null)
+            if (credentials == null)
             {
-                return false;
+                return;
             }
 
-            return context.Options.AllowUseStoredCredentials && context.Credentials == null;
+            rasDialParams.szUserName = credentials.UserName;
+            rasDialParams.szPassword = credentials.Password;
+            rasDialParams.szDomain = credentials.Domain;
         }
     }
 }

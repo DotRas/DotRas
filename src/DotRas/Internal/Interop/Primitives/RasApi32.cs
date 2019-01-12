@@ -12,11 +12,6 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasClearConnectionStatistics(hRasConn);
         }
 
-        public int RasClearLinkStatistics(IntPtr hRasConn, int dwSubEntry)
-        {
-            return UnsafeNativeMethods.RasClearLinkStatistics(hRasConn, dwSubEntry);
-        }
-
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
             return SafeNativeMethods.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
@@ -37,6 +32,11 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
         }
 
+        public int RasGetEntryDialParams(string lpszPhonebook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
+        {
+            return SafeNativeMethods.RasGetEntryDialParams(lpszPhonebook, ref lpDialParams, out lpfPassword);
+        }
+
         public int RasGetErrorString(int uErrorValue, StringBuilder lpszErrorString, int cBufSize)
         {
             return SafeNativeMethods.RasGetErrorString(uErrorValue, lpszErrorString, cBufSize);
@@ -45,11 +45,6 @@ namespace DotRas.Internal.Interop.Primitives
         public int RasGetConnectionStatistics(IntPtr hRasConn, ref RAS_STATS lpStatistics)
         {
             return SafeNativeMethods.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
-        }
-
-        public int RasGetLinkStatistics(IntPtr hRasConn, int dwSubEntry, ref RAS_STATS lpStatistics)
-        {
-            return SafeNativeMethods.RasGetLinkStatistics(hRasConn, dwSubEntry, ref lpStatistics);
         }
 
         public int RasHangUp(IntPtr hRasConn)

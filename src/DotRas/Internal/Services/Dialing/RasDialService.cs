@@ -14,6 +14,7 @@ namespace DotRas.Internal.Services.Dialing
     internal class RasDialService : DisposableObject, IRasDial
     {
         private readonly IRasApi32 api;
+        private readonly IRasHangUp hangUpService;
         private readonly IRasDialExtensionsBuilder extensionsBuilder;
         private readonly IRasDialParamsBuilder paramsBuilder;
         private readonly IExceptionPolicy exceptionPolicy;
@@ -26,9 +27,10 @@ namespace DotRas.Internal.Services.Dialing
         public ITaskCompletionSource<RasConnection> CompletionSource { get; private set; }
         public bool IsBusy { get; private set; }
 
-        public RasDialService(IRasApi32 api, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public RasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory, ITaskCancellationSourceFactory cancellationSourceFactory)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
+            this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
             this.extensionsBuilder = extensionsBuilder ?? throw new ArgumentNullException(nameof(extensionsBuilder));
             this.paramsBuilder = paramsBuilder ?? throw new ArgumentNullException(nameof(paramsBuilder));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
@@ -82,6 +84,8 @@ namespace DotRas.Internal.Services.Dialing
 
         private void BeginDial(RasDialContext context)
         {
+            var handle = IntPtr.Zero;
+
             try
             {
                 SetBusy();
@@ -89,7 +93,7 @@ namespace DotRas.Internal.Services.Dialing
                 var rasDialExtensions = ConvertToRasDialExtensions(context);
                 var rasDialParams = ConvertToRasDialParams(context);
 
-                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out var handle);
+                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out handle);
                 if (ret != SUCCESS)
                 {
                     throw exceptionPolicy.Create(ret);
@@ -99,9 +103,21 @@ namespace DotRas.Internal.Services.Dialing
             }
             catch (Exception)
             {
+                HangUpIfNecessary(handle);
                 SetNotBusy();
+
                 throw;
             }
+        }
+
+        private void HangUpIfNecessary(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero)
+            {
+                return;
+            }
+
+            hangUpService.UnsafeHangUp(handle, false);
         }
 
         private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)

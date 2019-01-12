@@ -3,7 +3,7 @@
 namespace DotRas
 {
     /// <summary>
-    /// Represents connection link statistics for a remote access connection.
+    /// Represents connection statistics for a remote access connection.
     /// </summary>
     public class RasConnectionStatistics
     {
@@ -99,13 +99,11 @@ namespace DotRas
         /// <summary>
         /// Gets the compression ratio for data received on this connection or link.
         /// </summary>
-        /// <remarks>This member is valid only for a single link connection, or a single link in a multilink connection.</remarks>
         public virtual long CompressionRatioIn { get; }
 
         /// <summary>
         /// Gets the compression ratio for data transmitted on this connection or link.
         /// </summary>
-        /// <remarks>This member is valid only for a single link connection, or a single link in a multilink connection.</remarks>
         public virtual long CompressionRatioOut { get; }
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
 using static DotRas.Internal.Interop.NativeMethods;
 
@@ -9,10 +8,6 @@ namespace DotRas.Internal.Interop
     {
         int RasClearConnectionStatistics(
             IntPtr hRasConn);
-
-        int RasClearLinkStatistics(
-            IntPtr hRasConn, 
-            int dwSubEntry);
 
         int RasEnumConnections(
             RASCONN[] lpRasConn,
@@ -36,6 +31,11 @@ namespace DotRas.Internal.Interop
             string lpszEntryName,
             ref RASCREDENTIALS lpCredentials);
 
+        int RasGetEntryDialParams(
+            string lpszPhonebook,
+            ref RASDIALPARAMS lpDialParams,
+            out bool lpfPassword);
+
         int RasGetErrorString(
             int uErrorValue,
             StringBuilder lpszErrorString,
@@ -43,11 +43,6 @@ namespace DotRas.Internal.Interop
 
         int RasGetConnectionStatistics(
             IntPtr hRasConn,
-            [In, Out] ref RAS_STATS lpStatistics);
-
-        int RasGetLinkStatistics(
-            IntPtr hRasConn, 
-            int dwSubEntry, 
             ref RAS_STATS lpStatistics);
 
         int RasHangUp(IntPtr hRasConn);

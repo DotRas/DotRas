@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.DependencyInjection;
-using Container = DotRas.Internal.DependencyInjection.Container;
 
 namespace DotRas
 {
@@ -17,9 +16,7 @@ namespace DotRas
         private readonly IRasGetConnectStatus statusService;
         private readonly IRasHangUp hangUpService;
         private readonly IRasGetConnectionStatistics connectionStatisticsService;
-        private readonly IRasGetLinkStatistics linkStatisticsService;
         private readonly IRasClearConnectionStatistics clearConnectionStatisticsService;
-        private readonly IRasClearLinkStatistics clearLinkStatisticsService;
 
         /// <summary>
         /// Gets the handle of the connection.
@@ -40,11 +37,6 @@ namespace DotRas
         /// Gets the full path (including filename) to the phone book containing the entry for this connection.
         /// </summary>
         public virtual string PhoneBookPath { get; }
-
-        /// <summary>
-        /// Gets the one-based sub-entry index of the connected link in a multi-link connection.
-        /// </summary>
-        public virtual int SubEntryId { get; }
 
         /// <summary>
         /// Gets the <see cref="Guid"/> that represents the phone book entry.
@@ -68,7 +60,7 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, int subEntryId, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasGetLinkStatistics linkStatisticsService, IRasClearConnectionStatistics clearConnectionStatisticsService, IRasClearLinkStatistics clearLinkStatisticsService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasClearConnectionStatistics clearConnectionStatisticsService)
         {
             if (handle == IntPtr.Zero)
             {
@@ -87,7 +79,6 @@ namespace DotRas
             PhoneBookPath = phoneBookPath;
             Handle = handle;
             Device = device ?? throw new ArgumentNullException(nameof(device));
-            SubEntryId = subEntryId;
             EntryId = entryId;
             Options = options ?? throw new ArgumentNullException(nameof(options));
             SessionId = sessionId;
@@ -96,9 +87,7 @@ namespace DotRas
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
             this.connectionStatisticsService = connectionStatisticsService ?? throw new ArgumentNullException(nameof(connectionStatisticsService));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
-            this.linkStatisticsService = linkStatisticsService ?? throw new ArgumentNullException(nameof(linkStatisticsService));
             this.clearConnectionStatisticsService = clearConnectionStatisticsService ?? throw new ArgumentNullException(nameof(clearConnectionStatisticsService));
-            this.clearLinkStatisticsService = clearLinkStatisticsService ?? throw new ArgumentNullException(nameof(clearLinkStatisticsService));
         }
 
         /// <summary>
@@ -114,7 +103,7 @@ namespace DotRas
         /// <returns>An enumerable used to iterate through the connections.</returns>
         public static IEnumerable<RasConnection> EnumerateConnections()
         {
-            return Container.Default.GetRequiredService<IRasEnumConnections>()
+            return CompositionRoot.Default.GetRequiredService<IRasEnumConnections>()
                 .EnumerateConnections();
         }
 
@@ -128,30 +117,12 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Clears the accumulated statistics for a link in a multi-link connection.
-        /// </summary>
-        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
-        public virtual void ClearLinkStatistics()
-        {
-            clearLinkStatisticsService.ClearLinkStatistics(this, SubEntryId);
-        }
-
-        /// <summary>
         /// Retrieves accumulated statistics for the connection.
         /// </summary>
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatistics GetStatistics()
         {
             return connectionStatisticsService.GetConnectionStatistics(this);
-        }
-
-        /// <summary>
-        /// Retrieves accumulated statistics for a link in a multi-link connection.
-        /// </summary>
-        /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
-        public virtual RasConnectionStatistics GetLinkStatistics()
-        {
-            return linkStatisticsService.GetLinkStatistics(this, SubEntryId);
         }
 
         /// <summary>
@@ -164,13 +135,24 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Terminates the remote access connection.
+        /// Disconnects the remote access connection.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        public virtual void HangUp(CancellationToken cancellationToken)
+        public virtual void Disconnect(CancellationToken cancellationToken)
         {
-            hangUpService.HangUp(this, cancellationToken);
+            Disconnect(false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
+        /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
+        /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        public virtual void Disconnect(bool closeAllReferences, CancellationToken cancellationToken)
+        {
+            hangUpService.HangUp(this, closeAllReferences, cancellationToken);
         }
     }
 }

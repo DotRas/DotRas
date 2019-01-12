@@ -30,6 +30,12 @@ namespace DotRas.Internal.Interop.Primitives
             ref int lpConnections);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasGetEntryDialParams(
+            string lpszPhonebook,
+            [In, Out] ref RASDIALPARAMS lpDialParams,
+            [Out] out bool lpfPassword);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetErrorString(
             int uErrorValue,
             StringBuilder lpszErrorString,
@@ -50,12 +56,6 @@ namespace DotRas.Internal.Interop.Primitives
             string lpszPhonebook,
             string lpszEntryName,
             [In, Out] ref RASCREDENTIALS lpCredentials);
-
-        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
-        public static extern int RasGetLinkStatistics(
-            IntPtr hRasConn,
-            int dwSubEntry,
-            [In, Out] ref RAS_STATS lpRasStatistics);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasValidateEntryName(

@@ -19,33 +19,33 @@ namespace DotRas.Internal.Services.Connections
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
         }
 
-        public void HangUp(IRasConnection connection, CancellationToken cancellationToken)
+        public void HangUp(IRasConnection connection, bool closeAllReferences, CancellationToken cancellationToken)
         {
             if (connection == null)
             {
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            HangUpImpl(connection.Handle, cancellationToken);
+            HangUpImpl(connection.Handle, closeAllReferences, cancellationToken);
         }
 
-        public void UnsafeHangUp(IntPtr handle, CancellationToken cancellationToken)
+        public void UnsafeHangUp(IntPtr handle, bool closeAllReferences)
         {
             if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
             }
 
-            HangUpImpl(handle, cancellationToken);
+            HangUpImpl(handle, closeAllReferences, CancellationToken.None);
         }
 
-        private void HangUpImpl(IntPtr handle, CancellationToken cancellationToken)
+        private void HangUpImpl(IntPtr handle, bool closeAllReferences, CancellationToken cancellationToken)
         {
-            CloseAllConnectionsToTheHandle(handle, cancellationToken);
+            CloseAllReferencesToTheHandle(handle, closeAllReferences, cancellationToken);
             EnsurePortHasBeenReleased();
         }
 
-        private void CloseAllConnectionsToTheHandle(IntPtr handle, CancellationToken cancellationToken)
+        private void CloseAllReferencesToTheHandle(IntPtr handle, bool closeAllReferences, CancellationToken cancellationToken)
         {
             int ret;
 
@@ -58,7 +58,7 @@ namespace DotRas.Internal.Services.Connections
                 {
                     throw exceptionPolicy.Create(ret);
                 }
-            } while (ret == SUCCESS);
+            } while (closeAllReferences && ret == SUCCESS);
         }
 
         private static bool ShouldThrowExceptionFromReturnCode(int ret)

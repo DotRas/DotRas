@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas;
@@ -18,11 +17,10 @@ namespace ConsoleRunner
             dialer = new RasDialer
             {
                 EntryName = Config.EntryName,
-                PhoneBookPath = Config.PhoneBookPath,
-                Credentials = new NetworkCredential(Config.Username, Config.Password)
+                PhoneBookPath = Config.PhoneBookPath
             };
 
-            dialer.DialStateChanged += OnStateChanged;
+            dialer.StateChanged += OnStateChanged;
         }
 
         private async Task RunAsync()
@@ -51,29 +49,23 @@ namespace ConsoleRunner
 
         private async Task ConnectAsync(CancellationToken cancellationToken)
         {
-            connection = await dialer.DialAsync(cancellationToken);
+            connection = await dialer.ConnectAsync(cancellationToken);
             if (connection != null)
             {
                 SetConnected();
 
-                var connectionStats = connection.GetStatistics();
-                if (connectionStats != null)
+                var stats = connection.GetStatistics();
+                if (stats != null)
                 {
                 }
 
-                var linkStats = connection.GetLinkStatistics();
-                if (linkStats != null)
-                {
-                }
-
-                connection.ClearLinkStatistics();
                 connection.ClearStatistics();
             }
         }
 
         private void DisconnectAsync(CancellationToken cancellationToken)
         {
-            connection.HangUp(cancellationToken);
+            connection.Disconnect(cancellationToken);
             SetNotConnected();
         }
 
@@ -92,7 +84,7 @@ namespace ConsoleRunner
             return !IsConnected && !CancellationSource.IsCancellationRequested;
         }
 
-        private void OnStateChanged(object sender, DialStateChangedEventArgs e)
+        private void OnStateChanged(object sender, StateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
             RandomlyThrowException();
