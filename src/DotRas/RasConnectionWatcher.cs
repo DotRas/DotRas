@@ -39,7 +39,7 @@ namespace DotRas
         /// Initializes a new instance of the <see cref="RasConnectionWatcher"/> class.
         /// </summary>
         public RasConnectionWatcher()
-            : this(Container.Default.GetRequiredService<IRasConnectionNotification>())
+            : this(CompositionRoot.Default.GetRequiredService<IRasConnectionNotification>())
         {
         }
 

@@ -53,13 +53,13 @@ namespace DotRas.Internal.DependencyInjection
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
             registry.RegisterCallback<IRasConnectionNotification>(
-                (c, _) => new RasConnectionNotificationService(
+                c => new RasConnectionNotificationService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IRasConnectionNotificationCallbackHandler>(),
                     c.GetRequiredService<DefaultExceptionPolicy>()));
 
             registry.RegisterCallback<IRasConnectionNotificationCallbackHandler>(
-                (c, _) => new RasConnectionNotificationCallbackHandler(
+                c => new RasConnectionNotificationCallbackHandler(
                     c.GetRequiredService<IRasEnumConnections>()));
 
             registry.RegisterCallback<IRasHangUp>(
