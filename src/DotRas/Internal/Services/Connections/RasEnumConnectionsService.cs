@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.Composition;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.RasError;

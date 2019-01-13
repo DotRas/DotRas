@@ -1,9 +1,9 @@
-﻿using DotRas.Internal.DependencyInjection;
+﻿using DotRas.Internal.Composition;
 using DotRas.Internal.Interop;
 using Moq;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.DependencyInjection
+namespace DotRas.Tests.Internal.Composition
 {
     [TestFixture]
     public class CompositionRootTests

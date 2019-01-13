@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRas.Internal.Abstractions.DependencyInjection
+namespace DotRas.Internal.Abstractions.Composition
 {
     internal interface ICompositionRegistry
     {

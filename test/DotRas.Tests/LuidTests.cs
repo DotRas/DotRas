@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.Composition;
 using Moq;
 using NUnit.Framework;
 

@@ -1,8 +1,8 @@
 ﻿using DotRas.Devices;
-using DotRas.Internal.DependencyInjection.Factories.Devices;
+using DotRas.Internal.Composition.Factories.Devices;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.DependencyInjection.Factories.Devices
+namespace DotRas.Tests.Internal.Composition.Factories.Devices
 {
     [TestFixture]
     public class PppoeDeviceFactoryTests

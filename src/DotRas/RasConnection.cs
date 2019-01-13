@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.Composition;
 
 namespace DotRas
 {

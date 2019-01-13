@@ -1,10 +1,10 @@
 ﻿using System;
 using DotRas.Devices;
-using DotRas.Internal.DependencyInjection.Factories;
+using DotRas.Internal.Composition.Factories;
 using Moq;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.DependencyInjection.Factories
+namespace DotRas.Tests.Internal.Composition.Factories
 {
     [TestFixture]
     public class DeviceTypeFactoryTests

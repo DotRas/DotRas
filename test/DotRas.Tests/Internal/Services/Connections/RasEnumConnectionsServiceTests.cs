@@ -4,7 +4,7 @@ using DotRas.Devices;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection.Factories;
+using DotRas.Internal.Composition.Factories;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
