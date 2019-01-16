@@ -7,7 +7,7 @@ namespace ConsoleRunner
 {
     partial class Program
     {
-        private readonly RasDialer dialer = new RasDialer();    
+        private readonly RasDialer dialer = new RasDialer();
         private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
 
         private RasConnection connection;
@@ -30,8 +30,6 @@ namespace ConsoleRunner
 
         private void Run()
         {
-            watcher.WatchAnyConnections();
-
             while (ShouldContinueExecution())
             {
                 try
@@ -59,13 +57,28 @@ namespace ConsoleRunner
 
         private void Connect(CancellationToken cancellationToken)
         {
+            if (IsConnected)
+            {
+                return;
+            }
+
             Console.WriteLine("Starting connection...");
+
             connection = dialer.Connect(cancellationToken);
+            watcher.WatchConnection(connection);
+            
+            IsConnected = true;
+
             Console.WriteLine("Completed connecting.");
         }
 
         private void Disconnect()
         {
+            if (!IsConnected)
+            {
+                return;
+            }
+
             Console.WriteLine("Starting disconnect...");
             connection.Disconnect();
             Console.WriteLine("Completed disconnect.");

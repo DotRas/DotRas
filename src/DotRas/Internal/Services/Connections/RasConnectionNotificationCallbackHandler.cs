@@ -10,57 +10,61 @@ namespace DotRas.Internal.Services.Connections
         private readonly IRasEnumConnections enumConnectionsService;
         private readonly object syncRoot = new object();
 
-        private RasConnection[] previous;
+        private RasConnection[] previousState;
 
-        public RasConnectionNotificationCallbackHandler(IRasEnumConnections enumConnectionService)
+        public RasConnectionNotificationCallbackHandler(IRasEnumConnections enumConnectionsService)
         {
-            this.enumConnectionsService = enumConnectionService ?? throw new ArgumentNullException(nameof(enumConnectionService));
+            this.enumConnectionsService = enumConnectionsService ?? throw new ArgumentNullException(nameof(enumConnectionsService));
         }
 
         public void Initialize()
         {
             lock (syncRoot)
             {
-                previous = enumConnectionsService.EnumerateConnections().ToArray();
+                previousState = enumConnectionsService.EnumerateConnections().ToArray();
             }
         }
 
-        public void OnCallback(object obj, bool timedOut)
+        public void OnCallback(object obj, bool timeout)
         {
-            if (!(obj is RasConnectionNotificationStateObject registration))
+            if (obj is RasConnectionNotificationStateObject state)
             {
-                return;
+                OnCallback(state);
             }
+        }
 
+        private void OnCallback(RasConnectionNotificationStateObject state)
+        {           
             lock (syncRoot)
             {
                 var current = enumConnectionsService.EnumerateConnections().ToArray();
-                var changes = FindChanges(current);
+                var changes = FindConnectionChanges(current);
 
                 if (changes.Any())
                 {
-                    ExecuteCallbackForChanges(registration.Callback, changes);
-                    previous = current;
+                    ExecuteCallbackForChanges(state.Callback, changes);
                 }
+
+                previousState = current;
             }
         }
 
-        private IEnumerable<RasConnection> FindChanges(RasConnection[] current)
+        private IList<RasConnection> FindConnectionChanges(RasConnection[] current)
         {
-            if (current.Length > previous.Length)
+            if (current.Length > previousState.Length)
             {
-                return FindChanges(current, previous);
+                return FindChanges(current, previousState);
             }
 
-            return FindChanges(previous, current);
+            return FindChanges(previousState, current);
         }
 
-        private static IEnumerable<RasConnection> FindChanges(IEnumerable<RasConnection> collectionA, IEnumerable<RasConnection> collectionB)
+        private static IList<RasConnection> FindChanges(IEnumerable<RasConnection> collectionA, IEnumerable<RasConnection> collectionB)
         {
             return collectionA.Where(o => !collectionB.Contains(o)).ToArray();
         }
 
-        private void ExecuteCallbackForChanges(Action<RasConnectionEventArgs> callback, IEnumerable<RasConnection> changes)
+        private void ExecuteCallbackForChanges(Action<RasConnectionEventArgs> callback, IList<RasConnection> changes)
         {
             if (changes == null || !changes.Any())
             {

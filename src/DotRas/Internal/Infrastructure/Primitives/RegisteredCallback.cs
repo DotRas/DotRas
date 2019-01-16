@@ -18,7 +18,7 @@ namespace DotRas.Internal.Infrastructure.Primitives
             this.waitHandle = waitHandle ?? throw new ArgumentNullException(nameof(waitHandle));
         }
 
-        public static RegisteredCallback Create(WaitOrTimerCallback callback, object state)
+        public static IRegisteredCallback Create(WaitOrTimerCallback callback, object state)
         {
             AutoResetEvent waitEvent = null;
 
@@ -37,7 +37,7 @@ namespace DotRas.Internal.Infrastructure.Primitives
                 }
                 catch (Exception)
                 {
-                    waitHandle.Unregister(waitEvent);
+                    waitHandle?.Unregister(waitEvent);
                     throw;
                 }
             }

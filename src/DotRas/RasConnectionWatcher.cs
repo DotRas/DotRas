@@ -14,7 +14,7 @@ namespace DotRas
         private readonly IRasConnectionNotification api;
 
         /// <summary>
-        /// Gets a value indicating whether this instance is watching for connection changes.
+        /// Gets a value indicating whether this instance is actively watching for connection changes.
         /// </summary>
         public bool IsActive { get; } = false;
 
@@ -82,6 +82,8 @@ namespace DotRas
 
         private void Subscribe(IRasConnection connection)
         {
+            api.Reset();
+
             api.Subscribe(new RasNotificationContext
             {
                 Connection = connection,
@@ -91,14 +93,14 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Stops the watcher from watching for connection changes.
+        /// Stops watching for connection changes.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after Dispose has been called.</exception>
         public void Stop()
         {
             GuardMustNotBeDisposed();
 
-            api.Dispose();
+            api.Reset();
         }
 
         /// <inheritdoc />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -18,7 +17,7 @@ namespace DotRas.Internal.Services.Connections
         private readonly IRasConnectionNotificationCallbackHandler callbackHandler;
         private readonly IExceptionPolicy exceptionPolicy;
 
-        private readonly IDictionary<RASCN, RasConnectionNotificationStateObject> registrations = 
+        private readonly IDictionary<RASCN, RasConnectionNotificationStateObject> subscriptions = 
             new Dictionary<RASCN, RasConnectionNotificationStateObject>();
 
         public RasConnectionNotificationService(IRasApi32 api, IRasConnectionNotificationCallbackHandler callbackHandler, IExceptionPolicy exceptionPolicy)
@@ -35,15 +34,25 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(context));
             }
 
-            callbackHandler.Initialize();
-
-            var handle = DetermineHandleForSubscribe(context);
-            if (ShouldRegisterForConnectedEvents(handle))
+            lock (SyncRoot)
             {
-                RegisterCallback(handle, context.OnConnectedCallback, RASCN.Connection);
-            }
+                callbackHandler.Initialize();
 
-            RegisterCallback(handle, context.OnDisconnectedCallback, RASCN.Disconnection);
+                var handle = DetermineHandleForSubscribe(context);
+                if (ShouldRegisterForConnectedEvents(handle))
+                {
+                    RegisterCallback(handle, context.OnConnectedCallback, RASCN.Connection);
+                }
+
+                RegisterCallback(handle, context.OnDisconnectedCallback, RASCN.Disconnection);
+            }
+        }
+
+        public void Reset()
+        {
+            GuardMustNotBeDisposed();
+
+            Unsubscribe();
         }
 
         private IntPtr DetermineHandleForSubscribe(RasNotificationContext context)
@@ -75,7 +84,7 @@ namespace DotRas.Internal.Services.Connections
                 stateObject.Callback = callback;
                 stateObject.NotificationType = changeNotification;
 
-                registrations.Add(changeNotification, stateObject);
+                subscriptions.Add(changeNotification, stateObject);
             }
             catch (Exception)
             {
@@ -87,6 +96,29 @@ namespace DotRas.Internal.Services.Connections
         protected virtual IRegisteredCallback CreateRegisteredCallback(object state)
         {
             return RegisteredCallback.Create(callbackHandler.OnCallback, state);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Unsubscribe();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void Unsubscribe()
+        {
+            lock (SyncRoot)
+            {
+                foreach (var subscription in subscriptions)
+                {
+                    subscription.Value.RegisteredCallback.Dispose();
+                }
+
+                subscriptions.Clear();
+            }
         }
     }
 }
