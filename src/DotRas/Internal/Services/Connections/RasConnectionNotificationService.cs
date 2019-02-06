@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Infrastructure.Primitives;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
@@ -13,20 +13,33 @@ namespace DotRas.Internal.Services.Connections
 {
     internal class RasConnectionNotificationService : DisposableObject, IRasConnectionNotification
     {
-        private readonly IRasApi32 api;
+        private readonly IRasApi32 rasApi32;
         private readonly IRasConnectionNotificationCallbackHandler callbackHandler;
         private readonly IExceptionPolicy exceptionPolicy;
+        private readonly IRegisteredCallbackFactory callbackFactory;
 
-        private readonly IDictionary<RASCN, RasConnectionNotificationStateObject> subscriptions = 
+        private readonly IDictionary<RASCN, RasConnectionNotificationStateObject> notifications = 
             new Dictionary<RASCN, RasConnectionNotificationStateObject>();
 
-        public RasConnectionNotificationService(IRasApi32 api, IRasConnectionNotificationCallbackHandler callbackHandler, IExceptionPolicy exceptionPolicy)
+        public RasConnectionNotificationService(IRasApi32 rasApi32, IRasConnectionNotificationCallbackHandler callbackHandler, IExceptionPolicy exceptionPolicy, IRegisteredCallbackFactory callbackFactory)
         {
-            this.api = api ?? throw new ArgumentNullException(nameof(api));
+            this.rasApi32 = rasApi32 ?? throw new ArgumentNullException(nameof(rasApi32));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
+            this.callbackFactory = callbackFactory ?? throw new ArgumentNullException(nameof(callbackFactory));
         }
 
+        public int SubscriptionsCount
+        {
+            get
+            {
+                lock (SyncRoot)
+                {
+                    return notifications.Count;
+                }
+            }
+        }
+        
         public void Subscribe(RasNotificationContext context)
         {
             if (context == null)
@@ -39,7 +52,7 @@ namespace DotRas.Internal.Services.Connections
                 callbackHandler.Initialize();
 
                 var handle = DetermineHandleForSubscribe(context);
-                if (ShouldRegisterForConnectedEvents(handle))
+                if (ShouldRegisterForConnectionEvents(handle))
                 {
                     RegisterCallback(handle, context.OnConnectedCallback, RASCN.Connection);
                 }
@@ -60,7 +73,7 @@ namespace DotRas.Internal.Services.Connections
             return context.Connection?.Handle ?? INVALID_HANDLE_VALUE;
         }
 
-        private bool ShouldRegisterForConnectedEvents(IntPtr handle)
+        private bool ShouldRegisterForConnectionEvents(IntPtr handle)
         {
             return handle == INVALID_HANDLE_VALUE;
         }
@@ -72,9 +85,13 @@ namespace DotRas.Internal.Services.Connections
 
             try
             {
-                registeredCallback = CreateRegisteredCallback(stateObject);
+                registeredCallback = callbackFactory.Create(callbackHandler.OnCallback, stateObject);
+                if (registeredCallback == null)
+                {
+                    throw new InvalidOperationException("The factory did not register a callback.");
+                }
 
-                var ret = api.RasConnectionNotification(handle, registeredCallback.Handle, changeNotification);
+                var ret = rasApi32.RasConnectionNotification(handle, registeredCallback.Handle, changeNotification);
                 if (ret != SUCCESS)
                 {
                     throw exceptionPolicy.Create(ret);
@@ -84,18 +101,13 @@ namespace DotRas.Internal.Services.Connections
                 stateObject.Callback = callback;
                 stateObject.NotificationType = changeNotification;
 
-                subscriptions.Add(changeNotification, stateObject);
+                notifications.Add(changeNotification, stateObject);
             }
             catch (Exception)
             {
                 registeredCallback?.Dispose();
                 throw;
             }
-        }
-
-        protected virtual IRegisteredCallback CreateRegisteredCallback(object state)
-        {
-            return RegisteredCallback.Create(callbackHandler.OnCallback, state);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,12 +124,12 @@ namespace DotRas.Internal.Services.Connections
         {
             lock (SyncRoot)
             {
-                foreach (var subscription in subscriptions)
+                foreach (var subscription in notifications)
                 {
                     subscription.Value.RegisteredCallback.Dispose();
                 }
 
-                subscriptions.Clear();
+                notifications.Clear();
             }
         }
     }

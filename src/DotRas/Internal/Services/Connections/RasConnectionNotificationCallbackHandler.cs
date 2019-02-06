@@ -10,6 +10,7 @@ namespace DotRas.Internal.Services.Connections
         private readonly IRasEnumConnections enumConnectionsService;
         private readonly object syncRoot = new object();
 
+        private bool initialized;
         private RasConnection[] previousState;
 
         public RasConnectionNotificationCallbackHandler(IRasEnumConnections enumConnectionsService)
@@ -19,9 +20,22 @@ namespace DotRas.Internal.Services.Connections
 
         public void Initialize()
         {
+            GuardMustNotAlreadyBeInitialized();
+
             lock (syncRoot)
             {
+                GuardMustNotAlreadyBeInitialized();
+
                 previousState = enumConnectionsService.EnumerateConnections().ToArray();
+                initialized = true;
+            }
+        }
+
+        private void GuardMustNotAlreadyBeInitialized()
+        {
+            if (initialized)
+            {
+                throw new InvalidOperationException("The object has already been initialized.");
             }
         }
 
@@ -38,8 +52,8 @@ namespace DotRas.Internal.Services.Connections
             lock (syncRoot)
             {
                 var current = enumConnectionsService.EnumerateConnections().ToArray();
-                var changes = FindConnectionChanges(current);
 
+                var changes = FindConnectionChanges(current);
                 if (changes.Any())
                 {
                     ExecuteCallbackForChanges(state.Callback, changes);
@@ -66,11 +80,6 @@ namespace DotRas.Internal.Services.Connections
 
         private void ExecuteCallbackForChanges(Action<RasConnectionEventArgs> callback, IList<RasConnection> changes)
         {
-            if (changes == null || !changes.Any())
-            {
-                return;
-            }
-
             foreach (var connection in changes)
             {
                 callback.Invoke(new RasConnectionEventArgs(connection));

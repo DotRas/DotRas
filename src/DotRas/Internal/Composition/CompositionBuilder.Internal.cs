@@ -56,7 +56,8 @@ namespace DotRas.Internal.Composition
                 c => new RasConnectionNotificationService(
                     c.GetRequiredService<IRasApi32>(),
                     c.GetRequiredService<IRasConnectionNotificationCallbackHandler>(),
-                    c.GetRequiredService<DefaultExceptionPolicy>()));
+                    c.GetRequiredService<DefaultExceptionPolicy>(),
+                    c.GetRequiredService<IRegisteredCallbackFactory>()));
 
             registry.RegisterCallback<IRasConnectionNotificationCallbackHandler>(
                 c => new RasConnectionNotificationCallbackHandler(

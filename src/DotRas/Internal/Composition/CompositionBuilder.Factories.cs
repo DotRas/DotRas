@@ -27,6 +27,9 @@ namespace DotRas.Internal.Composition
             registry.RegisterCallback<IStructArrayFactory>(
                 c =>  new StructFactory(
                     c.GetRequiredService<IMarshaller>()));
+
+            registry.RegisterCallback<IRegisteredCallbackFactory>(
+                c => new RegisteredCallbackFactory());
         }        
     }
 }
