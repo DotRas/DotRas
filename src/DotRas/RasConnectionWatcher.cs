@@ -16,7 +16,7 @@ namespace DotRas
         /// <summary>
         /// Gets a value indicating whether this instance is actively watching for connection changes.
         /// </summary>
-        public bool IsActive { get; } = false;
+        public bool IsActive => api.SubscriptionsCount > 0;
 
         #endregion
 
@@ -58,7 +58,6 @@ namespace DotRas
         public void WatchAnyConnections()
         {
             GuardMustNotBeDisposed();
-
             Subscribe(null);
         }
 
@@ -76,7 +75,6 @@ namespace DotRas
             }
 
             GuardMustNotBeDisposed();
-            
             Subscribe(connection);
         }
 
@@ -99,14 +97,16 @@ namespace DotRas
         public void Stop()
         {
             GuardMustNotBeDisposed();
-
             api.Reset();
         }
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            api?.Dispose();
+            if (disposing)
+            {
+                api.Dispose();
+            }
 
             base.Dispose(disposing);
         }
