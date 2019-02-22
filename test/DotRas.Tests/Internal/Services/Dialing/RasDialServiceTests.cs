@@ -55,6 +55,24 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
+        public void DisposesCorrectlyWhenNotInitialized()
+        {
+            var api = new Mock<IRasApi32>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var extensionsBuilder = new Mock<IRasDialExtensionsBuilder>();
+            var paramsBuilder = new Mock<IRasDialParamsBuilder>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+            var completionSourceFactory = new Mock<ITaskCompletionSourceFactory>();
+            var cancellationSourceFactory = new Mock<ITaskCancellationSourceFactory>();
+            var callbackHandler = new Mock<IRasDialCallbackHandler>();
+
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, completionSourceFactory.Object, cancellationSourceFactory.Object);
+            target.Dispose();
+
+            callbackHandler.Verify(o => o.Dispose(), Times.Once);
+        }
+
+        [Test]
         public void ThrowsAnExceptionWhenTheCompletionSourceIsNotCreated()
         {
             var api = new Mock<IRasApi32>();
@@ -100,13 +118,11 @@ namespace DotRas.Tests.Internal.Services.Dialing
             completionSourceFactory.Setup(o => o.Create<RasConnection>()).Returns(completionSource.Object);
 
             var cancellationSource = new Mock<ITaskCancellationSource>();
-            cancellationSource.As<IDisposable>();
 
             var cancellationSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationSource.Object);
 
             var callbackHandler = new Mock<IRasDialCallbackHandler>();
-            callbackHandler.As<IDisposable>();
 
             var context = new RasDialContext
             {
@@ -124,8 +140,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 await target.DialAsync(context);
             }
 
-            callbackHandler.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
-            cancellationSource.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
+            callbackHandler.Verify(o => o.Dispose(), Times.Once);
+            cancellationSource.Verify(o => o.Dispose(), Times.Once);
         }
 
         [Test]

@@ -78,7 +78,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void SetUpCancellationSource(RasDialContext context)
         {
-            CancellationSource?.DisposeIfNecessary();
+            CancellationSource?.Dispose();
             CancellationSource = cancellationSourceFactory.Create(context.CancellationToken);
         }
 
@@ -157,8 +157,8 @@ namespace DotRas.Internal.Services.Dialing
                     CancellationSource.Cancel();
                 }
 
-                CancellationSource.DisposeIfNecessary();            
-                callbackHandler.DisposeIfNecessary();
+                CancellationSource?.Dispose();
+                callbackHandler.Dispose();
             }
 
             base.Dispose(disposing);

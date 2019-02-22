@@ -185,7 +185,7 @@ namespace DotRas
         {
             if (disposing)
             {
-                api.DisposeIfNecessary();
+                api.Dispose();
             }
 
             base.Dispose(disposing);

@@ -14,6 +14,14 @@ namespace DotRas.Internal.Composition.Advice
         {
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                AttachedObject.Dispose();
+            }
+        }
+
         public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             AttachedObject.Initialize(completionSource, onStateChangedCallback, onCompletedCallback, cancellationToken);

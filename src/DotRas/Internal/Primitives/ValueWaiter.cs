@@ -48,7 +48,7 @@ namespace DotRas.Internal.Primitives
         {
             if (disposing)
             {
-                waitHandle.DisposeIfNecessary();
+                waitHandle.Dispose();
             }
 
             base.Dispose(disposing);

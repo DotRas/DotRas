@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace DotRas.Internal.Abstractions.Primitives
 {
-    internal interface IManualResetEvent
+    internal interface IManualResetEvent : IDisposable
     {
         void Set();
         void Reset();

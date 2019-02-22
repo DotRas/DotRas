@@ -231,7 +231,6 @@ namespace DotRas.Tests
         public void DisposesTheApiAsExpected()
         {
             var api = new Mock<IRasDial>();
-            var disposable = api.As<IDisposable>();
 
             var fileSystem = new Mock<IFileSystem>();
             var validator = new Mock<IPhoneBookEntryValidator>();
@@ -239,7 +238,7 @@ namespace DotRas.Tests
             var target = new RasDialer(api.Object, fileSystem.Object, validator.Object);
             target.Dispose();
 
-            disposable.Verify(o => o.Dispose(), Times.Once);
+            api.Verify(o => o.Dispose(), Times.Once);
         }
 
         [Test]

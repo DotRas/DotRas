@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace DotRas.Internal.Abstractions.Primitives
 {
-    internal interface ITaskCancellationSource
+    internal interface ITaskCancellationSource : IDisposable
     {
         CancellationToken Token { get; }
 
