@@ -30,6 +30,8 @@ namespace ConsoleRunner
 
         private void Run()
         {
+            watcher.Start();
+            
             while (ShouldContinueExecution())
             {
                 try
@@ -65,7 +67,6 @@ namespace ConsoleRunner
             Console.WriteLine("Starting connection...");
 
             connection = dialer.Connect(cancellationToken);
-            watcher.WatchConnection(connection);
             
             IsConnected = true;
 

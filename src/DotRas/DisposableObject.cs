@@ -29,6 +29,11 @@ namespace DotRas
 
             lock (SyncRoot)
             {
+                if (disposed)
+                {
+                    return;
+                }
+
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }

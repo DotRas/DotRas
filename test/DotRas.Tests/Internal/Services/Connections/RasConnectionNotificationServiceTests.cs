@@ -55,7 +55,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ReturnsZeroAfterCreation()
+        public void ReturnsInactiveAfterCreation()
         {
             var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
@@ -63,7 +63,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var callbackFactory = new Mock<IRegisteredCallbackFactory>();
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            Assert.AreEqual(0, target.SubscriptionsCount);
+            Assert.False(target.IsActive);
         }
 
         [Test]
@@ -90,12 +90,12 @@ namespace DotRas.Tests.Internal.Services.Connections
             api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Connection), Times.Once);
             api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Disconnection), Times.Once);
 
-            Assert.AreEqual(2, target.SubscriptionsCount);
+            Assert.True(target.IsActive);
 
             target.Reset();
 
             registeredCallback.Verify(o => o.Dispose(), Times.Exactly(2));
-            Assert.AreEqual(0, target.SubscriptionsCount);
+            Assert.False(target.IsActive);
         }
 
         [Test]
@@ -123,15 +123,15 @@ namespace DotRas.Tests.Internal.Services.Connections
             });
 
             callbackHandler.Verify(o => o.Initialize(), Times.Once);
-            api.Verify(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<SafeHandle>(), RASCN.Connection), Times.Never);
+            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Connection), Times.Once);
             api.Verify(o => o.RasConnectionNotification(handle, It.IsAny<SafeHandle>(), RASCN.Disconnection), Times.Once);
 
-            Assert.AreEqual(1, target.SubscriptionsCount);
+            Assert.True(target.IsActive);
 
             target.Reset();
 
-            registeredCallback.Verify(o => o.Dispose(), Times.Once);
-            Assert.AreEqual(0, target.SubscriptionsCount);
+            registeredCallback.Verify(o => o.Dispose(), Times.Exactly(2));
+            Assert.False(target.IsActive);
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace DotRas.Tests.Internal.Services.Connections
 
             target.Dispose();
 
-            registeredCallback.Verify(o => o.Dispose(), Times.Once);
+            registeredCallback.Verify(o => o.Dispose(), Times.Exactly(2));
         }
 
         [Test]

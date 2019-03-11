@@ -21,38 +21,49 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ReturnsTrueWhenTheSubscriptionsIsGreaterThanZero()
+        public void ReturnsTrueWhenIsActive()
         {
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.SubscriptionsCount).Returns(1);
+            api.Setup(o => o.IsActive).Returns(true);
 
             var target = new RasConnectionWatcher(api.Object);
             Assert.True(target.IsActive);
         }
 
         [Test]
-        public void ReturnsFalseWhenTheSubscriptionsIsZero()
+        public void ReturnsFalseWhenIsNotActive()
         {
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.SubscriptionsCount).Returns(0);
+            api.Setup(o => o.IsActive).Returns(false);
 
             var target = new RasConnectionWatcher(api.Object);
             Assert.False(target.IsActive);
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenWatchAnyConnectionsAfterDispose()
+        public void ThrowsAnExceptionWhenStartAfterDispose()
         {
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new RasConnectionWatcher(api.Object);
             target.Dispose();
 
-            Assert.Throws<ObjectDisposedException>(() => target.WatchAnyConnections());
+            Assert.Throws<ObjectDisposedException>(() => target.Start());
         }
 
         [Test]
-        public void WatchAnyConnectionsWillSubscribeWithoutAConnection()
+        public void ThrowsAnExceptionWhenStopAfterDispose()
+        {
+            var api = new Mock<IRasConnectionNotification>();
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Stop());
+        }
+
+        [Test]
+        public void StartWillSubscribeWithoutAConnection()
         {
             var api = new Mock<IRasConnectionNotification>();
             api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
@@ -63,7 +74,7 @@ namespace DotRas.Tests
             });
 
             var target = new RasConnectionWatcher(api.Object);
-            target.WatchAnyConnections();
+            target.Start();
 
             api.Verify(o => o.Subscribe(It.IsAny<RasNotificationContext>()), Times.Once);
         }
@@ -86,7 +97,7 @@ namespace DotRas.Tests
                 executed = true;
             };
 
-            target.WatchAnyConnections();
+            target.Start();
 
             Assert.True(executed);
         }
@@ -109,19 +120,10 @@ namespace DotRas.Tests
                 executed = true;
             };
 
-            target.WatchAnyConnections();
+            target.Start();
 
             Assert.True(executed);
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenConnectionIsNull()
-        {
-            var api = new Mock<IRasConnectionNotification>();
-
-            var target = new RasConnectionWatcher(api.Object);
-            Assert.Throws<ArgumentNullException>(() => target.WatchConnection(null));
-        }
+        }        
 
         [Test]
         public void WatchConnectionWillSubscribeWithConnection()
@@ -136,21 +138,14 @@ namespace DotRas.Tests
                 Assert.IsNotNull(c.OnDisconnectedCallback);
             });
 
-            var target = new RasConnectionWatcher(api.Object);
-            target.WatchConnection(connection.Object);
+            var target = new RasConnectionWatcher(api.Object)
+            {
+                Connection = connection.Object
+            };
+
+            target.Start();
 
             api.Verify(o => o.Subscribe(It.IsAny<RasNotificationContext>()), Times.Once);
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenWatchConnectionsAfterDispose()
-        {
-            var api = new Mock<IRasConnectionNotification>();
-
-            var target = new RasConnectionWatcher(api.Object);
-            target.Dispose();
-
-            Assert.Throws<ObjectDisposedException>(() => target.WatchConnection(new Mock<RasConnection>().Object));
         }
 
         [Test]
@@ -168,10 +163,32 @@ namespace DotRas.Tests
         public void StopWillResetTheApi()
         {
             var api = new Mock<IRasConnectionNotification>();
+            api.Setup(o => o.IsActive).Returns(true);
 
             var target = new RasConnectionWatcher(api.Object);
             target.Stop();
 
+            api.Verify(o => o.Reset(), Times.Once);
+        }
+
+        [Test]
+        public void RestartsTheWatcherWhenChangedWhileActive()
+        {
+            var connection = new Mock<RasConnection>();
+
+            var api = new Mock<IRasConnectionNotification>();
+            api.SetupSequence(o => o.IsActive)
+                .Returns(false)
+                .Returns(true)
+                .Returns(true)
+                .Returns(false);
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Start();
+
+            target.Connection = connection.Object;
+            
+            api.Verify(o => o.Subscribe(It.IsAny<RasNotificationContext>()), Times.Exactly(2));
             api.Verify(o => o.Reset(), Times.Once);
         }
     }

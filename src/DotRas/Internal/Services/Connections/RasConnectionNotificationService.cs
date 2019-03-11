@@ -29,16 +29,16 @@ namespace DotRas.Internal.Services.Connections
             this.callbackFactory = callbackFactory ?? throw new ArgumentNullException(nameof(callbackFactory));
         }
 
-        public int SubscriptionsCount
+        public bool IsActive
         {
             get
             {
                 lock (SyncRoot)
                 {
-                    return notifications.Count;
+                    return notifications.Count > 0;
                 }
             }
-        }
+        }       
         
         public void Subscribe(RasNotificationContext context)
         {
@@ -51,12 +51,10 @@ namespace DotRas.Internal.Services.Connections
             {
                 callbackHandler.Initialize();
 
-                var handle = DetermineHandleForSubscribe(context);
-                if (ShouldRegisterForConnectionEvents(handle))
-                {
-                    RegisterCallback(handle, context.OnConnectedCallback, RASCN.Connection);
-                }
+                // Connection events always needs an invalid handle.
+                RegisterCallback(INVALID_HANDLE_VALUE, context.OnConnectedCallback, RASCN.Connection);
 
+                var handle = DetermineHandleForSubscribe(context);
                 RegisterCallback(handle, context.OnDisconnectedCallback, RASCN.Disconnection);
             }
         }
@@ -71,11 +69,6 @@ namespace DotRas.Internal.Services.Connections
         private IntPtr DetermineHandleForSubscribe(RasNotificationContext context)
         {
             return context.Connection?.Handle ?? INVALID_HANDLE_VALUE;
-        }
-
-        private bool ShouldRegisterForConnectionEvents(IntPtr handle)
-        {
-            return handle == INVALID_HANDLE_VALUE;
         }
 
         private void RegisterCallback(IntPtr handle, Action<RasConnectionEventArgs> callback, RASCN changeNotification)

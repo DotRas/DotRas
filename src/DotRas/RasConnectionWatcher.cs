@@ -16,7 +16,30 @@ namespace DotRas
         /// <summary>
         /// Gets a value indicating whether this instance is actively watching for connection changes.
         /// </summary>
-        public bool IsActive => api.SubscriptionsCount > 0;
+        public bool IsActive => api.IsActive;
+
+        private IRasConnection connection;
+
+        /// <summary>
+        /// Gets or sets the connection to watch for changes.
+        /// </summary>
+        public IRasConnection Connection
+        {
+            get => connection;
+            set
+            {
+                if (connection == null && value == null || Equals(connection, value))
+                {
+                    return;
+                }
+
+                connection = value;
+                if (IsActive)
+                {
+                    Restart();
+                }
+            }
+        }
 
         #endregion
 
@@ -25,7 +48,6 @@ namespace DotRas
         /// <summary>
         /// Occurs when a new connection has been established.
         /// </summary>
-        /// <remarks>This event will only be raised if the watcher is watching for any connections.</remarks>
         public event EventHandler<RasConnectionEventArgs> Connected;
 
         /// <summary>
@@ -52,35 +74,17 @@ namespace DotRas
         }
 
         /// <summary>
-        /// Watch any connections for changes.
+        /// Starts watching for connection changes.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after Dispose has been called.</exception>
-        public void WatchAnyConnections()
+        public void Start()
         {
             GuardMustNotBeDisposed();
-            Subscribe(null);
-        }
 
-        /// <summary>
-        /// Watch a specific connection for changes.
-        /// </summary>
-        /// <param name="connection">The connection to watch.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="connection"/> is a null reference.</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the object is used after Dispose has been called.</exception>
-        public void WatchConnection(RasConnection connection)
-        {
-            if (connection == null)
+            if (IsActive)
             {
-                throw new ArgumentNullException(nameof(connection));
+                return;
             }
-
-            GuardMustNotBeDisposed();
-            Subscribe(connection);
-        }
-
-        private void Subscribe(IRasConnection connection)
-        {
-            api.Reset();
 
             api.Subscribe(new RasNotificationContext
             {
@@ -97,7 +101,19 @@ namespace DotRas
         public void Stop()
         {
             GuardMustNotBeDisposed();
+
+            if (!IsActive)
+            {
+                return;
+            }
+
             api.Reset();
+        }
+
+        private void Restart()
+        {
+            Stop();
+            Start();
         }
 
         /// <inheritdoc />
