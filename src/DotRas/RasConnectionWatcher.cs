@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Composition;
+using DotRas.Internal.DependencyInjection;
 
 namespace DotRas
 {

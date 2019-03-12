@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.Composition;
+using DotRas.Internal.DependencyInjection;
 
 namespace DotRas
 {

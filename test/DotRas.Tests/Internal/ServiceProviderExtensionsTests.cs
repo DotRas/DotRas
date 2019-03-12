@@ -1,5 +1,5 @@
 ﻿using System;
-using DotRas.Internal.Composition;
+using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
 using DotRas.Tests.Internal.Stubs;
 using Moq;
