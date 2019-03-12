@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
+using DotRas.Internal.IoC;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
@@ -19,13 +19,13 @@ namespace DotRas.Tests
         public void Setup()
         {
             container = new Mock<IServiceProvider>();
-            CompositionRoot.Default = container.Object;
+            ServiceLocator.Default = container.Object;
         }
 
         [TearDown]
         public void TearDown()
         {
-            CompositionRoot.Clear();
+            ServiceLocator.Clear();
         }
 
         [Test]

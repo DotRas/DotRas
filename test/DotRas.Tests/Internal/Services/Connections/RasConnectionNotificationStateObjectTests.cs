@@ -1,6 +1,4 @@
-﻿using System;
-using DotRas.Internal.Services.Connections;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Services.Connections
 {

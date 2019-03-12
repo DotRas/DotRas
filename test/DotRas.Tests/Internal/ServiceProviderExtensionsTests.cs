@@ -1,6 +1,6 @@
 ﻿using System;
-using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
+using DotRas.Internal.IoC;
 using DotRas.Tests.Internal.Stubs;
 using Moq;
 using NUnit.Framework;

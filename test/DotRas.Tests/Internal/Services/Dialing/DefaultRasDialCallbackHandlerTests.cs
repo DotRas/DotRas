@@ -4,7 +4,7 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection.Factories;
+using DotRas.Internal.IoC.Factories;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Tests.Internal.Stubs;
 using Moq;

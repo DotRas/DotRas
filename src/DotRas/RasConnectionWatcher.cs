@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.IoC;
 
 namespace DotRas
 {
@@ -61,7 +61,7 @@ namespace DotRas
         /// Initializes a new instance of the <see cref="RasConnectionWatcher"/> class.
         /// </summary>
         public RasConnectionWatcher()
-            : this(CompositionRoot.Default.GetRequiredService<IRasConnectionNotification>())
+            : this(ServiceLocator.Default.GetRequiredService<IRasConnectionNotification>())
         {
         }
 
