@@ -71,7 +71,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             {
                 Callback = (e) =>
                 {
-                    Assert.AreEqual(connection.Object, e.Connection);
                     executed = true;
                 },
                 NotificationType = RASCN.Disconnection,
@@ -101,7 +100,6 @@ namespace DotRas.Tests.Internal.Services.Connections
             {
                 Callback = (e) =>
                 {
-                    Assert.AreEqual(connection.Object, e.Connection);
                     executed = true;
                 },
                 NotificationType = RASCN.Connection,

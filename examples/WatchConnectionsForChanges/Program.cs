@@ -45,7 +45,7 @@ namespace WatchConnectionsForChanges
         /// <param name="e">This object carries the event data.</param>
         private void OnConnectionConnected(object sender, RasConnectionEventArgs e)
         {
-            Console.WriteLine($"Connected: {e.Connection.EntryName}");
+            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace WatchConnectionsForChanges
         /// <param name="e">This object carries the event data.</param>
         private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
         {
-            Console.WriteLine($"Disconnected: {e.Connection.EntryName}");
+            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
         }
 
         private void Run()

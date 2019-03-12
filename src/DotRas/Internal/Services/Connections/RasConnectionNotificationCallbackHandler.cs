@@ -48,7 +48,7 @@ namespace DotRas.Internal.Services.Connections
         }
 
         private void OnCallback(RasConnectionNotificationStateObject state)
-        {           
+        {
             lock (syncRoot)
             {
                 var current = enumConnectionsService.EnumerateConnections().ToArray();
@@ -78,11 +78,17 @@ namespace DotRas.Internal.Services.Connections
             return collectionA.Where(o => !collectionB.Contains(o)).ToArray();
         }
 
-        private void ExecuteCallbackForChanges(Action<RasConnectionEventArgs> callback, IList<RasConnection> changes)
+        private void ExecuteCallbackForChanges(Action<RasConnectionEventArgs> callback, IEnumerable<RasConnection> changes)
         {
             foreach (var connection in changes)
             {
-                callback.Invoke(new RasConnectionEventArgs(connection));
+                callback.Invoke(new RasConnectionEventArgs(
+                    new RasConnectionInformation(
+                        connection.Handle,
+                        connection.EntryName,
+                        connection.PhoneBookPath,
+                        connection.EntryId,
+                        connection.CorrelationId)));
             }
         }
     }

@@ -88,7 +88,12 @@ namespace DotRas.Tests
             api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
             {
                 Assert.Throws<ArgumentNullException>(() => c.OnConnectedCallback(null));
-                c.OnConnectedCallback(new RasConnectionEventArgs(new Mock<RasConnection>().Object));
+                c.OnConnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(
+                    new IntPtr(1),
+                    "Test",
+                    "",
+                    Guid.NewGuid(),
+                    Guid.NewGuid())));
             });
 
             var target = new RasConnectionWatcher(api.Object);
@@ -111,7 +116,12 @@ namespace DotRas.Tests
             api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
             {
                 Assert.Throws<ArgumentNullException>(() => c.OnDisconnectedCallback(null));
-                c.OnDisconnectedCallback(new RasConnectionEventArgs(new Mock<RasConnection>().Object));
+                c.OnDisconnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(
+                    new IntPtr(1),
+                    "Test",
+                    "",
+                    Guid.NewGuid(),
+                    Guid.NewGuid())));
             });
 
             var target = new RasConnectionWatcher(api.Object);

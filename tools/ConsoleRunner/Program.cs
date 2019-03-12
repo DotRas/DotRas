@@ -90,13 +90,13 @@ namespace ConsoleRunner
 
         private void OnConnected(object sender, RasConnectionEventArgs e)
         {
-            Console.WriteLine($"Connected: {e.Connection.EntryName}");
+            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
             SetConnected();
         }
 
         private void OnDisconnected(object sender, RasConnectionEventArgs e)
         {
-            Console.WriteLine($"Disconnected: {e.Connection.EntryName}");            
+            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");            
             SetNotConnected();
         }
 
