@@ -20,7 +20,7 @@ namespace ConsoleRunner
             dialer.StateChanged += OnStateChanged;
 
             watcher.Connected += OnConnected;
-            watcher.Disconnected += OnDisconnected;            
+            watcher.Disconnected += OnDisconnected;
         }
 
         public Task RunAsync()
@@ -46,6 +46,8 @@ namespace ConsoleRunner
                         {
                             Disconnect();
                         }
+
+                        WaitUntilNextExecution(tcs.Token);
                     }
                 }
                 catch (Exception ex)
@@ -65,11 +67,7 @@ namespace ConsoleRunner
             }
 
             Console.WriteLine("Starting connection...");
-
             connection = dialer.Connect(cancellationToken);
-            
-            IsConnected = true;
-
             Console.WriteLine("Completed connecting.");
         }
 
@@ -83,6 +81,11 @@ namespace ConsoleRunner
             Console.WriteLine("Starting disconnect...");
             connection.Disconnect();
             Console.WriteLine("Completed disconnect.");
+        }
+
+        private void WaitUntilNextExecution(CancellationToken cancellationToken)
+        {
+            cancellationToken.WaitHandle.WaitOne(TimeSpan.FromSeconds(5));
         }
 
         private void OnConnected(object sender, RasConnectionEventArgs e)
