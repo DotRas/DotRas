@@ -55,6 +55,11 @@ namespace DotRas
         /// </summary>
         public event EventHandler<RasConnectionEventArgs> Disconnected;
 
+        /// <summary>
+        /// Occurs when an exception occurs while processing the notification.
+        /// </summary>
+        public event EventHandler<ErrorEventArgs> Error;
+
         #endregion
         
         /// <summary>
@@ -134,7 +139,14 @@ namespace DotRas
                 throw new ArgumentNullException(nameof(e));
             }
 
-            Connected?.Invoke(this, e);
+            try
+            {
+                Connected?.Invoke(this, e);
+            }
+            catch (Exception ex)
+            {
+                RaiseErrorEvent(new ErrorEventArgs(ex));
+            }
         }
 
         private void RaiseDisconnectedEvent(RasConnectionEventArgs e)
@@ -144,7 +156,31 @@ namespace DotRas
                 throw new ArgumentNullException(nameof(e));
             }
 
-            Disconnected?.Invoke(this, e);
+            try
+            {
+                Disconnected?.Invoke(this, e);
+            }
+            catch (Exception ex)
+            {
+                RaiseErrorEvent(new ErrorEventArgs(ex));
+            }
+        }
+
+        private void RaiseErrorEvent(ErrorEventArgs e)
+        {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
+            try
+            {
+                Error?.Invoke(this, e);
+            }
+            catch (Exception)
+            {
+                // Swallow any errors which occur while processing the error event.
+            }
         }
     }
 }

@@ -20,5 +20,12 @@ namespace DotRas
         {
             ConnectionInformation = connectionInformation ?? throw new ArgumentNullException(nameof(connectionInformation));
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasConnectionEventArgs"/> class.
+        /// </summary>
+        protected RasConnectionEventArgs()
+        {
+        }
     }
 }

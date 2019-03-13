@@ -1,5 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
+using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
 
@@ -200,6 +201,64 @@ namespace DotRas.Tests
             
             api.Verify(o => o.Subscribe(It.IsAny<RasNotificationContext>()), Times.Exactly(2));
             api.Verify(o => o.Reset(), Times.Once);
+        }
+
+        [Test]
+        public void RaisesTheErrorEventWhenAnErrorOccursWithinConnectedEvent()
+        {
+            Action<RasConnectionEventArgs> onConnectedCallback = null;
+            bool executed = false;
+
+            var api = new Mock<IRasConnectionNotification>();
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(context =>
+            {
+                onConnectedCallback = context.OnConnectedCallback;
+            });
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Connected += (sender, e) => { throw new TestException(); };
+            target.Error += (sender, e) =>
+            {
+                executed = true;
+            };
+
+            target.Start();
+
+            Assert.IsNotNull(onConnectedCallback);
+
+            var eventData = new Mock<RasConnectionEventArgs>();
+            onConnectedCallback(eventData.Object);
+
+            Assert.True(executed, "The error event was not executed as expected.");
+        }
+
+        [Test]
+        public void RaisesTheErrorEventWhenAnErrorOccursWithinDisconnectedEvent()
+        {
+            Action<RasConnectionEventArgs> onDisconnectedCallback = null;
+            bool executed = false;
+
+            var api = new Mock<IRasConnectionNotification>();
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(context =>
+            {
+                onDisconnectedCallback = context.OnDisconnectedCallback;
+            });
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Disconnected += (sender, e) => { throw new TestException(); };
+            target.Error += (sender, e) =>
+            {
+                executed = true;
+            };
+
+            target.Start();
+
+            Assert.IsNotNull(onDisconnectedCallback);
+
+            var eventData = new Mock<RasConnectionEventArgs>();
+            onDisconnectedCallback(eventData.Object);
+
+            Assert.True(executed, "The error event was not executed as expected.");
         }
     }
 }
