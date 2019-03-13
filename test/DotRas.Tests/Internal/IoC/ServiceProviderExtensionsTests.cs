@@ -5,7 +5,7 @@ using DotRas.Tests.Internal.Stubs;
 using Moq;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal
+namespace DotRas.Tests.Internal.IoC
 {
     [TestFixture]
     public class ServiceProviderExtensionsTests
