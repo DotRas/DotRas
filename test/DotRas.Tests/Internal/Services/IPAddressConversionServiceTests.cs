@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using DotRas.Internal.Services;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.NativeMethods;

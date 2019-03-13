@@ -60,6 +60,18 @@ namespace DotRas.Internal.Interop
         }
 
         [Flags]
+        public enum RASCN
+        {
+            Connection = 0x1,
+            Disconnection = 0x2,
+            BandwidthAdded = 0x4,
+            BandwidthRemoved = 0x8,
+            Dormant = 0x10,
+            Reconnection = 0x20,
+            EPDGPacketArrival = 0x40
+        }
+
+        [Flags]
         public enum RDEOPT
         {
             None = 0x0,

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.IoC;
 
 namespace DotRas
 {
@@ -48,7 +48,7 @@ namespace DotRas
         /// <returns>A new <see cref="Luid"/> structure.</returns>
         public static Luid NewLuid()
         {
-            return CompositionRoot.Default.GetRequiredService<IAllocateLocallyUniqueId>()
+            return ServiceLocator.Default.GetRequiredService<IAllocateLocallyUniqueId>()
                 .AllocateLocallyUniqueId();
         }
 

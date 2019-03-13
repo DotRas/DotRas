@@ -45,8 +45,8 @@ namespace DotRas.Internal.Services.Dialing
         {
             if (disposing)
             {
-                cancellationSource.DisposeIfNecessary();
-                handle.DisposeIfNecessary();
+                cancellationSource?.Dispose();
+                handle.Dispose();
             }
 
             base.Dispose(disposing);
@@ -71,7 +71,7 @@ namespace DotRas.Internal.Services.Dialing
 
             lock (syncRoot)
             {
-                cancellationSource.DisposeIfNecessary();                
+                cancellationSource?.Dispose();
                 cancellationSource = cancellationSourceFactory.Create(cancellationToken);
 
                 this.cancellationToken = cancellationSource.Token;

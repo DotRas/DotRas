@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
+using DotRas.Internal.IoC;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
@@ -19,13 +19,117 @@ namespace DotRas.Tests
         public void Setup()
         {
             container = new Mock<IServiceProvider>();
-            CompositionRoot.Default = container.Object;
+            ServiceLocator.Default = container.Object;
         }
 
         [TearDown]
         public void TearDown()
         {
-            CompositionRoot.Clear();
+            ServiceLocator.Clear();
+        }
+
+        [Test]
+        public void EqualsTheHashCodeOfTheHandle()
+        {
+            var handle = new IntPtr(1);
+
+            var target = new Mock<RasConnection>();
+            target.Setup(o => o.Handle).Returns(handle);
+            target.Setup(o => o.GetHashCode()).CallBase();
+
+            var actual = target.Object.GetHashCode();
+
+            Assert.AreEqual(handle.GetHashCode(), actual);
+        }
+
+        [Test]
+        public void DoesNotEqualNullWhenUsingEqualsWithObject()
+        {
+            var target = new Mock<RasConnection>();
+
+            object other = null;
+            target.Setup(o => o.Equals(other)).CallBase();
+
+            Assert.False(target.Object.Equals(other));
+        }
+
+        [Test]
+        public void EqualsTheOtherConnection()
+        {
+            var target = new Mock<RasConnection>();
+            target.Setup(o => o.Handle).Returns(new IntPtr(1));
+
+            var other = new Mock<RasConnection>();
+            other.Setup(o => o.Handle).Returns(new IntPtr(1));
+
+            target.Setup(o => o.Equals(other.Object)).CallBase();
+
+            Assert.True(target.Object == other.Object);
+        }
+
+        [Test]
+        public void EqualsTheOtherConnectionWhenOtherIsAnObject()
+        {
+            var target = new Mock<RasConnection>();
+            target.Setup(o => o.Handle).Returns(new IntPtr(1));
+            
+            var other = new Mock<RasConnection>();
+            other.Setup(o => o.Handle).Returns(new IntPtr(1));
+
+            target.Setup(o => o.Equals(other.Object)).CallBase();
+
+            object otherTarget = other.Object;
+            target.Setup(o => o.Equals(otherTarget)).CallBase();
+
+            Assert.True(target.Object.Equals(otherTarget));
+        }
+
+        [Test]
+        public void DoesNotEqualTheOtherConnection()
+        {
+            var target = new Mock<RasConnection>();
+            target.Setup(o => o.Handle).Returns(new IntPtr(1));
+
+            var other = new Mock<RasConnection>();
+            other.Setup(o => o.Handle).Returns(new IntPtr(2));
+
+            Assert.True(target.Object != other.Object);
+        }
+
+        [Test]
+        public void DoesEqualWhenBothAreNull()
+        {
+            RasConnection targetA = null;
+            RasConnection targetB = null;
+
+            Assert.True(targetA == targetB);
+        }
+
+        [Test]
+        public void DoesNotEqualWhenOneIsExpectedToBeNull()
+        {
+            var target = new Mock<RasConnection>();
+
+            Assert.False(target.Object == null);
+        }
+
+        [Test]
+        public void DoesNotEqualWhenOtherIsExpectedToBeNullUsingEquals()
+        {
+            var target = new Mock<RasConnection>();
+
+            RasConnection other = null;
+            target.Setup(o => o.Equals(other)).CallBase();
+
+            Assert.False(target.Object.Equals(other));
+        }
+
+        [Test]
+        public void DoesNotEqualWhenOneIsExpectedToBeNullWhenUsingYodaSyntax()
+        {
+            var target = new Mock<RasConnection>();
+
+            Assert.False(null == target.Object);
         }
 
         [Test]
@@ -512,7 +616,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectShouldNotCloseAllReferencesByDefault()
+        public void DisconnectShouldCloseAllReferencesByDefault()
         {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
@@ -531,7 +635,7 @@ namespace DotRas.Tests
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
             target.Disconnect(CancellationToken.None);
 
-            rasHangUp.Verify(o => o.HangUp(target, false, CancellationToken.None), Times.Once);
+            rasHangUp.Verify(o => o.HangUp(target, true, CancellationToken.None), Times.Once);
         }
     }
 }

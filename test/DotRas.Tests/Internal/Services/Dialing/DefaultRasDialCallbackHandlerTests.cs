@@ -4,7 +4,7 @@ using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection.Factories;
+using DotRas.Internal.IoC.Factories;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Tests.Internal.Stubs;
 using Moq;
@@ -344,14 +344,13 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var waitHandle = new Mock<IValueWaiter<IntPtr>>();
-            waitHandle.As<IDisposable>();
 
             var cancellationSourceFactory = new Mock<ITaskCancellationSourceFactory>();
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object, cancellationSourceFactory.Object);
             target.Dispose();
 
-            waitHandle.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
+            waitHandle.Verify(o => o.Dispose(), Times.Once);
         }
 
         [Test]
@@ -363,7 +362,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var waitHandle = new Mock<IValueWaiter<IntPtr>>();
 
             var cancellationSource = new Mock<ITaskCancellationSource>();
-            cancellationSource.As<IDisposable>();
 
             var cancellationSourceFactory = new Mock<ITaskCancellationSourceFactory>();
             cancellationSourceFactory.Setup(o => o.Create(It.IsAny<CancellationToken>())).Returns(cancellationSource.Object);
@@ -373,7 +371,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             target.Dispose();
 
-            cancellationSource.As<IDisposable>().Verify(o => o.Dispose(), Times.Once);
+            cancellationSource.Verify(o => o.Dispose(), Times.Once);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.IoC;
 using Moq;
 using NUnit.Framework;
 
@@ -15,13 +15,13 @@ namespace DotRas.Tests
         public void Setup()
         {
             container = new Mock<IServiceProvider>();
-            CompositionRoot.Default = container.Object;
+            ServiceLocator.Default = container.Object;
         }
 
         [TearDown]
         public void TearDown()
         {
-            CompositionRoot.Clear();
+            ServiceLocator.Clear();
         }
 
         [Test]

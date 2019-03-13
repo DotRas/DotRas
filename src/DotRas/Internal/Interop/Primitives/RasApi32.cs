@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
-using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.NativeMethods;
+using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Interop.Primitives
 {
@@ -10,6 +11,11 @@ namespace DotRas.Internal.Interop.Primitives
         public int RasClearConnectionStatistics(IntPtr hRasConn)
         {
             return UnsafeNativeMethods.RasClearConnectionStatistics(hRasConn);
+        }
+
+        public int RasConnectionNotification(IntPtr hRasConn, SafeHandle hEvent, RASCN dwFlags)
+        {
+            return SafeNativeMethods.RasConnectionNotification(hRasConn, hEvent, dwFlags);
         }
 
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
@@ -27,14 +33,14 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);
         }
 
-        public int RasGetCredentials(string lpszPhonebook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
+        public int RasGetCredentials(string lpszPhoneBook, string lpszEntryName, ref RASCREDENTIALS lpCredentials)
         {
-            return SafeNativeMethods.RasGetCredentials(lpszPhonebook, lpszEntryName, ref lpCredentials);
+            return SafeNativeMethods.RasGetCredentials(lpszPhoneBook, lpszEntryName, ref lpCredentials);
         }
 
-        public int RasGetEntryDialParams(string lpszPhonebook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
+        public int RasGetEntryDialParams(string lpszPhoneBook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
         {
-            return SafeNativeMethods.RasGetEntryDialParams(lpszPhonebook, ref lpDialParams, out lpfPassword);
+            return SafeNativeMethods.RasGetEntryDialParams(lpszPhoneBook, ref lpDialParams, out lpfPassword);
         }
 
         public int RasGetErrorString(int uErrorValue, StringBuilder lpszErrorString, int cBufSize)
@@ -52,9 +58,9 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasHangUp(hRasConn);
         }
 
-        public int RasValidateEntryName(string lpszPhonebook, string lpszEntryName)
+        public int RasValidateEntryName(string lpszPhoneBook, string lpszEntryName)
         {
-            return SafeNativeMethods.RasValidateEntryName(lpszPhonebook, lpszEntryName);
+            return SafeNativeMethods.RasValidateEntryName(lpszPhoneBook, lpszEntryName);
         }
     }
 }

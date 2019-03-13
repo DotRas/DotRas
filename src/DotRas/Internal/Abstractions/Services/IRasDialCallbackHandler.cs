@@ -4,7 +4,7 @@ using DotRas.Internal.Abstractions.Primitives;
 
 namespace DotRas.Internal.Abstractions.Services
 {
-    internal interface IRasDialCallbackHandler
+    internal interface IRasDialCallbackHandler : IDisposable
     {
         void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
 

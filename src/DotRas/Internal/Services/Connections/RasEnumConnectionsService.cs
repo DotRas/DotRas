@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.RasError;
@@ -41,7 +40,7 @@ namespace DotRas.Internal.Services.Connections
 
         private RASCONN[] GetConnections(out int count)
         {
-            RASCONN[] lpRasConns;
+            RASCONN[] lpRasConn;
             bool retry;
 
             count = 1;
@@ -49,9 +48,9 @@ namespace DotRas.Internal.Services.Connections
             do
             {
                 retry = false;
-                lpRasConns = structFactory.CreateArray<RASCONN>(count, out var lpCb);
+                lpRasConn = structFactory.CreateArray<RASCONN>(count, out var lpCb);
 
-                var ret = api.RasEnumConnections(lpRasConns, ref lpCb, ref count);
+                var ret = api.RasEnumConnections(lpRasConn, ref lpCb, ref count);
                 if (ret == ERROR_BUFFER_TOO_SMALL)
                 {
                     retry = true;
@@ -62,7 +61,7 @@ namespace DotRas.Internal.Services.Connections
                 }
             } while (retry);
 
-            return lpRasConns;
+            return lpRasConn;
         }
 
         private RasConnection CreateConnection(RASCONN hRasConn)

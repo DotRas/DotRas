@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.DependencyInjection;
+using DotRas.Internal.IoC;
 
 namespace DotRas
 {
@@ -65,9 +65,9 @@ namespace DotRas
         /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
         public RasDialer() : this(
-                CompositionRoot.Default.GetRequiredService<IRasDial>(),
-                CompositionRoot.Default.GetRequiredService<IFileSystem>(),
-                CompositionRoot.Default.GetRequiredService<IPhoneBookEntryValidator>())
+                ServiceLocator.Default.GetRequiredService<IRasDial>(),
+                ServiceLocator.Default.GetRequiredService<IFileSystem>(),
+                ServiceLocator.Default.GetRequiredService<IPhoneBookEntryValidator>())
         {
         }
 
@@ -185,7 +185,7 @@ namespace DotRas
         {
             if (disposing)
             {
-                api.DisposeIfNecessary();
+                api.Dispose();
             }
 
             base.Dispose(disposing);
