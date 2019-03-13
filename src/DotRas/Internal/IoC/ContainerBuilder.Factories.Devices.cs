@@ -1,53 +1,25 @@
-﻿using DotRas.Internal.Abstractions.IoC;
-using DotRas.Internal.IoC.Factories.Devices;
+﻿using DotRas.Internal.IoC.Factories.Devices;
 
 namespace DotRas.Internal.IoC
 {
-    internal static partial class ContainerBuilder
+    static partial class ContainerBuilder
     {
-        private static void RegisterDeviceFactories(ICompositionRegistry registry)
+        private static void RegisterDeviceFactories(Container container)
         {
-            registry.RegisterCallback(
-                c => new AtmDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new FrameRelayDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new GenericDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new IrdaDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new IsdnDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new ModemDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new PadDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new ParallelDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new PppoeDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new SerialDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new SonetDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new Sw56DeviceFactory());
-
-            registry.RegisterCallback(
-                c => new VpnDeviceFactory());
-
-            registry.RegisterCallback(
-                c => new X25DeviceFactory());
+            container.RegisterType(typeof(AtmDeviceFactory));
+            container.RegisterType(typeof(FrameRelayDeviceFactory));
+            container.RegisterType(typeof(GenericDeviceFactory));
+            container.RegisterType(typeof(IrdaDeviceFactory));
+            container.RegisterType(typeof(IsdnDeviceFactory));
+            container.RegisterType(typeof(ModemDeviceFactory));
+            container.RegisterType(typeof(PadDeviceFactory));
+            container.RegisterType(typeof(ParallelDeviceFactory));
+            container.RegisterType(typeof(PppoeDeviceFactory));
+            container.RegisterType(typeof(SerialDeviceFactory));
+            container.RegisterType(typeof(SonetDeviceFactory));
+            container.RegisterType(typeof(Sw56DeviceFactory));
+            container.RegisterType(typeof(VpnDeviceFactory));
+            container.RegisterType(typeof(X25DeviceFactory));
         }
     }
 }

@@ -1,17 +1,21 @@
-﻿namespace DotRas.Internal.IoC
+﻿using System;
+
+namespace DotRas.Internal.IoC
 {
     internal static partial class ContainerBuilder
     {
-        public static ServiceLocator Build()
+        public static Container Build()
         {
-            var composer = new ServiceLocator();
+            var container = new Container();
 
-            RegisterDiagnostics(composer);
-            RegisterFactories(composer);
-            RegisterInternal(composer);
-            RegisterInterop(composer);
+            container.Register<IServiceProvider>(() => container);
 
-            return composer;
+            RegisterDiagnostics(container);
+            RegisterFactories(container);
+            RegisterInternal(container);
+            RegisterInterop(container);
+
+            return container;
         }
     }
 }

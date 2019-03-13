@@ -1,35 +1,20 @@
 ﻿using DotRas.Internal.Abstractions.Factories;
-using DotRas.Internal.Abstractions.IoC;
-using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.IoC.Factories;
 
 namespace DotRas.Internal.IoC
 {
-    internal partial class ContainerBuilder
+    partial class ContainerBuilder
     {
-        private static void RegisterFactories(ICompositionRegistry registry)
+        private static void RegisterFactories(Container container)
         {
-            RegisterDeviceFactories(registry);
+            RegisterDeviceFactories(container);
 
-            registry.RegisterCallback<ITaskCancellationSourceFactory>(
-                c => new TaskCancellationSourceFactory());
-
-            registry.RegisterCallback<ITaskCompletionSourceFactory>(
-                c =>  new TaskCompletionSourceFactory());
-
-            registry.RegisterCallback<IDeviceTypeFactory>(
-                c =>  new DeviceTypeFactory(c));
-
-            registry.RegisterCallback<IStructFactory>(
-                c =>  new StructFactory(
-                    c.GetRequiredService<IMarshaller>()));
-
-            registry.RegisterCallback<IStructArrayFactory>(
-                c =>  new StructFactory(
-                    c.GetRequiredService<IMarshaller>()));
-
-            registry.RegisterCallback<IRegisteredCallbackFactory>(
-                c => new RegisteredCallbackFactory());
+            container.Register<ITaskCancellationSourceFactory>(typeof(TaskCancellationSourceFactory));
+            container.Register<ITaskCompletionSourceFactory>(typeof(TaskCompletionSourceFactory));
+            container.Register<IDeviceTypeFactory>(typeof(DeviceTypeFactory));
+            container.Register<IStructFactory>(typeof(StructFactory));
+            container.Register<IStructArrayFactory>(typeof(StructFactory));
+            container.Register<IRegisteredCallbackFactory>(typeof(RegisteredCallbackFactory));
         }        
     }
 }

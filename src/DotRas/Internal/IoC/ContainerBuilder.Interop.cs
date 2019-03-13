@@ -1,29 +1,28 @@
 ﻿using DotRas.Diagnostics;
-using DotRas.Internal.Abstractions.IoC;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Interop.Primitives;
 using DotRas.Internal.IoC.Advice;
 
 namespace DotRas.Internal.IoC
 {
-    internal static partial class ContainerBuilder
+    static partial class ContainerBuilder
     {
-        private static void RegisterInterop(ICompositionRegistry registry)
+        private static void RegisterInterop(Container container)
         {
-            registry.RegisterCallback<IAdvApi32>(
-                c => new AdvApi32LoggingAdvice(
+            container.Register<IAdvApi32>(() =>
+                new AdvApi32LoggingAdvice(
                     new AdvApi32(),
-                    c.GetRequiredService<IEventLoggingPolicy>()));
+                    container.GetRequiredService<IEventLoggingPolicy>()));
 
-            registry.RegisterCallback<IKernel32>(
-                c => new Kernel32LoggingAdvice(
+            container.Register<IKernel32>(() =>
+                new Kernel32LoggingAdvice(
                     new Kernel32(),
-                    c.GetRequiredService<IEventLoggingPolicy>()));
+                    container.GetRequiredService<IEventLoggingPolicy>()));
 
-            registry.RegisterCallback<IRasApi32>(
-                c => new RasApi32LoggingAdvice(
+            container.Register<IRasApi32>(() =>
+                new RasApi32LoggingAdvice(
                     new RasApi32(),
-                    c.GetRequiredService<IEventLoggingPolicy>()));
+                    container.GetRequiredService<IEventLoggingPolicy>()));
         }
     }
 }
