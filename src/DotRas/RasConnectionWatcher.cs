@@ -23,6 +23,7 @@ namespace DotRas
         /// <summary>
         /// Gets or sets the connection to watch for changes.
         /// </summary>
+        /// <exception cref="ObjectDisposedException">The connection has been changed after the <see cref="Dispose"/> method has been called.</exception>
         public IRasConnection Connection
         {
             get => connection;
@@ -81,7 +82,7 @@ namespace DotRas
         /// <summary>
         /// Starts watching for connection changes.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the object is used after Dispose has been called.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after the <see cref="Dispose"/> method has been called.</exception>
         public void Start()
         {
             GuardMustNotBeDisposed();
@@ -102,7 +103,7 @@ namespace DotRas
         /// <summary>
         /// Stops watching for connection changes.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the object is used after Dispose has been called.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is used after the <see cref="Dispose"/> method has been called.</exception>
         public void Stop()
         {
             GuardMustNotBeDisposed();

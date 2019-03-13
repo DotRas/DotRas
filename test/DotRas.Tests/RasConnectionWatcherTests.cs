@@ -22,6 +22,42 @@ namespace DotRas.Tests
         }
 
         [Test]
+        public void ThrowsAnExceptionWhenStartAfterDisposed()
+        {
+            var api = new Mock<IRasConnectionNotification>();
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Start());
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenStopAfterDisposed()
+        {
+            var api = new Mock<IRasConnectionNotification>();
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Stop());
+        }
+
+         [Test]
+        public void ThrowsAnExceptionWhenConnectionChangedAfterDisposed()
+        {
+            var api = new Mock<IRasConnectionNotification>();
+            api.Setup(o => o.IsActive).Returns(true);
+
+            var connection = new Mock<IRasConnection>();
+
+            var target = new RasConnectionWatcher(api.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Connection = connection.Object);
+        }
+
+        [Test]
         public void ReturnsTrueWhenIsActive()
         {
             var api = new Mock<IRasConnectionNotification>();

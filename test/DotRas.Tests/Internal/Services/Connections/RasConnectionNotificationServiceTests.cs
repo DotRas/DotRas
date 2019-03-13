@@ -43,6 +43,34 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
+        public void ThrowsAnExceptionWhenSubscribeAfterDispose()
+        {
+            var api = new Mock<IRasApi32>();
+            var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+            var callbackFactory = new Mock<IRegisteredCallbackFactory>();
+
+            var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Subscribe(new RasNotificationContext()));
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenResetAfterDispose()
+        {
+            var api = new Mock<IRasApi32>();
+            var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
+            var exceptionPolicy = new Mock<IExceptionPolicy>();
+            var callbackFactory = new Mock<IRegisteredCallbackFactory>();
+
+            var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
+            target.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => target.Reset());
+        }
+
+        [Test]
         public void ThrowsAnExceptionWhenContextIsNull()
         {
             var api = new Mock<IRasApi32>();

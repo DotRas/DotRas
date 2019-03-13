@@ -47,6 +47,8 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(context));
             }
 
+            GuardMustNotBeDisposed();
+
             lock (SyncRoot)
             {
                 callbackHandler.Initialize();
