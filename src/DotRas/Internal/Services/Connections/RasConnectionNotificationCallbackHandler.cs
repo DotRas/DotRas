@@ -20,24 +20,22 @@ namespace DotRas.Internal.Services.Connections
 
         public void Initialize()
         {
-            GuardMustNotAlreadyBeInitialized();
+            if (initialized)
+            {
+                return;
+            }
 
             lock (syncRoot)
             {
-                GuardMustNotAlreadyBeInitialized();
+                if (initialized)
+                {
+                    return;
+                }
 
                 previousState = enumConnectionsService.EnumerateConnections().ToArray();
                 initialized = true;
             }
-        }
-
-        private void GuardMustNotAlreadyBeInitialized()
-        {
-            if (initialized)
-            {
-                throw new InvalidOperationException("The object has already been initialized.");
-            }
-        }
+        }        
 
         public void OnCallback(object obj, bool timeout)
         {

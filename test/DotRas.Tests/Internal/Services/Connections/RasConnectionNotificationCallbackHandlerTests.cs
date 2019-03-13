@@ -29,14 +29,14 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenInitializedMoreThanOnce()
+        public void DoesNotThrowAnExceptionWhenInitializedMoreThanOnce()
         {
             var rasEnumConnections = new Mock<IRasEnumConnections>();
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
 
             target.Initialize();
-            Assert.Throws<InvalidOperationException>(() => target.Initialize());
+            Assert.DoesNotThrow(() => target.Initialize());
 
             rasEnumConnections.Verify(o => o.EnumerateConnections(), Times.Once);
         }
