@@ -37,6 +37,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Examples", "1. Examples"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WatchConnectionsForChanges", "examples\WatchConnectionsForChanges\WatchConnectionsForChanges.csproj", "{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnection", "examples\DialConnection\DialConnection.csproj", "{B7761F51-BD56-45FB-A337-C6CA8CB71B10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnectionAsynchronously", "examples\DialConnectionAsynchronously\DialConnectionAsynchronously.csproj", "{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,14 @@ Global
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7761F51-BD56-45FB-A337-C6CA8CB71B10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7761F51-BD56-45FB-A337-C6CA8CB71B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7761F51-BD56-45FB-A337-C6CA8CB71B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7761F51-BD56-45FB-A337-C6CA8CB71B10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +80,8 @@ Global
 		{48D5F528-BF5E-4B79-B6A2-3CD77E28C482} = {C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}
 		{82CDADEF-9BA9-480C-A059-DAF35FD69B08} = {B3BCF167-8512-4154-A462-5BC1F7B1925F}
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
+		{B7761F51-BD56-45FB-A337-C6CA8CB71B10} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
+		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BBA19DF-42BF-442B-95C4-17D4A554714E}
