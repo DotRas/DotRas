@@ -14,7 +14,7 @@ namespace ConsoleRunner.Infrastructure.Providers
 
         public object GetService(Type serviceType)
         {
-            return context.Resolve(serviceType);
+            return context.ResolveOptional(serviceType);
         }
     }
 }
