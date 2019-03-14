@@ -3,7 +3,7 @@
 namespace DotRas
 {
     /// <summary>
-    /// Provides an access-point to resolve external implementations of dependencies.
+    /// Provides a registration point for a dependency resolver used to resolve external dependency implementations.
     /// </summary>
     public static class DependencyResolver
     {
