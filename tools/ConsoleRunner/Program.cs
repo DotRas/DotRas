@@ -31,7 +31,7 @@ namespace ConsoleRunner
         private void Run()
         {
             watcher.Start();
-            
+         
             while (ShouldContinueExecution())
             {
                 try

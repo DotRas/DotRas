@@ -15,4 +15,12 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.1" />
+    <PackageReference Include="NLog.Config" Version="4.5.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="C:\Users\jeffw\.nuget\packages\nlog.config\4.5.11\contentFiles\any\any\NLog.config" Link="NLog.config" />
+  </ItemGroup>
 </Project>

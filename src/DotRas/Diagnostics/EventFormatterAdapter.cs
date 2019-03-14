@@ -2,34 +2,42 @@
 using System.Reflection;
 using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Tracing
+namespace DotRas.Diagnostics
 {
-    internal class EventFormatterAdapter : IEventFormatterAdapter
+    /// <summary>
+    /// Provides a generic adapter for formatting trace events.
+    /// </summary>
+    public class EventFormatterAdapter : IEventFormatterAdapter
     {
         private const string FormatMethodName = nameof(IEventFormatter<TraceEvent>.Format);
         private const string FactoryMethodName = nameof(IEventFormatterFactory.Create);
 
         private readonly IEventFormatterFactory factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventFormatterAdapter"/> class.
+        /// </summary>
+        /// <param name="factory">The factory to use to create the formatter.</param>
         public EventFormatterAdapter(IEventFormatterFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public string Format(object value)
+        /// <inheritdoc />
+        public string Format(object eventData)
         {
-            if (value == null)
+            if (eventData == null)
             {
                 return "[(null)]";
             }
 
-            var formatter = CreateFormatterForType(value.GetType());
+            var formatter = CreateFormatterForType(eventData.GetType());
             if (formatter == null)
             {
-                throw new FormatterNotFoundException($"The formatter could not be located.", value.GetType());
+                throw new FormatterNotFoundException($"The formatter could not be located.", eventData.GetType());
             }
 
-            return FormatValue(formatter, value);            
+            return FormatValue(formatter, eventData);            
         }
 
         private object CreateFormatterForType(Type valueType)

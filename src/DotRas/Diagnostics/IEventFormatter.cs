@@ -3,9 +3,9 @@
 namespace DotRas.Diagnostics
 {
     /// <summary>
-    /// Identifies a formatter for an object.
+    /// Identifies a formatter for a trace event.
     /// </summary>
-    /// <typeparam name="T">The type of object being formatted.</typeparam>
+    /// <typeparam name="T">The type of event being formatted.</typeparam>
     public interface IEventFormatter<in T>
         where T : TraceEvent
     {
