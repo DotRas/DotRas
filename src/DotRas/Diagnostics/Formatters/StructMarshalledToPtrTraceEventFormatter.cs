@@ -19,15 +19,18 @@ namespace DotRas.Diagnostics.Formatters
 
             var sb = new StringBuilder();
 
-            sb.AppendLine("Structure marshalled to pointer. See the following for more details:");
-            sb.AppendLine($"\tType: {eventData.StructureType.FullName}");
-            sb.AppendLine($"\tResult: {eventData.Result}");
-            sb.AppendLine($"\tDuration: {eventData.Duration}");
+            sb.Append("Structure marshalled to pointer. See the following for more details:");
+            sb.AppendLine().Append($"\tType: {eventData.StructureType.FullName}");
+            sb.AppendLine().Append($"\tResult: {eventData.Result}");
+            sb.AppendLine().Append($"\tDuration: {eventData.Duration}");
 
-            sb.AppendLine("\tFields:");
-            foreach (var field in eventData.Fields)
+            if (eventData.Fields.Count > 0)
             {
-                sb.AppendLine($"\t\t{field.Key}: [{field.Value ?? "(null)"}]");
+                sb.AppendLine().Append("\tFields:");
+                foreach (var field in eventData.Fields)
+                {
+                    sb.AppendLine().Append($"\t\t{field.Key}: [{field.Value ?? "(null)"}]");
+                }
             }
 
             return sb.ToString();

@@ -22,21 +22,24 @@ namespace DotRas.Diagnostics.Formatters
 
             var sb = new StringBuilder();
 
-            sb.AppendLine("PInvoke external call completed. See the following for more details:");
-            sb.AppendLine($"\tDllName: {eventData.DllName}");
-            sb.AppendLine($"\tEntryPoint: '{eventData.MethodName}'");
-            sb.AppendLine($"\tReturnCode: [{eventData.Result}]");
-            sb.AppendLine($"\tDuration: {eventData.Duration}");
+            sb.Append("PInvoke external call completed. See the following for more details:");
+            sb.AppendLine().Append($"\tDllName: {eventData.DllName}");
+            sb.AppendLine().Append($"\tEntryPoint: '{eventData.MethodName}'");
+            sb.AppendLine().Append($"\tReturnCode: [{eventData.Result}]");
+            sb.AppendLine().Append($"\tDuration: {eventData.Duration}");
 
-            sb.AppendLine("\tArguments:");
-            foreach (var arg in eventData.Args)
+            if (eventData.Args.Count > 0 || eventData.OutArgs.Count > 0)
             {
-                sb.AppendLine($"\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
-            }
+                sb.AppendLine().Append("\tArguments:");
+                foreach (var arg in eventData.Args)
+                {
+                    sb.AppendLine().Append($"\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
+                }
 
-            foreach (var arg in eventData.OutArgs)
-            {
-                sb.AppendLine($"\t\tout {arg.Key}: [{arg.Value ?? "(null)"}]");
+                foreach (var arg in eventData.OutArgs)
+                {
+                    sb.AppendLine().Append($"\t\tout {arg.Key}: [{arg.Value ?? "(null)"}]");
+                }
             }
 
             return sb.ToString();
