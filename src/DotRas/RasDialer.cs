@@ -83,10 +83,7 @@ namespace DotRas
         /// </summary>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Connect()
@@ -100,10 +97,8 @@ namespace DotRas
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Connect(CancellationToken cancellationToken)
@@ -119,10 +114,7 @@ namespace DotRas
         /// </summary>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> ConnectAsync()
@@ -136,16 +128,13 @@ namespace DotRas
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests while dialing the connection.</param>
         /// <returns>The connection instance.</returns>
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the <see cref="PhoneBookPath"/> file does not exist.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        /// <exception cref="RasEntryNotFoundException">Thrown if the <see cref="EntryName"/> within the phone book specified does not exist.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> ConnectAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();
-            ValidateConfigurationPriorToDialAttempt();
 
             return api.DialAsync(new RasDialContext
             {
@@ -157,19 +146,6 @@ namespace DotRas
                 OnStateChangedCallback = RaiseDialStateChanged
             });
         }        
-
-        private void ValidateConfigurationPriorToDialAttempt()
-        {
-            if (!string.IsNullOrWhiteSpace(PhoneBookPath) && !fileSystem.VerifyFileExists(PhoneBookPath))
-            {
-                throw new FileNotFoundException("The file does not exist.", PhoneBookPath);
-            }
-
-            if (string.IsNullOrWhiteSpace(EntryName) || !validator.VerifyEntryExists(EntryName, PhoneBookPath))
-            {
-                throw new RasEntryNotFoundException("The entry does not exist within the phone book specified.", EntryName, PhoneBookPath);
-            }
-        }
 
         private void RaiseDialStateChanged(StateChangedEventArgs e)
         {
