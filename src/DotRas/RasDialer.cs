@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.IoC;
 
@@ -13,13 +11,11 @@ namespace DotRas
     /// <summary>
     /// Provides a mechanism to establish a connection to a remote network.
     /// </summary>
-    public sealed class RasDialer : DisposableObject
+    public class RasDialer : RasComponentBase
     {
         #region Fields and Properties
 
         private readonly IRasDial api;
-        private readonly IFileSystem fileSystem;
-        private readonly IPhoneBookEntryValidator validator;
 
         /// <summary>
         /// Gets a value indicating whether this instance is currently dialing a connection.
@@ -64,18 +60,14 @@ namespace DotRas
         /// <summary>
         /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
-        public RasDialer() : this(
-                ServiceLocator.Default.GetRequiredService<IRasDial>(),
-                ServiceLocator.Default.GetRequiredService<IFileSystem>(),
-                ServiceLocator.Default.GetRequiredService<IPhoneBookEntryValidator>())
+        public RasDialer() 
+            : this(ServiceLocator.Default.GetRequiredService<IRasDial>())
         {
         }
 
-        internal RasDialer(IRasDial api, IFileSystem fileSystem, IPhoneBookEntryValidator validator)
+        internal RasDialer(IRasDial api)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         /// <summary>
@@ -143,18 +135,25 @@ namespace DotRas
                 Credentials = Credentials,
                 CancellationToken = cancellationToken,
                 Options = Options,
-                OnStateChangedCallback = RaiseDialStateChanged
+                OnStateChangedCallback = RaiseStateChangedEvent
             });
-        }        
+        }
 
-        private void RaiseDialStateChanged(StateChangedEventArgs e)
+        protected void RaiseStateChangedEvent(StateChangedEventArgs e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            StateChanged?.Invoke(this, e);
+            try
+            {
+                RaiseEvent(StateChanged, e);
+            }
+            catch (Exception ex)
+            {
+                RaiseErrorEvent(new ErrorEventArgs(ex));
+            }
         }
 
         protected override void Dispose(bool disposing)

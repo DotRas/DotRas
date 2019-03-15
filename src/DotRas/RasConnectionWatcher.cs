@@ -7,7 +7,7 @@ namespace DotRas
     /// <summary>
     /// Listens to the remote access service (RAS) change notifications and raises events when connections change.
     /// </summary>
-    public class RasConnectionWatcher : DisposableObject
+    public class RasConnectionWatcher : RasComponentBase
     {
         #region Fields and Properties
 
@@ -55,11 +55,6 @@ namespace DotRas
         /// Occurs when a connection has disconnected.
         /// </summary>
         public event EventHandler<RasConnectionEventArgs> Disconnected;
-
-        /// <summary>
-        /// Occurs when an exception occurs while processing the notification.
-        /// </summary>
-        public event EventHandler<ErrorEventArgs> Error;
 
         #endregion
         
@@ -133,7 +128,7 @@ namespace DotRas
             base.Dispose(disposing);
         }
 
-        private void RaiseConnectedEvent(RasConnectionEventArgs e)
+        protected void RaiseConnectedEvent(RasConnectionEventArgs e)
         {
             if (e == null)
             {
@@ -142,7 +137,7 @@ namespace DotRas
 
             try
             {
-                Connected?.Invoke(this, e);
+                RaiseEvent(Connected, e);
             }
             catch (Exception ex)
             {
@@ -150,7 +145,7 @@ namespace DotRas
             }
         }
 
-        private void RaiseDisconnectedEvent(RasConnectionEventArgs e)
+        protected void RaiseDisconnectedEvent(RasConnectionEventArgs e)
         {
             if (e == null)
             {
@@ -159,28 +154,11 @@ namespace DotRas
 
             try
             {
-                Disconnected?.Invoke(this, e);
+                RaiseEvent(Disconnected, e);
             }
             catch (Exception ex)
             {
                 RaiseErrorEvent(new ErrorEventArgs(ex));
-            }
-        }
-
-        private void RaiseErrorEvent(ErrorEventArgs e)
-        {
-            if (e == null)
-            {
-                throw new ArgumentNullException(nameof(e));
-            }
-
-            try
-            {
-                Error?.Invoke(this, e);
-            }
-            catch (Exception)
-            {
-                // Swallow any errors which occur while processing the error event.
             }
         }
     }
