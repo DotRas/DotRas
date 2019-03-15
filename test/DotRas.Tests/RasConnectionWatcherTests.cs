@@ -22,6 +22,48 @@ namespace DotRas.Tests
         }
 
         [Test]
+        public void RaisesTheErrorEventWhenAnErrorOccursDuringConnectedEvent()
+        {
+            var called = false;
+
+            var api = new Mock<IRasConnectionNotification>();
+
+            var target = new TestableRasConnectionWatcher(api.Object);
+            target.Connected += (sender, e) => throw new TestException();
+            target.Error += (sender, e) =>
+            {
+                Assert.IsInstanceOf<TestException>(e.GetException());
+                called = true;
+            };
+
+            target.RaiseConnectedEvent(new RasConnectionEventArgs(
+                new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
+
+            Assert.True(called, "The event was not called as expected.");
+        }
+
+        [Test]
+        public void RaisesTheErrorEventWhenAnErrorOccursDuringDisconnectedEvent()
+        {
+            var called = false;
+
+            var api = new Mock<IRasConnectionNotification>();
+
+            var target = new TestableRasConnectionWatcher(api.Object);
+            target.Disconnected += (sender, e) => throw new TestException();
+            target.Error += (sender, e) =>
+            {
+                Assert.IsInstanceOf<TestException>(e.GetException());
+                called = true;
+            };
+
+            target.RaiseDisconnectedEvent(new RasConnectionEventArgs(
+                new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
+
+            Assert.True(called, "The event was not called as expected.");
+        }
+
+        [Test]
         public void ThrowsAnExceptionWhenStartAfterDisposed()
         {
             var api = new Mock<IRasConnectionNotification>();

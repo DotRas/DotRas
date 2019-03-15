@@ -8,5 +8,15 @@ namespace DotRas.Tests.Stubs
             : base(api)
         {
         }
+
+        public new void RaiseConnectedEvent(RasConnectionEventArgs e)
+        {
+            base.RaiseConnectedEvent(e);
+        }
+
+        public new void RaiseDisconnectedEvent(RasConnectionEventArgs e)
+        {
+            base.RaiseDisconnectedEvent(e);
+        }
     }
 }
