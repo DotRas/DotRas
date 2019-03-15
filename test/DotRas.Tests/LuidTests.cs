@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.IoC;
+using DotRas.Internal;
 using Moq;
 using NUnit.Framework;
 

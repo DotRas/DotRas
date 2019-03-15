@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.IoC;
 
 namespace DotRas
 {

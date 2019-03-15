@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal.IoC;
 
 namespace DotRas
 {

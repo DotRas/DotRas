@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
-using DotRas.Internal.IoC;
+using DotRas.Internal;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;

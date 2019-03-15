@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using DotRas.Internal.Services;
-using DotRas.Tests.Internal.Stubs;
+using DotRas.Tests.Stubs;
 using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Services
