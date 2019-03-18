@@ -50,42 +50,5 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             Assert.AreEqual(RDEOPT.None, result.dwfOptions);
         }
-
-        [Test]
-        public void ConfiguresTheOptionsAsExpected()
-        {
-            var factory = new Mock<IStructFactory>();
-
-            var target = new RasDialExtensionsBuilder(factory.Object);
-            var result = target.Build(new RasDialContext
-            {
-                Options = new RasDialerOptions
-                {
-                    UsePrefixSuffix = true,
-                    PausedStates = true,
-                    SetModemSpeaker = true,
-                    SetSoftwareCompression = true,
-                    DisableConnectedUI = true,
-                    DisableReconnectUI = true,
-                    DisableReconnect = true,
-                    NoUser = true,
-                    Router = true,
-                    CustomDial = true,
-                    UseCustomScripting = true
-                }
-            });
-
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.UsePrefixSuffix));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.PausedStates));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.SetModemSpeaker));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.SetSoftwareCompression));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.DisableConnectedUI));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.DisableReconnectUI));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.DisableReconnect));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.NoUser));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.Router));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.CustomDial));
-            Assert.True(result.dwfOptions.HasFlag(RDEOPT.UseCustomScripting));
-        }
     }
 }

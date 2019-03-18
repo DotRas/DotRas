@@ -18,7 +18,7 @@ namespace ConsoleRunner
             dialer.EntryName = Config.EntryName;
             dialer.PhoneBookPath = Config.PhoneBookPath;
             dialer.StateChanged += OnStateChanged;
-
+            
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;
         }
