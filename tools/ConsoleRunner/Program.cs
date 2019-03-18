@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRas;
@@ -15,9 +16,11 @@ namespace ConsoleRunner
 
         public Program()
         {
+            dialer.StateChanged += OnStateChanged;
+
             dialer.EntryName = Config.EntryName;
             dialer.PhoneBookPath = Config.PhoneBookPath;
-            dialer.StateChanged += OnStateChanged;
+            dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
             
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;

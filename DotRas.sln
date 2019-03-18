@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Tests", "2. Tests", "{9D34A309-06DD-4B78-9424-672421884BCB}"
 EndProject
@@ -31,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Includes", "Includes", "{48
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Tools", "3. Tools", "{B3BCF167-8512-4154-A462-5BC1F7B1925F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleRunner", "tools\ConsoleRunner\ConsoleRunner.csproj", "{82CDADEF-9BA9-480C-A059-DAF35FD69B08}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Examples", "1. Examples", "{C342DFB6-A477-4974-B389-102D84DD4F2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WatchConnectionsForChanges", "examples\WatchConnectionsForChanges\WatchConnectionsForChanges.csproj", "{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}"
@@ -41,7 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnection", "examples\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAsynchronously", "examples\DialConnectionAsynchronously\DialConnectionAsynchronously.csproj", "{933204B0-CD91-4FB3-8E9D-7EBAE6784B39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnectionAndWatchForDisconnect", "examples\DialConnectionAndWatchForDisconnect\DialConnectionAndWatchForDisconnect.csproj", "{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAndWatchForDisconnect", "examples\DialConnectionAndWatchForDisconnect\DialConnectionAndWatchForDisconnect.csproj", "{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRunner", "tools\ConsoleRunner\ConsoleRunner.csproj", "{82CDADEF-9BA9-480C-A059-DAF35FD69B08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +57,6 @@ Global
 		{1F46ADDE-3E40-4BB3-B933-11DD919839AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F46ADDE-3E40-4BB3-B933-11DD919839AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F46ADDE-3E40-4BB3-B933-11DD919839AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,6 +73,10 @@ Global
 		{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82CDADEF-9BA9-480C-A059-DAF35FD69B08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,11 +84,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1F46ADDE-3E40-4BB3-B933-11DD919839AE} = {9D34A309-06DD-4B78-9424-672421884BCB}
 		{48D5F528-BF5E-4B79-B6A2-3CD77E28C482} = {C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}
-		{82CDADEF-9BA9-480C-A059-DAF35FD69B08} = {B3BCF167-8512-4154-A462-5BC1F7B1925F}
 		{A3DE66F4-33AD-4F63-A989-7382CC4CEA42} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
 		{B7761F51-BD56-45FB-A337-C6CA8CB71B10} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
 		{933204B0-CD91-4FB3-8E9D-7EBAE6784B39} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
 		{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789} = {C342DFB6-A477-4974-B389-102D84DD4F2E}
+		{82CDADEF-9BA9-480C-A059-DAF35FD69B08} = {B3BCF167-8512-4154-A462-5BC1F7B1925F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BBA19DF-42BF-442B-95C4-17D4A554714E}
