@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Interop.Primitives
 {
+    [SuppressUnmanagedCodeSecurity]
     internal static class UnsafeNativeMethods
     {
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]

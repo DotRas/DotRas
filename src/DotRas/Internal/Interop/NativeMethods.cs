@@ -78,14 +78,6 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct RASEAPINFO
-        {
-            [SizeOf]
-            public int dwSizeofEapInfo;
-            public IntPtr pbEapInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct RASDEVSPECIFICINFO
         {
             [SizeOf]
@@ -113,6 +105,24 @@ namespace DotRas.Internal.Interop
             public int dwSubEntry;
             public IntPtr dwCallbackId;
             public int dwIfIndex;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct RASEAPINFO
+        {
+            [SizeOf]
+            public int dwSizeofEapInfo;
+            public IntPtr pbEapInfo;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
+        public struct RASEAPUSERIDENTITY
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = UNLEN + 1)]
+            public string szUserName;
+            public int dwSizeofEapInfo;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)]
+            public byte[] pbEapInfo;
         }
 
         [StructLayout(LayoutKind.Sequential)]

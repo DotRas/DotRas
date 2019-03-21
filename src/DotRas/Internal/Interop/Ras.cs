@@ -72,6 +72,15 @@ namespace DotRas.Internal.Interop
         }
 
         [Flags]
+        public enum RASEAPF
+        {
+            None = 0x0,
+            NonInteractive = 0x2,
+            LogOn = 0x4,
+            Preview = 0x8
+        }
+
+        [Flags]
         public enum RDEOPT
         {
             None = 0x0,

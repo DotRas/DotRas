@@ -38,6 +38,13 @@ namespace DotRas.Internal.Interop
             string lpszEntryName,
             ref RASCREDENTIALS lpCredentials);
 
+        int RasGetEapUserIdentity(
+            string pszPhoneBook,
+            string pszEntry,
+            RASEAPF dwFlags,
+            IntPtr hWnd,
+            out IntPtr ppRasEapUserIdentity);
+
         int RasGetEntryDialParams(
             string lpszPhonebook,
             ref RASDIALPARAMS lpDialParams,

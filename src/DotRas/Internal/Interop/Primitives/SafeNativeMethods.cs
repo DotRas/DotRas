@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -7,6 +8,7 @@ using static DotRas.Internal.Interop.Ras;
 
 namespace DotRas.Internal.Interop.Primitives
 {
+    [SuppressUnmanagedCodeSecurity]
     internal static class SafeNativeMethods
     {
         [DllImport(AdvApi32Dll, SetLastError = true)]
@@ -35,6 +37,14 @@ namespace DotRas.Internal.Interop.Primitives
             [In, Out] RASCONN[] lpRasConn,
             ref int lpCb,
             ref int lpConnections);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasGetEapUserIdentity(
+            string pszPhoneBook,
+            string pszEntry,
+            RASEAPF dwFlags,
+            IntPtr hWnd,
+            [Out] out IntPtr ppRasEapUserIdentity);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetEntryDialParams(

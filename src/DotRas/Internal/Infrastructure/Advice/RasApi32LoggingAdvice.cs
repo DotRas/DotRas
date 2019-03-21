@@ -150,6 +150,30 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
+        public int RasGetEapUserIdentity(string pszPhoneBook, string pszEntry, RASEAPF dwFlags, IntPtr hWnd, out IntPtr ppRasEapUserIdentity)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasGetEapUserIdentity(pszPhoneBook, pszEntry, dwFlags, hWnd, out ppRasEapUserIdentity);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasGetEapUserIdentity),
+                Result = result,
+            };
+
+            callEvent.Args.Add(nameof(pszPhoneBook), pszPhoneBook);
+            callEvent.Args.Add(nameof(pszEntry), pszEntry);
+            callEvent.Args.Add(nameof(dwFlags), dwFlags);
+            callEvent.Args.Add(nameof(hWnd), hWnd);
+            callEvent.OutArgs.Add(nameof(ppRasEapUserIdentity), ppRasEapUserIdentity);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
         public int RasGetEntryDialParams(string lpszPhoneBook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
         {
             var stopwatch = Stopwatch.StartNew();
