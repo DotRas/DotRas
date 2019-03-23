@@ -11,5 +11,7 @@
         public const int ERROR_INSUFFICIENT_BUFFER = 122;
 
         public const int ERROR_ALREADY_EXISTS = 183;
+
+        public const int ERROR_CANCELLED = 1223;
     }
 }

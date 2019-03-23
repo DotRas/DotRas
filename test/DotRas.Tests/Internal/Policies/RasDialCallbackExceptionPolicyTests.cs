@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using DotRas.ExtensibleAuthentication;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Policies;
 using Moq;

@@ -28,6 +28,11 @@ namespace DotRas.Internal.Policies
                 return new NotSupportedException("The operating system does not support the operation being requested. Please check the compatibility matrix for features supported with this operating system.");
             }
 
+            if (error == ERROR_CANCELLED)
+            {
+                return new OperationCanceledException();
+            }
+
             if (ShouldGetMessageFromRas(error))
             {
                 return CreateExceptionFromRas(error);

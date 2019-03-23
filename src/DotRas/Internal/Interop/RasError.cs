@@ -14,6 +14,10 @@
 
         public const int ERROR_AUTHENTICATION_FAILURE = RASBASE + 91;
 
+        public const int ERROR_INTERACTIVE_MODE = RASBASE + 103;
+
+        public const int ERROR_INVALID_FUNCTION_FOR_ENTRY = RASBASE + 180;
+
         public const int ERROR_DEVICE_COMPLIANCE = RASBASE + 275;
     }
 }

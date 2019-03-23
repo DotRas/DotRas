@@ -20,6 +20,16 @@ namespace DotRas.Internal.Infrastructure.Advice
             return AttachedObject.SizeOf<T>();
         }
 
+        public IntPtr GetAddressOfPinnedArrayElement(Array array, int index)
+        {
+            return AttachedObject.GetAddressOfPinnedArrayElement(array, index);
+        }
+
+        public byte[] ReadDataFromPtr(IntPtr ptr, int length)
+        {
+            return AttachedObject.ReadDataFromPtr(ptr, length);
+        }
+
         public IntPtr AllocHGlobal(int size)
         {
             return AttachedObject.AllocHGlobal(size);
@@ -28,6 +38,11 @@ namespace DotRas.Internal.Infrastructure.Advice
         public bool FreeHGlobalIfNeeded(IntPtr ptr)
         {
             return AttachedObject.FreeHGlobalIfNeeded(ptr);
+        }
+
+        public T PtrToStructure<T>(IntPtr ptr)
+        {
+            return AttachedObject.PtrToStructure<T>(ptr);
         }
 
         public string PtrToUnicodeString(IntPtr ptr, int length)

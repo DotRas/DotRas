@@ -1,4 +1,5 @@
 ﻿using System;
+using DotRas.ExtensibleAuthentication;
 using DotRas.Internal.Abstractions.Services;
 using static DotRas.Internal.Interop.EapHostError;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
+using DotRas.ExtensibleAuthentication;
 
 namespace DotRas.Internal.Abstractions.Services
 {

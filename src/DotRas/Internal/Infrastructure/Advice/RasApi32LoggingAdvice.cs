@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
+using DotRas.ExtensibleAuthentication;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -105,6 +106,24 @@ namespace DotRas.Internal.Infrastructure.Advice
 
             LogVerbose(callEvent);
             return result;
+        }
+
+        public void RasFreeEapUserIdentity(IntPtr pRasEapUserIdentity)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            AttachedObject.RasFreeEapUserIdentity(pRasEapUserIdentity);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeVoidCallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasFreeEapUserIdentity)
+            };
+
+            callEvent.Args.Add(nameof(pRasEapUserIdentity), pRasEapUserIdentity);
+
+            LogVerbose(callEvent);
         }
 
         public int RasGetConnectStatus(IntPtr hRasConn, ref RASCONNSTATUS lpRasConnStatus)

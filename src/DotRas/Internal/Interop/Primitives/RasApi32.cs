@@ -28,6 +28,11 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
         }
 
+        public void RasFreeEapUserIdentity(IntPtr pRasEapUserIdentity)
+        {
+            SafeNativeMethods.RasFreeEapUserIdentity(pRasEapUserIdentity);
+        }
+
         public int RasGetConnectStatus(IntPtr hRasConn, ref RASCONNSTATUS lpRasConnStatus)
         {
             return SafeNativeMethods.RasGetConnectStatus(hRasConn, ref lpRasConnStatus);

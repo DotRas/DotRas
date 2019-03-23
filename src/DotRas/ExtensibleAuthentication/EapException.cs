@@ -2,10 +2,10 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace DotRas
+namespace DotRas.ExtensibleAuthentication
 {
     /// <summary>
-    /// Thrown when an exception occurs within the Extensible Authentication Protocol (EAP) client within the operating system.
+    /// Thrown when an exception occurs within the Extensible Authentication Protocol (EAP).
     /// </summary>
     [Serializable]
     public class EapException : Win32Exception

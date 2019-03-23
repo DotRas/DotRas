@@ -29,6 +29,9 @@ namespace DotRas.Internal.Interop
             RasDialFunc2 lpvNotifier,
             out IntPtr lphRasConn);
 
+        void RasFreeEapUserIdentity(
+            IntPtr pRasEapUserIdentity);
+
         int RasGetConnectStatus(
             IntPtr hRasConn,
             ref RASCONNSTATUS lpRasConnStatus);

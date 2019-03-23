@@ -37,6 +37,7 @@ namespace DotRas.Internal.Infrastructure.IoC
             container.Register<IRasConnectionNotificationCallbackHandler>(typeof(RasConnectionNotificationCallbackHandler));
             container.Register<IRasHangUp>(typeof(RasHangUpService));
             container.Register<IRasGetConnectionStatistics>(typeof(RasGetConnectionStatisticsService));
+            container.Register<IRasGetEapCredentials>(typeof(RasGetEapCredentialService));
 
             container.Register<IRasGetConnectStatus>(() =>
                 new RasGetConnectStatusService(
