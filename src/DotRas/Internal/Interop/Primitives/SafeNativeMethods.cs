@@ -40,7 +40,7 @@ namespace DotRas.Internal.Interop.Primitives
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern void RasFreeEapUserIdentity(
-            IntPtr pRasEapUserIdentity); 
+            EapCredential pRasEapUserIdentity); 
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetEapUserIdentity(
@@ -48,7 +48,7 @@ namespace DotRas.Internal.Interop.Primitives
             string pszEntry,
             RASEAPF dwFlags,
             IntPtr hWnd,
-            [Out] out IntPtr ppRasEapUserIdentity);
+            [Out] out EapCredential ppRasEapUserIdentity);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetEntryDialParams(

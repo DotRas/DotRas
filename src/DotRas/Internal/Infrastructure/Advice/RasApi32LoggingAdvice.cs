@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
-using DotRas.ExtensibleAuthentication;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -108,7 +107,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public void RasFreeEapUserIdentity(IntPtr pRasEapUserIdentity)
+        public void RasFreeEapUserIdentity(EapCredential pRasEapUserIdentity)
         {
             var stopwatch = Stopwatch.StartNew();
             AttachedObject.RasFreeEapUserIdentity(pRasEapUserIdentity);
@@ -121,7 +120,7 @@ namespace DotRas.Internal.Infrastructure.Advice
                 MethodName = nameof(RasFreeEapUserIdentity)
             };
 
-            callEvent.Args.Add(nameof(pRasEapUserIdentity), pRasEapUserIdentity);
+            callEvent.Args.Add(nameof(pRasEapUserIdentity), pRasEapUserIdentity.Handle);
 
             LogVerbose(callEvent);
         }
@@ -169,7 +168,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public int RasGetEapUserIdentity(string pszPhoneBook, string pszEntry, RASEAPF dwFlags, IntPtr hWnd, out IntPtr ppRasEapUserIdentity)
+        public int RasGetEapUserIdentity(string pszPhoneBook, string pszEntry, RASEAPF dwFlags, IntPtr hWnd, out EapCredential ppRasEapUserIdentity)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.RasGetEapUserIdentity(pszPhoneBook, pszEntry, dwFlags, hWnd, out ppRasEapUserIdentity);
@@ -187,7 +186,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             callEvent.Args.Add(nameof(pszEntry), pszEntry);
             callEvent.Args.Add(nameof(dwFlags), dwFlags);
             callEvent.Args.Add(nameof(hWnd), hWnd);
-            callEvent.OutArgs.Add(nameof(ppRasEapUserIdentity), ppRasEapUserIdentity);
+            callEvent.OutArgs.Add(nameof(ppRasEapUserIdentity), ppRasEapUserIdentity.Handle);
 
             LogVerbose(callEvent);
             return result;

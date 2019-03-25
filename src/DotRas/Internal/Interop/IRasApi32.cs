@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using DotRas.ExtensibleAuthentication;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
@@ -30,7 +31,7 @@ namespace DotRas.Internal.Interop
             out IntPtr lphRasConn);
 
         void RasFreeEapUserIdentity(
-            IntPtr pRasEapUserIdentity);
+            EapCredential pRasEapUserIdentity);
 
         int RasGetConnectStatus(
             IntPtr hRasConn,
@@ -46,7 +47,7 @@ namespace DotRas.Internal.Interop
             string pszEntry,
             RASEAPF dwFlags,
             IntPtr hWnd,
-            out IntPtr ppRasEapUserIdentity);
+            out EapCredential ppRasEapUserIdentity);
 
         int RasGetEntryDialParams(
             string lpszPhonebook,

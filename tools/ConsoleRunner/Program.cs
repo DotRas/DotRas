@@ -21,7 +21,7 @@ namespace ConsoleRunner
             dialer.EntryName = Config.EntryName;
             dialer.PhoneBookPath = Config.PhoneBookPath;
             dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
-            
+
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;
         }

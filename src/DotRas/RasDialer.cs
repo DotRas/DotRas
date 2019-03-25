@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DotRas.ExtensibleAuthentication;
 using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
 
@@ -33,7 +34,7 @@ namespace DotRas
         public string PhoneBookPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the credentials to use while dialing the connection.
+        /// Gets the client credentials used to authenticate the client.
         /// </summary>
         public NetworkCredential Credentials { get; set; }
 

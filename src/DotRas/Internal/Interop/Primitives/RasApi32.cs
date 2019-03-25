@@ -28,7 +28,7 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
         }
 
-        public void RasFreeEapUserIdentity(IntPtr pRasEapUserIdentity)
+        public void RasFreeEapUserIdentity(EapCredential pRasEapUserIdentity)
         {
             SafeNativeMethods.RasFreeEapUserIdentity(pRasEapUserIdentity);
         }
@@ -43,7 +43,7 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetCredentials(lpszPhoneBook, lpszEntryName, ref lpCredentials);
         }
 
-        public int RasGetEapUserIdentity(string pszPhoneBook, string pszEntry, RASEAPF dwFlags, IntPtr hWnd, out IntPtr ppRasEapUserIdentity)
+        public int RasGetEapUserIdentity(string pszPhoneBook, string pszEntry, RASEAPF dwFlags, IntPtr hWnd, out EapCredential ppRasEapUserIdentity)
         {
             return SafeNativeMethods.RasGetEapUserIdentity(pszPhoneBook, pszEntry, dwFlags, hWnd, out ppRasEapUserIdentity);
         }
