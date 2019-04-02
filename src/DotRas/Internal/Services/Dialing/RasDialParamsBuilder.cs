@@ -26,6 +26,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             var rasDialParams = structFactory.Create<RASDIALPARAMS>();
             rasDialParams.szEntryName = context.EntryName;
+            rasDialParams.dwSubEntry = 1;
 
             var ret = api.RasGetEntryDialParams(context.PhoneBookPath, ref rasDialParams, out _);
             if (ret != SUCCESS)

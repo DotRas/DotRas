@@ -16,9 +16,9 @@ namespace DotRas.Internal.Interop.Primitives
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasDial(
-            [In] ref RASDIALEXTENSIONS lpRasDialExtensions,
+            [In] IntPtr lpRasDialExtensions,
             string lpszPhoneBook,
-            [In] ref RASDIALPARAMS lpRasDialParams,
+            [In] IntPtr lpRasDialParams,
             NotifierType dwNotifierType,
             Delegate lpvNotifier,
             out IntPtr lphRasConn);

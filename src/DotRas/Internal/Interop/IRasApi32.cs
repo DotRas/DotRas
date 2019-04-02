@@ -23,9 +23,9 @@ namespace DotRas.Internal.Interop
             ref int lpConnections);
 
         int RasDial(
-            ref RASDIALEXTENSIONS lpRasDialExtensions,
+            IntPtr lpRasDialExtensions,
             string lpszPhoneBook,
-            ref RASDIALPARAMS lpRasDialParams,
+            IntPtr lpRasDialParams,
             Ras.NotifierType dwNotifierType,
             RasDialFunc2 lpvNotifier,
             out IntPtr lphRasConn);
@@ -64,6 +64,12 @@ namespace DotRas.Internal.Interop
             ref RAS_STATS lpStatistics);
 
         int RasHangUp(IntPtr hRasConn);
+
+        int RasInvokeEapUI(
+            IntPtr hRasConn,
+            int dwSubEntryId,
+            IntPtr lpExtensions,
+            IntPtr hWnd);
 
         int RasValidateEntryName(
             string lpszPhonebook,

@@ -82,10 +82,10 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
+        public int RasDial(IntPtr lpRasDialExtensions, string lpszPhoneBook, IntPtr lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
         {
             var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
+            var result = AttachedObject.RasDial(lpRasDialExtensions, lpszPhoneBook, lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
             stopwatch.Stop();
 
             var callEvent = new PInvokeInt32CallCompletedTraceEvent
@@ -272,6 +272,29 @@ namespace DotRas.Internal.Infrastructure.Advice
             };
 
             callEvent.Args.Add(nameof(hRasConn), hRasConn);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
+        public int RasInvokeEapUI(IntPtr hRasConn, int dwSubEntryId, IntPtr lpExtensions, IntPtr hWnd)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasInvokeEapUI(hRasConn, dwSubEntryId, lpExtensions, hWnd);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasInvokeEapUI),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(hRasConn), hRasConn);
+            callEvent.Args.Add(nameof(dwSubEntryId), dwSubEntryId);
+            callEvent.Args.Add(nameof(lpExtensions), lpExtensions);
+            callEvent.Args.Add(nameof(hWnd), hWnd);
 
             LogVerbose(callEvent);
             return result;

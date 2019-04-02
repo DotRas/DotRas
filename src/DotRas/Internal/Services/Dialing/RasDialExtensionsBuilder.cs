@@ -43,7 +43,7 @@ namespace DotRas.Internal.Services.Dialing
             var builder = new RasDialExtensionsOptionsBuilder();
 
             //builder.AppendFlagIfTrue(options.UsePrefixSuffix, RDEOPT.UsePrefixSuffix);
-            //builder.AppendFlagIfTrue(options.PausedStates, RDEOPT.PausedStates);
+            builder.AppendFlagIfTrue(true, RDEOPT.PausedStates);
             //builder.AppendFlagIfTrue(options.SetModemSpeaker, RDEOPT.SetModemSpeaker);
             //builder.AppendFlagIfTrue(options.SetSoftwareCompression, RDEOPT.SetSoftwareCompression);
             //builder.AppendFlagIfTrue(options.DisableConnectedUI, RDEOPT.DisableConnectedUI);

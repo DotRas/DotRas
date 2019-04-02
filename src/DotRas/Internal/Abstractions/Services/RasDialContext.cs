@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using DotRas.ExtensibleAuthentication;
+using DotRas.Internal.Interop;
 
 namespace DotRas.Internal.Abstractions.Services
 {
@@ -13,5 +14,10 @@ namespace DotRas.Internal.Abstractions.Services
         public Action<StateChangedEventArgs> OnStateChangedCallback { get; set; }
         public RasDialerOptions Options { get; set; }
         public CancellationToken CancellationToken { get; set; }        
+        public NativeMethods.RasDialFunc2 Callback { get; set; }
+        public NativeMethods.RASDIALPARAMS DialParams { get; set; }
+        public NativeMethods.RASDIALEXTENSIONS DialExtensions { get; set; }
+        public IntPtr LpDialExtensions { get; set; }
+        public IntPtr LpDialParams { get; set; }
     }
 }

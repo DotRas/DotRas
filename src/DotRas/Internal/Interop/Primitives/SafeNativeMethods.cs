@@ -79,6 +79,13 @@ namespace DotRas.Internal.Interop.Primitives
             [In, Out] ref RASCREDENTIALS lpCredentials);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasInvokeEapUI(
+            IntPtr hRasConn,
+            int dwSubEntryId,
+            IntPtr lpExtensions,
+            IntPtr hWnd);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasValidateEntryName(
             string lpszPhoneBook,
             string lpszEntryName);

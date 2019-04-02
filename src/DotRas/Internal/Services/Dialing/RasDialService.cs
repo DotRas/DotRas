@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
@@ -73,7 +74,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void InitializeCallbackHandler(RasDialContext context)
         {
-            callbackHandler.Initialize(CompletionSource, context.OnStateChangedCallback, SetNotBusy, CancellationSource.Token);
+            callbackHandler.Initialize(context, CompletionSource, context.OnStateChangedCallback, SetNotBusy, CancellationSource.Token);
         }
 
         private void SetUpCancellationSource(RasDialContext context)
@@ -91,9 +92,25 @@ namespace DotRas.Internal.Services.Dialing
                 SetBusy();
 
                 var rasDialExtensions = ConvertToRasDialExtensions(context);
-                var rasDialParams = ConvertToRasDialParams(context);
+                context.DialExtensions = rasDialExtensions;
 
-                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out handle);
+                var rasDialParams = ConvertToRasDialParams(context);
+                context.DialParams = rasDialParams;
+
+                context.Callback = callback;
+
+                LoadEapUserIdentity(context, ref rasDialExtensions, ref rasDialParams);
+
+                var lpRasDialParams = Marshal.AllocHGlobal(rasDialParams.dwSize);
+                Marshal.StructureToPtr(rasDialParams, lpRasDialParams, true);
+
+                var lpRasDialExtensions = Marshal.AllocHGlobal(rasDialExtensions.dwSize);
+                Marshal.StructureToPtr(rasDialExtensions, lpRasDialExtensions, true);
+
+                context.LpDialParams = lpRasDialParams;
+                context.LpDialExtensions = lpRasDialExtensions;
+
+                var ret = api.RasDial(lpRasDialExtensions, context.PhoneBookPath, lpRasDialParams, NotifierType.RasDialFunc2, callback, out handle);
                 if (ret != SUCCESS)
                 {
                     throw exceptionPolicy.Create(ret);
@@ -107,6 +124,19 @@ namespace DotRas.Internal.Services.Dialing
                 SetNotBusy();
 
                 throw;
+            }
+        }
+
+        private void LoadEapUserIdentity(RasDialContext context, ref RASDIALEXTENSIONS rasDialExtensions, ref RASDIALPARAMS rasDialParams)
+        {
+            var ret = api.RasGetEapUserIdentity(context.PhoneBookPath, context.EntryName, RASEAPF.None, IntPtr.Zero, out var rasEapCredential);
+            if (ret == SUCCESS)
+            {
+                var rasEapUserIdentity = Marshal.PtrToStructure<RASEAPUSERIDENTITY>(rasEapCredential.Handle);
+
+                rasDialExtensions.RasEapInfo.dwSizeofEapInfo = rasEapUserIdentity.dwSizeofEapInfo;
+                rasDialExtensions.RasEapInfo.pbEapInfo = Marshal.UnsafeAddrOfPinnedArrayElement(rasEapUserIdentity.pbEapInfo, 0);
+                rasDialParams.szUserName = rasEapUserIdentity.szUserName;
             }
         }
 

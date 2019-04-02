@@ -84,24 +84,25 @@ namespace DotRas.Internal.Interop
         public enum RDEOPT
         {
             None = 0x0,
-            //UsePrefixSuffix = 0x1,
-            //PausedStates = 0x2,
-            //IgnoreModemSpeaker = 0x4,
-            //SetModemSpeaker = 0x8,
-            //IgnoreSoftwareCompression = 0x10,
-            //SetSoftwareCompression = 0x20,
-            //DisableConnectedUI = 0x40,
-            //DisableReconnectUI = 0x80,
-            //DisableReconnect = 0x100,
-            //NoUser = 0x200,
-            //PauseOnScript = 0x400,
-            //Router = 0x800,
-            //CustomDial = 0x1000,
-            //UseCustomScripting = 0x2000
+            UsePrefixSuffix = 0x1,
+            PausedStates = 0x2,
+            IgnoreModemSpeaker = 0x4,
+            SetModemSpeaker = 0x8,
+            IgnoreSoftwareCompression = 0x10,
+            SetSoftwareCompression = 0x20,
+            DisableConnectedUI = 0x40,
+            DisableReconnectUI = 0x80,
+            DisableReconnect = 0x100,
+            NoUser = 0x200,
+            PauseOnScript = 0x400,
+            Router = 0x800,
+            CustomDial = 0x1000,
+            UseCustomScripting = 0x2000
         }
 
         public enum NotifierType
         {
+            None = 0,
             RasDialFunc2 = 2
         }
 

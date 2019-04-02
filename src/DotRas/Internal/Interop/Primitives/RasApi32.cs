@@ -23,9 +23,9 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
         }
 
-        public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
+        public int RasDial(IntPtr lpRasDialExtensions, string lpszPhoneBook, IntPtr lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
         {
-            return UnsafeNativeMethods.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
+            return UnsafeNativeMethods.RasDial(lpRasDialExtensions, lpszPhoneBook, lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);
         }
 
         public void RasFreeEapUserIdentity(EapCredential pRasEapUserIdentity)
@@ -66,6 +66,11 @@ namespace DotRas.Internal.Interop.Primitives
         public int RasHangUp(IntPtr hRasConn)
         {
             return UnsafeNativeMethods.RasHangUp(hRasConn);
+        }
+
+        public int RasInvokeEapUI(IntPtr hRasConn, int dwSubEntryId, IntPtr lpExtensions, IntPtr hWnd)
+        {
+            return SafeNativeMethods.RasInvokeEapUI(hRasConn, dwSubEntryId, lpExtensions, hWnd);
         }
 
         public int RasValidateEntryName(string lpszPhoneBook, string lpszEntryName)

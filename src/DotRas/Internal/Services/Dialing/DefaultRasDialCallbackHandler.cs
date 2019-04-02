@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
+using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 
 namespace DotRas.Internal.Services.Dialing
@@ -52,7 +54,9 @@ namespace DotRas.Internal.Services.Dialing
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        private RasDialContext context;
+
+        public void Initialize(RasDialContext context, ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -66,6 +70,8 @@ namespace DotRas.Internal.Services.Dialing
             {
                 throw new ArgumentNullException(nameof(onCompletedCallback));
             }
+
+            this.context = context;
 
             GuardMustNotBeDisposed();
 
@@ -95,6 +101,8 @@ namespace DotRas.Internal.Services.Dialing
             rasHangUp.UnsafeHangUp(handle.Value, false);
         }
 
+        private int subEntryId;
+
         public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
         {
             GuardMustNotBeDisposed();
@@ -107,11 +115,21 @@ namespace DotRas.Internal.Services.Dialing
                 GuardRequestShouldNotBeCancelled();
                 GuardErrorCodeMustBeZero(dwError);
 
-                ExecuteStateChangedCallback(connectionState);
-
-                if (HasConnectionCompleted(connectionState))
+                if (connectionState == RasConnectionState.InvokeEapUI)
                 {
-                    SetConnectionResult();
+                    subEntryId = dwSubEntry;
+
+                    var t = new Thread(LoadEapUserIdentity);
+                    t.Start();
+                }
+                else
+                {
+                    ExecuteStateChangedCallback(connectionState);
+
+                    if (HasConnectionCompleted(connectionState))
+                    {
+                        SetConnectionResult();
+                    }
                 }
             }
             catch (OperationCanceledException operationCanceledEx)
@@ -132,6 +150,65 @@ namespace DotRas.Internal.Services.Dialing
             }
 
             return !Completed;
+        }
+
+        private void LoadEapUserIdentity()
+        {
+            var rasDialExtensions = new NativeMethods.RASDIALEXTENSIONS
+            {
+                dwSize = Marshal.SizeOf<NativeMethods.RASDIALEXTENSIONS>()
+            };
+
+            var lpRasDialExtensions = Marshal.AllocHGlobal(rasDialExtensions.dwSize);
+            Marshal.StructureToPtr(rasDialExtensions, lpRasDialExtensions, true);
+
+            var ret = ServiceLocator.Default.GetRequiredService<IRasApi32>().RasInvokeEapUI(
+                handle.Value, subEntryId, lpRasDialExtensions, IntPtr.Zero);
+            if (ret == SUCCESS)
+            {
+                //var rasDialParams = new NativeMethods.RASDIALPARAMS
+                //{
+                //    dwSize = Marshal.SizeOf<NativeMethods.RASDIALPARAMS>(),
+                //    szEntryName = context.EntryName
+                //};
+
+                //var lpRasDialParams = Marshal.AllocHGlobal(rasDialParams.dwSize);
+                //Marshal.StructureToPtr(rasDialParams, lpRasDialParams, true);
+
+                //var rasDialExtensions = Marshal.PtrToStructure<NativeMethods.RASDIALEXTENSIONS>(context.LpDialExtensions);
+                //rasDialExtensions.dwfOptions = Ras.RDEOPT.None;            
+                //Marshal.StructureToPtr(rasDialExtensions, context.LpDialExtensions, true);
+
+                var ptr = handle.Value;
+                var callback = context.Callback;
+                var phoneBookPath = context.PhoneBookPath;
+
+                //var rasDialExtensions = Marshal.PtrToStructure<NativeMethods.RASDIALEXTENSIONS>(context.LpDialExtensions);
+
+                //var rasDialParams = new NativeMethods.RASDIALPARAMS
+                //{
+                //    dwSize = Marshal.SizeOf<NativeMethods.RASDIALPARAMS>(),
+                //    dwSubEntry = 1,
+                //    szEntryName = context.EntryName
+                //};
+
+                //var lpRasDialParams = Marshal.AllocHGlobal(rasDialParams.dwSize);
+                //Marshal.StructureToPtr(rasDialParams, lpRasDialParams, true);
+
+                ret = ServiceLocator.Default.GetRequiredService<IRasApi32>()
+                    .RasDial(
+                        context.LpDialExtensions,
+                        phoneBookPath, 
+                        context.LpDialParams,
+                        Ras.NotifierType.None, 
+                        callback, 
+                        out ptr);
+
+                //if (ret != SUCCESS)
+                //{
+                //    throw exceptionPolicy.Create(ret);
+                //}
+            }
         }
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
