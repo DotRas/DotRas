@@ -14,6 +14,9 @@ namespace DotRas
         /// </summary>
         protected object SyncRoot { get; } = new object();
 
+        /// <summary>
+        /// Finalizes the object.
+        /// </summary>
         ~DisposableObject()
         {
             Dispose(false);
@@ -51,6 +54,9 @@ namespace DotRas
             }
         }
 
+        /// <summary>
+        /// Ensures the object has not already been disposed.
+        /// </summary>
         protected void GuardMustNotBeDisposed()
         {
             if (disposed)

@@ -139,6 +139,10 @@ namespace DotRas
             });
         }
 
+        /// <summary>
+        /// Raises the <see cref="StateChanged"/> event.
+        /// </summary>
+        /// <param name="e">An <see cref="StateChangedEventArgs"/> containing event data.</param>
         protected void RaiseStateChangedEvent(StateChangedEventArgs e)
         {
             if (e == null)
@@ -156,6 +160,7 @@ namespace DotRas
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

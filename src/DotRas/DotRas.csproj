@@ -7,8 +7,13 @@
     <Product>OpenRas</Product>
   </PropertyGroup>
 
+  <ItemGroup>
+    <OperatingSystems Include="WIN7;WIN8;WIN10" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputPath>bin\$(Configuration)</OutputPath>
+    <DocumentationFile>bin\$(Configuration)\DotRas.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/winnster/DotRas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,10 +24,6 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\DotRas.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

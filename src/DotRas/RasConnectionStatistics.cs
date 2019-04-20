@@ -42,6 +42,9 @@ namespace DotRas
             ConnectionDuration = connectionDuration;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasConnectionStatistics"/> class.
+        /// </summary>
         protected RasConnectionStatistics()
         {
         }

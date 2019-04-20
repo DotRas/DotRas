@@ -14,6 +14,9 @@ namespace DotRas
             this.flags = flags;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasConnectionOptions"/> class.
+        /// </summary>
         protected RasConnectionOptions()
         {
         }

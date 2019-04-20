@@ -163,6 +163,12 @@ namespace DotRas
             hangUpService.HangUp(this, closeAllReferences, cancellationToken);
         }
 
+        /// <summary>
+        /// Evaluates the equality of two instances.
+        /// </summary>
+        /// <param name="objA">The first instance.</param>
+        /// <param name="objB">The second instance.</param>
+        /// <returns>A value indicating whether the two objects are not equal.</returns>
         public static bool operator ==(RasConnection objA, RasConnection objB)
         {
 #pragma warning disable IDE0041 // Use 'is null' check
@@ -178,6 +184,13 @@ namespace DotRas
 
             return objA.Equals(objB);
         }
+
+        /// <summary>
+        /// Evaluates the inequality of two instances.
+        /// </summary>
+        /// <param name="objA">The first instance.</param>
+        /// <param name="objB">The second instance.</param>
+        /// <returns>A value indicating whether the two objects are not equal.</returns>
 
         public static bool operator !=(RasConnection objA, RasConnection objB)
         {
@@ -207,6 +220,7 @@ namespace DotRas
             return Handle == other.Handle;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return Handle.GetHashCode();

@@ -128,6 +128,10 @@ namespace DotRas
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Raises the <see cref="Connected"/> event.
+        /// </summary>
+        /// <param name="e">An <see cref="RasConnectionEventArgs"/> containing event data.</param>
         protected void RaiseConnectedEvent(RasConnectionEventArgs e)
         {
             if (e == null)
@@ -145,6 +149,10 @@ namespace DotRas
             }
         }
 
+        /// <summary>
+        /// Raises the <see cref="Disconnected"/> event.
+        /// </summary>
+        /// <param name="e">An <see cref="RasConnectionEventArgs"/> containing event data.</param>
         protected void RaiseDisconnectedEvent(RasConnectionEventArgs e)
         {
             if (e == null)

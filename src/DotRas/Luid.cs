@@ -32,11 +32,23 @@ namespace DotRas
             this.highPart = highPart;
         }
 
+        /// <summary>
+        /// Evaluates the equality of two instances.
+        /// </summary>
+        /// <param name="objA">The first instance.</param>
+        /// <param name="objB">The second instance.</param>
+        /// <returns>A value indicating whether the two objects are equal.</returns>
         public static bool operator ==(Luid objA, Luid objB)
         {
             return objA.Equals(objB);
         }
 
+        /// <summary>
+        /// Evaluates the inequality of two instances.
+        /// </summary>
+        /// <param name="objA">The first instance.</param>
+        /// <param name="objB">The second instance.</param>
+        /// <returns>A value indicating whether the two objects are not equal.</returns>
         public static bool operator !=(Luid objA, Luid objB)
         {
             return !(objA == objB);
