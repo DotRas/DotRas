@@ -1,0 +1,16 @@
+version: 2.0.0.{build}
+image: Visual Studio 2019
+environment:
+  semver_label: preview
+configuration:
+- Debug
+platform: Any CPU
+dotnet_csproj:
+  patch: true
+  file: '**\DotRas.csproj'
+  version: '2.0.0'
+  package_version: '2.0.0-{semver_label}.{build}'
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
