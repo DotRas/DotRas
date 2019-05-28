@@ -21,7 +21,7 @@ namespace DotRas.Internal.Primitives
         {
             lock (syncRoot)
             {
-                Value = default;
+                Value = default(T);
                 IsSet = false;
             }
 
