@@ -18,8 +18,4 @@
     <ProjectReference Include="..\..\src\DotRas\DotRas.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-
 </Project>

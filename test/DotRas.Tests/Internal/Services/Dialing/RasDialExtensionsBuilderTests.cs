@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Services.Dialing;
@@ -25,15 +24,12 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var factory = new Mock<IStructFactory>();
 
-            var owner = new Mock<IWin32Window>();
-            owner.Setup(o => o.Handle).Returns(expected);
-
             var target = new RasDialExtensionsBuilder(factory.Object);
             var result = target.Build(new RasDialContext
             {
                Options = new RasDialerOptions
                {
-                   Owner = owner.Object
+                   Owner = expected
                }
             });
 

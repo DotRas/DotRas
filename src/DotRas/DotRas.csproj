@@ -1,10 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Version>0.0.0</Version>
+    <FileVersion>$(Version)</FileVersion>
     <Authors>Winnster.io</Authors>
-    <Product>OpenRas</Product>
+    <Product>DotRas</Product>
+  </PropertyGroup>
+
+  <!-- These properties will be managed by the build server. -->
+  <PropertyGroup>
+    <PackageVersion></PackageVersion>
+    <InformationalVersion></InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,10 +20,9 @@
 
   <PropertyGroup>
     <OutputPath>bin\$(Configuration)</OutputPath>
-    <DocumentationFile>bin\$(Configuration)\DotRas.xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\DotRas.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/winnster/DotRas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Provides remote access service (RAS) components for the full .NET Framework.</Description>
     <PackageProjectUrl>https://github.com/winnster/DotRas</PackageProjectUrl>
@@ -26,9 +32,8 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
 
 </Project>

@@ -27,9 +27,9 @@ namespace DotRas.Internal.Services.Dialing
             RasDialerOptions options;
             if ((options = context.Options) != null)
             {
-                if (options.Owner != null)
+                if (options.Owner != IntPtr.Zero)
                 {
-                    rasDialExtensions.hwndParent = options.Owner.Handle;
+                    rasDialExtensions.hwndParent = options.Owner;
                 }
 
                 rasDialExtensions.dwfOptions = BuildOptions(options);
