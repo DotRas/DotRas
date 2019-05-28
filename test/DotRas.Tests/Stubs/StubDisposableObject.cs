@@ -11,7 +11,7 @@
 
         protected override void Dispose(bool disposing)
         {
-            Counter = Counter + 1;
+            Counter += 1;
 
             base.Dispose(disposing);
         }

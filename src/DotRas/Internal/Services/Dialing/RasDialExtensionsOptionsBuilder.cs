@@ -10,7 +10,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             if (check)
             {
-                Result = Result | value;
+                Result |= value;
             }
         }
     }

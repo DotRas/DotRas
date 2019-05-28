@@ -7,7 +7,7 @@ namespace WatchConnectionsForChanges
     {
         private readonly RasConnectionWatcher watcher;
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             try
             {

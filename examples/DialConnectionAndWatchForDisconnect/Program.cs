@@ -11,7 +11,7 @@ namespace DialConnectionAndWatchForDisconnect
         private readonly RasDialer dialer;
         private readonly RasConnectionWatcher watcher;
 
-        static void Main(string[] args)
+        static void Main()
         {
             try
             {

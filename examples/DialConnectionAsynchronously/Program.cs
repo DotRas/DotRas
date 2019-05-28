@@ -10,7 +10,7 @@ namespace DialConnectionAsynchronously
     {
         private readonly RasDialer dialer;
 
-        static void Main(string[] args)
+        static void Main()
         {
             try
             {

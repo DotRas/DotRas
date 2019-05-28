@@ -40,6 +40,11 @@ namespace DotRas.Internal.Services.Dialing
 
         private static RDEOPT BuildOptions(RasDialerOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             var builder = new RasDialExtensionsOptionsBuilder();
 
             //builder.AppendFlagIfTrue(options.UsePrefixSuffix, RDEOPT.UsePrefixSuffix);

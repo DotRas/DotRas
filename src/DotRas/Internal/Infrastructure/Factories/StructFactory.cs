@@ -18,7 +18,7 @@ namespace DotRas.Internal.Infrastructure.Factories
 
         public T Create<T>() where T : new()
         {
-            return Create<T>(out var unused);
+            return Create<T>(out var _);
         }
 
         public T Create<T>(out int size) where T : new()
