@@ -5,6 +5,7 @@ environment:
     secure: et98JUwidgU0U6g+qKhOn/3++BEe7p65a1bXfMcSGq4=
 install:
   - ps: get-childitem env:* | sort name
+  - cmd: echo %snk_passphrase%
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
 configuration: Release
 platform: Any CPU
