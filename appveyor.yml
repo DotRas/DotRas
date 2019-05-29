@@ -2,7 +2,7 @@ version: 2.0.0.{build}
 image: Visual Studio 2019
 environment:
   snk_passphrase: 
-    secure: et98JUwidgU0U6g+qKhOn/3++BEe7p65a1bXfMcSGq4=
+    secure: yoQCo1s+v9GmfdhozxKIYjBhh4CbdgKYfnt2iabOqfg=
 install:
   - ps: get-childitem env:* | sort name
   - cmd: echo %snk_passphrase%
