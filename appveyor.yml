@@ -13,9 +13,10 @@ dotnet_csproj:
   package_version: '2.0.0-preview.{build}'
   informational_version: '{version}'
 before_build:
+- cmd: appveyor-tools\secure-file -decrypt C:\projects\dotras\Winnster.snk.enc -secret %snk_passphrase%
 - cmd: nuget restore
 build:
   verbosity: minimal
 install:
-  - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-  - cmd: appveyor-tools\secure-file -decrypt C:\projects\dotras\Winnster.snk.enc -secret %snk_passphrase%
+- ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+before_build:
