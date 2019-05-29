@@ -19,4 +19,4 @@ before_build:
 build:
   verbosity: minimal
 artifacts:
-  - path: **\*.nupkg
+  - path: '**\*.nupkg'
