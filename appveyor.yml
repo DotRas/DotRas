@@ -3,9 +3,6 @@ image: Visual Studio 2019
 environment:
   snk_passphrase: 
     secure: et98JUwidgU0U6g+qKhOn/3++BEe7p65a1bXfMcSGq4=
-install:
-  - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-  - cmd: appveyor-tools\secure-file -decrypt C:\projects\dotras\Winnster.snk.enc -secret %snk_passphrase%
 configuration: Release
 platform: Any CPU
 dotnet_csproj:
