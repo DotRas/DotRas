@@ -1,8 +1,11 @@
 version: 2.0.0.{build}
 image: Visual Studio 2019
-configuration:
-- Debug
+configuration: 
+  - Release
 platform: Any CPU
+environment:
+  snk_passphrase: 
+    secure: 7hMgum0BnN3IS2MMyp3GcgEVmWrlI92tlEKj5c3mXew=
 dotnet_csproj:
   patch: true
   file: '**\DotRas.csproj'
@@ -13,3 +16,6 @@ before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+install:
+  - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+  - cmd: appveyor-tools\secure-file -decrypt Winnster.snk.enc -secret %snk_passphrase%
