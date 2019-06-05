@@ -43,4 +43,8 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);$(RuntimeIdentifier.ToUpper())</DefineConstants>
+  </PropertyGroup>
+
 </Project>
