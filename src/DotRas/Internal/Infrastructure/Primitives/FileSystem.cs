@@ -2,7 +2,7 @@
 using System.IO;
 using DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Primitives
+namespace DotRas.Internal.Infrastructure.Primitives
 {
     internal class FileSystem : IFileSystem
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Primitives;
 using static System.Threading.Tasks.Task;
 
-namespace DotRas.Internal.Primitives
+namespace DotRas.Internal.Infrastructure.Primitives
 {
     internal class TaskCompletionSourceWrapper<T> : ITaskCompletionSource<T>
     {

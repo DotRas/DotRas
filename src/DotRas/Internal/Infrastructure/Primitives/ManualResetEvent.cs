@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Primitives
+namespace DotRas.Internal.Infrastructure.Primitives
 {
     internal class ManualResetEvent : DisposableObject, IManualResetEvent
     {

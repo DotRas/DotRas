@@ -4,6 +4,11 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>Winnster.io</Authors>
     <Product>DotRas</Product>
+    <Configurations>WIN-Debug;WIN-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
+    <_BuildConfiguration>$(Configuration.Substring( $(Configuration.LastIndexOf('-')) ))</_BuildConfiguration>
+    <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
+    <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('-')) ))</_RuntimeIdentifier>
+    <RuntimeIdentifier>$(_RuntimeIdentifier.ToLower())</RuntimeIdentifier>
   </PropertyGroup>
 
   <!-- These properties will be managed by the build server. -->
@@ -13,13 +18,9 @@
     <PackageVersion>$(Version)</PackageVersion>
     <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <OperatingSystems Include="WIN7;WIN8;WIN10" />
-  </ItemGroup>
-
+   
   <PropertyGroup>
-    <OutputPath>bin\$(Configuration)</OutputPath>
+    <OutputPath>bin\$(BuildConfiguration)</OutputPath>
     <DocumentationFile>$(OutputPath)\DotRas.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/winnster/DotRas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -28,14 +29,14 @@
     <PackageProjectUrl>https://github.com/winnster/DotRas</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(BuildConfiguration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Public.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(BuildConfiguration)|$(Platform)'=='Release|AnyCPU'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Winnster.snk</AssemblyOriginatorKeyFile>
