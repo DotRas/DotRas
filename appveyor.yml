@@ -5,7 +5,10 @@ environment:
     secure: yoQCo1s+v9GmfdhozxKIYjBhh4CbdgKYfnt2iabOqfg=
 install:
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-configuration: Release
+configuration: 
+  - WIN7-Release
+  - WIN8-Release
+  - WIN10-Release
 platform: Any CPU
 dotnet_csproj:
   patch: true
