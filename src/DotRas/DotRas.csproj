@@ -23,16 +23,19 @@
     <When Condition=" '$(RuntimeIdentifier)' == 'win10' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win10</PackageId>
+        <Title>DotRas for Windows 10</Title>
       </PropertyGroup>
     </When>
     <When Condition=" '$(RuntimeIdentifier)' == 'win8' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win8</PackageId>
+        <Title>DotRas for Windows 8</Title>
       </PropertyGroup>
     </When>
     <When Condition=" '$(RuntimeIdentifier)' == 'win7' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win7</PackageId>
+        <Title>DotRas for Windows 7</Title>
       </PropertyGroup>
     </When>
   </Choose>
