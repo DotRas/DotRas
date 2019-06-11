@@ -1,6 +1,6 @@
 ﻿using System;
 using DotRas.Internal.Abstractions.Primitives;
-using DotRas.Internal.Primitives;
+using DotRas.Internal.Infrastructure.Primitives;
 
 namespace DotRas.Internal.Infrastructure.IoC
 {

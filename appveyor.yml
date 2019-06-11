@@ -5,13 +5,14 @@ environment:
     secure: yoQCo1s+v9GmfdhozxKIYjBhh4CbdgKYfnt2iabOqfg=
 install:
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-configuration: Release
+configuration: 
+  - WIN7-Release
 platform: Any CPU
 dotnet_csproj:
   patch: true
   file: '**\DotRas.csproj'
   version: '2.0.0'
-  package_version: '2.0.0-preview.{build}'
+  package_version: '2.0.0-preview-{build}'
   informational_version: '{version}'
 before_build:
   - cmd: appveyor-tools\secure-file.exe -decrypt C:\projects\dotras\Winnster.snk.enc -secret %snk_passphrase%
