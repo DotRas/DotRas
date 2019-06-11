@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		AnyCPU.runsettings = AnyCPU.runsettings
 		appveyor.yml = appveyor.yml
 		CONTRIBUTING.md = CONTRIBUTING.md
 		README.md = README.md
