@@ -1,23 +1,43 @@
 version: 2.0.0.{build}
 image: Visual Studio 2019
-environment:
-  snk_passphrase: 
-    secure: yoQCo1s+v9GmfdhozxKIYjBhh4CbdgKYfnt2iabOqfg=
-install:
-  - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
 configuration: 
   - WIN7-Release
 platform: Any CPU
+
+skip_branch_with_pr: true
+
+environment:
+  sonarcloud_token:
+    secure: WSZCNtuf3h9M4BxNiFQ7SQPwGkg3+LqSMZRyfYruiicYvc1BzYaN90n8pNEsPAKs
+  snk_passphrase: 
+    secure: Wl4NefzdMAo7GP7gP11aWDrxKoQPC0eN78TZFcZBbHGMW3geBDFu40RVF1GxTFUaFzN/lAcQ3qL9m8huHSWLBg==
+  snk_salt:
+    secure: tIuRlNokDRTBkah55IRfeATr4WWOEfQOLDqUjrDMMcPEmgq4yOTHzQFKEky67G9rk51D2VvdMFsTcDQrecDonA==
+
+install:
+  - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/jeff-winn/secure-file/master/install.ps1'))
+
 dotnet_csproj:
   patch: true
   file: '**\DotRas.csproj'
   version: '2.0.0'
   package_version: '2.0.0-preview-{build}'
   informational_version: '{version}'
+
+nuget:
+  disable_publish_on_pr: true
+
 before_build:
-  - cmd: appveyor-tools\secure-file.exe -decrypt C:\projects\dotras\Winnster.snk.enc -secret %snk_passphrase%
-  - cmd: nuget restore
+- cmd: appveyor-tools\secure-file.exe -decrypt Winnster.snk.enc -secret %snk_passphrase% -salt %snk_salt%
+- cmd: choco install "sonarscanner-msbuild-net46" -y
+- cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%"
+- cmd: nuget restore
+
 build:
   verbosity: minimal
+
+after_build:
+- cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
+
 artifacts:
   - path: '**\*.nupkg'
