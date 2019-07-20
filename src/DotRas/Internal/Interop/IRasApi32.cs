@@ -34,12 +34,12 @@ namespace DotRas.Internal.Interop
             ref RASCONNSTATUS lpRasConnStatus);
 
         int RasGetCredentials(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             string lpszEntryName,
             ref RASCREDENTIALS lpCredentials);
 
         int RasGetEntryDialParams(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             ref RASDIALPARAMS lpDialParams,
             out bool lpfPassword);
 
@@ -55,7 +55,7 @@ namespace DotRas.Internal.Interop
         int RasHangUp(IntPtr hRasConn);
 
         int RasValidateEntryName(
-            string lpszPhonebook,
+            string lpszPhoneBook,
             string lpszEntryName);
     }
 }
