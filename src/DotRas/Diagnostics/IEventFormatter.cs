@@ -10,10 +10,10 @@ namespace DotRas.Diagnostics
         where T : TraceEvent
     {
         /// <summary>
-        /// Formats the value.
+        /// Formats the event data.
         /// </summary>
-        /// <param name="value">The value to format.</param>
+        /// <param name="eventData">The event data to format.</param>
         /// <returns>The formatted value.</returns>
-        string Format(T value);
+        string Format(T eventData);
     }
 }
