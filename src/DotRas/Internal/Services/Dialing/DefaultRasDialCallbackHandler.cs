@@ -95,7 +95,7 @@ namespace DotRas.Internal.Services.Dialing
             rasHangUp.UnsafeHangUp(handle.Value, false);
         }
 
-        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hRasConn, uint message, RasConnectionState connectionState, int dwError, int dwExtendedError)
+        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError)
         {
             GuardMustNotBeDisposed();
             GuardMustBeInitialized();
@@ -107,9 +107,9 @@ namespace DotRas.Internal.Services.Dialing
                 GuardRequestShouldNotBeCancelled();
                 GuardErrorCodeMustBeZero(dwError);
 
-                ExecuteStateChangedCallback(connectionState);
+                ExecuteStateChangedCallback(rascs);
 
-                if (HasConnectionCompleted(connectionState))
+                if (HasConnectionCompleted(rascs))
                 {
                     SetConnectionResult();
                 }
