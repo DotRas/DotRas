@@ -37,7 +37,7 @@ namespace DotRas.Internal.Services.Connections
             }
         }        
 
-        public void OnCallback(object obj, bool timeout)
+        public void OnCallback(object obj, bool timedOut)
         {
             if (obj is RasConnectionNotificationStateObject state)
             {
