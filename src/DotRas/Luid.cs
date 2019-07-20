@@ -111,9 +111,9 @@ namespace DotRas
         }
 
         /// <inheritdoc />
-        public string ToString(string format, IFormatProvider provider)
+        public string ToString(string format, IFormatProvider formatProvider)
         {
-            return ToInt64().ToString(format, provider);
+            return ToInt64().ToString(format, formatProvider);
         }
     }
 }
