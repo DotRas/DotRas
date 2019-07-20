@@ -1,6 +1,6 @@
 ﻿namespace DotRas.Internal.Interop
 {
-    internal class StdLib
+    internal static class StdLib
     {
         public const int MAX_PATH = 260;
     }
