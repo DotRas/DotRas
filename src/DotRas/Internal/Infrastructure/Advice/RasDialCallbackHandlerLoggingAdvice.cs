@@ -20,6 +20,8 @@ namespace DotRas.Internal.Infrastructure.Advice
             {
                 AttachedObject.Dispose();
             }
+
+            base.Dispose(disposing);
         }
 
         public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
@@ -50,9 +52,9 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public void SetHandle(IntPtr value)
+        public void SetHandle(IntPtr handle)
         {
-            AttachedObject.SetHandle(value);
+            AttachedObject.SetHandle(handle);
         }
     }
 }
