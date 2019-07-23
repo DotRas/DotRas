@@ -36,6 +36,10 @@ before_build:
 build:
   verbosity: minimal
 
+test:
+  assemblies:
+    - '**\*.Tests.dll'
+
 after_build:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
