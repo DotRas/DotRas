@@ -36,12 +36,11 @@ before_build:
 build:
   verbosity: minimal
 
-test:
-  assemblies:
-    - '**\*.Tests.dll'
-
 after_build:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 artifacts:
   - path: '**\*.nupkg'
+    name: NuGet
+  - path: '**\*.trx'
+    name: Test Results
