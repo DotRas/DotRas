@@ -36,7 +36,7 @@ before_build:
 build:
   verbosity: minimal
 
-after_build:
+after_test:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 artifacts:
