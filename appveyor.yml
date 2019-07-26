@@ -37,7 +37,7 @@ build:
   verbosity: minimal
 
 test_script:
-  - cmd: vstest.console.exe .\test\DotRas.Tests\bin\%CONFIGURATION%\net472\DotRas.Tests.dll /enablecodecoverage
+  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
@@ -45,5 +45,5 @@ after_test:
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
-  - path: '**\*.coverage*'
-    name: Coverage Results
+  - path: '**\*.trx'
+    name: Test Results
