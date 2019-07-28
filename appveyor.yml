@@ -41,7 +41,7 @@ before_test:
   - cmd: copy "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
 
 test_script:
-  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:Appveyor /logger:trx
+  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
