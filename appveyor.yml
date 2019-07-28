@@ -38,7 +38,7 @@ build:
   verbosity: minimal
 
 test_script:
-  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx /logger:"%VS_DIR%\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\Appveyor.MSTestLogger.VS2017.dll"
+  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
