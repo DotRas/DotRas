@@ -7,7 +7,7 @@ platform: Any CPU
 skip_branch_with_pr: true
 
 environment:
-  vs_dir: %PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\
+  vs_dir: C:\Program Files (x86)\Microsoft Visual Studio\2017\Community
   sonarcloud_token:
     secure: WSZCNtuf3h9M4BxNiFQ7SQPwGkg3+LqSMZRyfYruiicYvc1BzYaN90n8pNEsPAKs
   snk_passphrase: 
