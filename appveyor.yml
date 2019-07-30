@@ -49,7 +49,7 @@ test_script:
   - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
-  - ps: ls **\*.coverage | %{ $_.FullName }
+  - ps: Get-ChildItem *.coverage -Recurse | %{ $_.FullName }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 on_finish:
