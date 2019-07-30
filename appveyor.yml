@@ -16,6 +16,9 @@ environment:
   snk_salt:
     secure: tIuRlNokDRTBkah55IRfeATr4WWOEfQOLDqUjrDMMcPEmgq4yOTHzQFKEky67G9rk51D2VvdMFsTcDQrecDonA==
 
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 install:
   - cmd: choco install "sonarscanner-msbuild-net46" -y
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/jeff-winn/secure-file/master/install.ps1'))
@@ -48,6 +51,9 @@ test_script:
 after_test:
   - ps: ls **\*.coverage | %{ $_.FullName }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: '**\*.nupkg'
