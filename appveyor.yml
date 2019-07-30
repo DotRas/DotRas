@@ -19,8 +19,10 @@ init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
+  - cmd: set path=%path%;C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools
   - cmd: choco install "sonarscanner-msbuild-net46" -y
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/jeff-winn/secure-file/master/install.ps1'))
+  - cmd: copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
 
 dotnet_csproj:
   patch: true
@@ -40,15 +42,10 @@ before_build:
 build:
   verbosity: minimal
 
-before_test:
-  - cmd: set path=%path%;C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools
-  - cmd: copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "C:\Program Files (x86)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
-
 test_script:
   - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
-  - ps: Get-ChildItem *.coverage -Recurse | %{ codecoverage.exe analyze /output:"$((Join-Path (Split-Path -Path $_.FullName) "$($_.BaseName).coveragexml"))" "$($_.FullName)" }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 on_finish:
@@ -57,7 +54,7 @@ on_finish:
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
-  - path: '**\In\**\*.coverage*'
+  - path: '**\*.coverage*'
     name: Coverage Results
   - path: '**\*.trx'
     name: Test Results
