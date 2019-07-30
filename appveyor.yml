@@ -46,7 +46,7 @@ test_script:
   - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
-  - ps: Get-ChildItem C:/projects/dotras/**/In/**/*.coverage | %{Write-Host "$($_.FullName)"}
+  - ps: Get-ChildItem **/In/**/*.coverage
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 artifacts:
