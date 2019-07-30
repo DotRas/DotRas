@@ -32,7 +32,7 @@ nuget:
 before_build:
   - cmd: appveyor-tools\secure-file.exe -decrypt Winnster.snk.enc -secret %snk_passphrase% -salt %snk_salt%
   - cmd: choco install "sonarscanner-msbuild-net46" -y
-  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.exclusions=**/Infrastructure/IoC/**" /d:"sonar.cs.vstest.reportsPaths=**/*.trx" /d:"sonar.cs.vscoveragexml.reportPaths=**/*.coveragexml"
+  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.vstest.reportsPaths=**/*.trx" /d:"sonar.cs.vscoveragexml.reportPaths=**/*.coveragexml"
   - cmd: nuget restore
 
 build:
@@ -46,7 +46,7 @@ test_script:
   - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
 
 after_test:
-  - ps: Get-ChildItem $env:APPVEYOR_BUILD_FOLDER/**/*.coverage
+  - ps: ls **\*.coverage | %{ $_.FullName }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 artifacts:
