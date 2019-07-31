@@ -18,7 +18,6 @@ init:
   - cmd: set path=%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools;%path%
   - cmd: copy "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
   - ps: set-alias CodeCoverage "${env:ProgramFiles(X86)}\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
   - cmd: choco install "sonarscanner-msbuild-net46" -y
@@ -48,9 +47,6 @@ test_script:
 after_test:
   - ps: Get-ChildItem *.coverage -recurse | %{ codecoverage analyze /output:"$((Join-Path (Split-Path -Path $_.FullName) "$($_.BaseName).coveragexml"))" "$($_.FullName)" }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
-
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: '**\*.nupkg'
