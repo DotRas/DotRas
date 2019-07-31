@@ -51,7 +51,7 @@ after_test:
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
-  - path: '**\*.coverage*'
+  - path: '**\*.coveragexml'
     name: Coverage Results
   - path: '**\*.trx'
     name: Test Results
