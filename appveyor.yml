@@ -17,7 +17,7 @@ environment:
 init:
   - cmd: set path=%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools;%path%
   - cmd: copy "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
-  - ps: set-alias CodeCoverage ${env:ProgramFiles(X86)}\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe
+  - ps: set-alias CodeCoverage "${env:ProgramFiles(X86)}\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
