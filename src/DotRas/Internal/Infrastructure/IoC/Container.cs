@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
+// ReSharper disable UnusedMethodReturnValue.Global
 #pragma warning disable IDE0011
 #pragma warning disable IDE0021
 #pragma warning disable IDE0022
@@ -16,7 +17,7 @@ namespace DotRas.Internal.Infrastructure.IoC
     /// <summary>
     /// Inversion of control container handles dependency injection for registered types
     /// </summary>
-    class Container : Container.IScope
+    internal class Container : Container.IScope
     {
         #region Public interfaces
         /// <summary>
@@ -44,15 +45,15 @@ namespace DotRas.Internal.Infrastructure.IoC
         #endregion
 
         // Map of registered types
-        private readonly Dictionary<Type, Func<ILifetime, object>> _registeredTypes = new Dictionary<Type, Func<ILifetime, object>>();
+        private readonly Dictionary<Type, Func<ILifetime, object>> registeredTypes = new Dictionary<Type, Func<ILifetime, object>>();
 
         // Lifetime management
-        private readonly ContainerLifetime _lifetime;
+        private readonly ContainerLifetime lifetime;
 
         /// <summary>
         /// Creates a new instance of IoC Container
         /// </summary>
-        public Container() => _lifetime = new ContainerLifetime(t => _registeredTypes[t]);
+        public Container() => lifetime = new ContainerLifetime(t => registeredTypes[t]);
 
         /// <summary>
         /// Registers a factory function which will be called to resolve the specified interface
@@ -73,25 +74,42 @@ namespace DotRas.Internal.Infrastructure.IoC
             => RegisterType(@interface, FactoryFromType(implementation));
 
         private IRegisteredType RegisterType(Type itemType, Func<ILifetime, object> factory)
-            => new RegisteredType(itemType, f => _registeredTypes[itemType] = f, factory);
+            => new RegisteredType(itemType, f => registeredTypes[itemType] = f, factory);
 
         /// <summary>
         /// Returns the object registered for the given type
         /// </summary>
-        /// <param name="type">Type as registered with the container</param>
+        /// <param name="serviceType">Type as registered with the container</param>
         /// <returns>Instance of the registered type</returns>
-        public object GetService(Type type) => _registeredTypes[type](_lifetime);
+        public object GetService(Type serviceType) => registeredTypes[serviceType](lifetime);
 
         /// <summary>
         /// Creates a new scope
         /// </summary>
         /// <returns>Scope object</returns>
-        public IScope CreateScope() => new ScopeLifetime(_lifetime);
+        public IScope CreateScope() => new ScopeLifetime(lifetime);
+
+        ~Container()
+        {
+            Dispose(false);
+        }
 
         /// <summary>
         /// Disposes any <see cref="IDisposable"/> objects owned by this container.
         /// </summary>
-        public void Dispose() => _lifetime.Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                lifetime.Dispose();
+            }
+        }
         
         #region Lifetime management
         // ILifetime management adds resolution strategies to an IScope
@@ -103,31 +121,45 @@ namespace DotRas.Internal.Infrastructure.IoC
         }
 
         // ObjectCache provides common caching logic for lifetimes
-        abstract class ObjectCache
+        abstract class ObjectCache : IDisposable
         {
             // Instance cache
-            private readonly ConcurrentDictionary<Type, object> _instanceCache = new ConcurrentDictionary<Type, object>();
+            private readonly ConcurrentDictionary<Type, object> instanceCache = new ConcurrentDictionary<Type, object>();
 
             // Get from cache or create and cache object
             protected object GetCached(Type type, Func<ILifetime, object> factory, ILifetime lifetime)
-                => _instanceCache.GetOrAdd(type, _ => factory(lifetime));
+                => instanceCache.GetOrAdd(type, _ => factory(lifetime));
+
+            ~ObjectCache()
+            {
+                Dispose(false);
+            }
 
             public void Dispose()
             {
-                foreach (var obj in _instanceCache.Values)
-                    (obj as IDisposable)?.Dispose();
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    foreach (var obj in instanceCache.Values)
+                        (obj as IDisposable)?.Dispose();
+                }
             }
         }
 
         // Container lifetime management
-        class ContainerLifetime : ObjectCache, ILifetime
+        private class ContainerLifetime : ObjectCache, ILifetime
         {
-            // Retrieves the factory functino from the given type, provided by owning container
-            public Func<Type, Func<ILifetime, object>> GetFactory { get; private set; }
+            // Retrieves the factory function from the given type, provided by owning container
+            public Func<Type, Func<ILifetime, object>> GetFactory { get; }
 
             public ContainerLifetime(Func<Type, Func<ILifetime, object>> getFactory) => GetFactory = getFactory;
 
-            public object GetService(Type type) => GetFactory(type)(this);
+            public object GetService(Type serviceType) => GetFactory(serviceType)(this);
 
             // Singletons get cached per container
             public object GetServiceAsSingleton(Type type, Func<ILifetime, object> factory)
@@ -142,15 +174,15 @@ namespace DotRas.Internal.Infrastructure.IoC
         class ScopeLifetime : ObjectCache, ILifetime
         {
             // Singletons come from parent container's lifetime
-            private readonly ContainerLifetime _parentLifetime;
+            private readonly ContainerLifetime parentLifetime;
 
-            public ScopeLifetime(ContainerLifetime parentContainer) => _parentLifetime = parentContainer;
+            public ScopeLifetime(ContainerLifetime parentContainer) => parentLifetime = parentContainer;
 
-            public object GetService(Type type) => _parentLifetime.GetFactory(type)(this);
+            public object GetService(Type serviceType) => parentLifetime.GetFactory(serviceType)(this);
 
             // Singleton resolution is delegated to parent lifetime
             public object GetServiceAsSingleton(Type type, Func<ILifetime, object> factory)
-                => _parentLifetime.GetServiceAsSingleton(type, factory);
+                => parentLifetime.GetServiceAsSingleton(type, factory);
 
             // Per-scope objects get cached
             public object GetServicePerScope(Type type, Func<ILifetime, object> factory)
@@ -190,24 +222,24 @@ namespace DotRas.Internal.Infrastructure.IoC
         // and allowing users to mark it as a singleton or per-scope item
         class RegisteredType : IRegisteredType
         {
-            private readonly Type _itemType;
-            private readonly Action<Func<ILifetime, object>> _registerFactory;
-            private readonly Func<ILifetime, object> _factory;
+            private readonly Type itemType;
+            private readonly Action<Func<ILifetime, object>> registerFactory;
+            private readonly Func<ILifetime, object> factory;
 
             public RegisteredType(Type itemType, Action<Func<ILifetime, object>> registerFactory, Func<ILifetime, object> factory)
             {
-                _itemType = itemType;
-                _registerFactory = registerFactory;
-                _factory = factory;
+                this.itemType = itemType;
+                this.registerFactory = registerFactory;
+                this.factory = factory;
 
-                registerFactory(_factory);
+                registerFactory(this.factory);
             }
 
             public void AsSingleton()
-                => _registerFactory(lifetime => lifetime.GetServiceAsSingleton(_itemType, _factory));
+                => registerFactory(lifetime => lifetime.GetServiceAsSingleton(itemType, factory));
 
             public void PerScope() 
-                => _registerFactory(lifetime => lifetime.GetServicePerScope(_itemType, _factory));
+                => registerFactory(lifetime => lifetime.GetServicePerScope(itemType, factory));
         }
         #endregion
     }
