@@ -16,7 +16,6 @@ environment:
 
 init:
   - cmd: set path=%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools;%path%
-  - cmd: copy "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\appveyor.*" "%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions" /y
   - ps: set-alias CodeCoverage "${env:ProgramFiles(X86)}\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
 
 install:
@@ -42,7 +41,7 @@ build:
   verbosity: minimal
 
 test_script:
-  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx /logger:Appveyor
+  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx /logger:"%ProgramFiles(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions\Appveyor.MSTestLogger.VS2017.dll"
 
 after_test:
   - ps: Get-ChildItem *.coverage -recurse | ?{ $_.FullName -notmatch '\\In\\' } | %{ codecoverage analyze /output:"$((Join-Path (Split-Path -Path $_.FullName) "$($_.BaseName).coveragexml"))" "$($_.FullName)" }
