@@ -34,7 +34,7 @@ nuget:
 
 before_build:
   - cmd: appveyor-tools\secure-file.exe -decrypt Winnster.snk.enc -secret %snk_passphrase% -salt %snk_salt%
-  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.vstest.reportsPaths=**/*.trx" /d:"sonar.cs.vscoveragexml.reportsPaths=**/*.coveragexml" /d:"sonar.exclusions=**/examples/**,**/Interop/**"
+  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.vstest.reportsPaths=**/*.trx" /d:"sonar.cs.vscoveragexml.reportsPaths=**/*.coveragexml" /d:"sonar.exclusions=**\examples\**,**\Interop\**"
   - cmd: nuget restore
 
 build:
