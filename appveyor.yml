@@ -15,12 +15,14 @@ environment:
     secure: tIuRlNokDRTBkah55IRfeATr4WWOEfQOLDqUjrDMMcPEmgq4yOTHzQFKEky67G9rk51D2VvdMFsTcDQrecDonA==
 
 init:
-  - cmd: set path=%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow;%ProgramFiles(X86)%\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools;%path%
-  - ps: set-alias CodeCoverage "${env:ProgramFiles(X86)}\Microsoft Visual Studio\2017\TestAgent\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
+  - cmd: nuget sources add -name "myget.org" -source "https://www.myget.org/F/winnster/api/v3/index.json"
 
 install:
-  - cmd: choco install "sonarscanner-msbuild-net46" -y
+  - cmd: choco install opencover
+  - ps: set-alias opencover "${env:LocalAppData}\Apps\OpenCover\OpenCover.Console.exe"
+  - cmd: choco install sonarscanner-msbuild-net46
   - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+  - ps: set-alias securefile ".\appveyor-tools\secure-file.exe"
 
 dotnet_csproj:
   patch: true
@@ -34,17 +36,16 @@ nuget:
 
 before_build:
   - cmd: appveyor-tools\secure-file.exe -decrypt Winnster.snk.enc -secret %snk_passphrase% -salt %snk_salt%
-  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.vstest.reportsPaths=**/*.trx" /d:"sonar.cs.vscoveragexml.reportsPaths=**/*.coveragexml" /d:"sonar.exclusions=**\examples\**,**\Interop\**"
+  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.nunit.reportsPaths=**/TestResult.xml" /d:"sonar.cs.opencover.reportsPaths=**/opencover.xml" /d:"sonar.exclusions=**\examples\**,**\Interop\**"
   - cmd: nuget restore
 
 build:
   verbosity: minimal
 
 test_script:
-  - cmd: vstest.console.exe "./test/DotRas.Tests/bin/%CONFIGURATION%/net472/DotRas.Tests.dll" /enablecodecoverage /logger:trx
+  - ps: opencover -target:"C:\Tools\NUnit3\nunit3-console.exe" -targetargs:"$(get-childitem *.tests.dll -recurse | where { $_.FullName -notmatch 'obj' } | %{ `"$_`" }) --skipnontestassemblies" -register -output:opencover.xml
 
 after_test:
-  - ps: Get-ChildItem *.coverage -recurse | ?{ $_.FullName -notmatch '\\In\\' } | %{ codecoverage analyze /output:"$((Join-Path (Split-Path -Path $_.FullName) "$($_.BaseName).coveragexml"))" "$($_.FullName)" }
   - cmd: SonarScanner.MSBuild.exe end /d:"sonar.login=%sonarcloud_token%"
 
 artifacts:
