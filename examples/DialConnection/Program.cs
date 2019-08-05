@@ -75,6 +75,7 @@ namespace DialConnection
         {
             if (disposing)
             {
+                dialer.StateChanged -= OnDialerStateChanged;
                 dialer.Dispose();
             }
         }

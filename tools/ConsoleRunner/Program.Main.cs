@@ -14,7 +14,8 @@ namespace ConsoleRunner
                 ConfigureIoC();
                 ConfigureApplication();
 
-                using (var task = new Program().RunAsync())
+                using (var program = new Program())
+                using (var task = program.RunAsync())
                 {
                     Console.WriteLine("Press any key to cancel...");
                     Console.ReadKey(true);

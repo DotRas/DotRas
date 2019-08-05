@@ -81,6 +81,7 @@ namespace DialConnectionAsynchronously
         {
             if (disposing)
             {
+                dialer.StateChanged -= OnDialerStateChanged;
                 dialer.Dispose();
             }
         }

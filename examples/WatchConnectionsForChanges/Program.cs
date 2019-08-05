@@ -80,6 +80,8 @@ namespace WatchConnectionsForChanges
         {
             if (disposing)
             {
+                watcher.Connected -= OnConnectionConnected;
+                watcher.Disconnected -= OnConnectionDisconnected;
                 watcher.Dispose();            
             }
         }

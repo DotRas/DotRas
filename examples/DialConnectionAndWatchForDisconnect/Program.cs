@@ -89,6 +89,8 @@ namespace DialConnectionAndWatchForDisconnect
             if (disposing)
             {
                 dialer.Dispose();
+
+                watcher.Disconnected -= OnConnectionDisconnected;
                 watcher.Dispose();
             }
         }

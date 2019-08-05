@@ -6,7 +6,7 @@ using DotRas;
 
 namespace ConsoleRunner
 {
-    partial class Program
+    partial class Program : IDisposable
     {
         private readonly RasDialer dialer = new RasDialer();
         private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
@@ -24,6 +24,30 @@ namespace ConsoleRunner
             
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;
+        }
+
+        ~Program()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                dialer.StateChanged -= OnStateChanged;
+                dialer.Dispose();
+                
+                watcher.Connected -= OnConnected;
+                watcher.Disconnected -= OnDisconnected;
+                watcher.Dispose();
+            }
         }
 
         public Task RunAsync()
