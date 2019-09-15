@@ -5,10 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
-		CONTRIBUTING.md = CONTRIBUTING.md
-		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas", "src\DotRas\DotRas.csproj", "{DA4B359A-F13F-46FE-81C4-FCD6EB7EB2CA}"
