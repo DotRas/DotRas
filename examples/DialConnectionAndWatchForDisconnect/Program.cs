@@ -6,7 +6,7 @@ using DotRas;
 
 namespace DialConnectionAndWatchForDisconnect
 {
-    class Program : IDisposable
+    class Program
     {
         private readonly RasDialer dialer;
         private readonly RasConnectionWatcher watcher;
@@ -15,10 +15,7 @@ namespace DialConnectionAndWatchForDisconnect
         {
             try
             {
-                using (var p = new Program())
-                {
-                    p.Run();
-                }
+                new Program().Run();
             }
             catch (Exception ex)
             {
@@ -35,11 +32,6 @@ namespace DialConnectionAndWatchForDisconnect
 
             watcher = new RasConnectionWatcher();
             watcher.Disconnected += OnConnectionDisconnected;
-        }
-
-        ~Program()
-        {
-            Dispose(false);
         }
 
         private void Run()
@@ -76,23 +68,6 @@ namespace DialConnectionAndWatchForDisconnect
         private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
         {
             Console.WriteLine($"Disconnected: [{e.ConnectionInformation.EntryName}] @ {e.ConnectionInformation.Handle}");
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dialer.Dispose();
-
-                watcher.Disconnected -= OnConnectionDisconnected;
-                watcher.Dispose();
-            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsoleRunner.Exceptions;
 using DotRas;
 
 namespace ConsoleRunner
@@ -152,7 +153,7 @@ namespace ConsoleRunner
         {
             if (ShouldThrowRandomException())
             {
-                throw new Exception("A random exception occurred.");
+                throw new RandomException();
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -77,7 +76,7 @@ namespace DotRas
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
-        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Connect()
         {
             return Connect(CancellationToken.None);
@@ -92,7 +91,7 @@ namespace DotRas
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
-        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Connect(CancellationToken cancellationToken)
         {
             using (var task = ConnectAsync(cancellationToken))
@@ -108,7 +107,7 @@ namespace DotRas
         /// <exception cref="EapException">Thrown when an error occurs while authenticating the user credentials when using Extensible Authentication Protocol (EAP).</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
-        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> ConnectAsync()
         {
             return ConnectAsync(CancellationToken.None);
@@ -123,7 +122,7 @@ namespace DotRas
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after <see cref="Dispose"/> has been called.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
-        /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public Task<RasConnection> ConnectAsync(CancellationToken cancellationToken)
         {
             GuardMustNotBeDisposed();

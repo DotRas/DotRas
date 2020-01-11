@@ -3,7 +3,7 @@ using DotRas;
 
 namespace WatchConnectionsForChanges
 {
-    internal class Program : IDisposable
+    internal class Program
     {
         private readonly RasConnectionWatcher watcher;
 
@@ -11,10 +11,7 @@ namespace WatchConnectionsForChanges
         {
             try
             {
-                using (var p = new Program())
-                {
-                    p.Run();
-                }
+                new Program().Run();
             }
             catch (Exception ex)
             {
@@ -32,11 +29,6 @@ namespace WatchConnectionsForChanges
             watcher.Connected += OnConnectionConnected;
             watcher.Disconnected += OnConnectionDisconnected;
         }
-
-        ~Program()
-        {
-            Dispose(false);
-        }        
 
         /// <summary>
         /// This method gets called when the operating system notifies DotRas that a new connection has been established.
@@ -68,22 +60,6 @@ namespace WatchConnectionsForChanges
 
             // Stop watching for connection changes.
             watcher.Stop();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                watcher.Connected -= OnConnectionConnected;
-                watcher.Disconnected -= OnConnectionDisconnected;
-                watcher.Dispose();            
-            }
         }
     }
 }

@@ -5,7 +5,7 @@ using DotRas;
 
 namespace DialConnection
 {
-    class Program : IDisposable
+    class Program
     {
         private readonly RasDialer dialer;
 
@@ -13,10 +13,7 @@ namespace DialConnection
         {
             try
             {
-                using (var p = new Program())
-                {
-                    p.Run();
-                }
+                new Program().Run();
             }
             catch (Exception ex)
             {
@@ -31,11 +28,6 @@ namespace DialConnection
         {
             dialer = new RasDialer();
             dialer.StateChanged += OnDialerStateChanged;
-        }
-
-        ~Program()
-        {
-            Dispose(false);
         }
 
         private void OnDialerStateChanged(object sender, StateChangedEventArgs e)
@@ -63,21 +55,6 @@ namespace DialConnection
             var connection = dialer.Connect();
 
             Console.WriteLine($"Connected: [{connection.EntryName}] @ {connection.Handle}");
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dialer.StateChanged -= OnDialerStateChanged;
-                dialer.Dispose();
-            }
         }
     }
 }

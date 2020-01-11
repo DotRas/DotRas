@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\RandomException.cs" />
     <Compile Include="Infrastructure\ContainerBindings.cs" />
     <Compile Include="Infrastructure\Diagnostics\DotRasLoggingAdapter.cs" />
     <Compile Include="Infrastructure\Providers\AutofacServiceProvider.cs" />

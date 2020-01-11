@@ -4,6 +4,8 @@ using static DotRas.Internal.Interop.Lmcons;
 using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.StdLib;
 
+#pragma warning disable S101 // The type in this file intentionally match the interop structures used by the Win32 API.
+
 namespace DotRas.Internal.Interop
 {
     internal static class NativeMethods
