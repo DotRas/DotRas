@@ -11,7 +11,7 @@ namespace DotRas.Tests.Stubs
             this.result = result;
         }
 
-        public string Format(BadTraceEventWithBadFormatter value)
+        public string Format(BadTraceEventWithBadFormatter eventData)
         {
             return result;
         }

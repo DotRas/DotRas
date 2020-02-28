@@ -7,26 +7,15 @@ namespace DotRas.Diagnostics.Tracing
     {
         public TraceEventType Convert(EventLevel input)
         {
-            switch (input)
+            return input switch
             {
-                case EventLevel.Critical:
-                    return TraceEventType.Critical;
-
-                case EventLevel.Error:
-                    return TraceEventType.Error;
-
-                case EventLevel.Information:
-                    return TraceEventType.Information;
-
-                case EventLevel.Warning:
-                    return TraceEventType.Warning;
-
-                case EventLevel.Verbose:
-                    return TraceEventType.Verbose;
-
-                default:
-                    throw new NotSupportedException($"The value '{input}' is not supported.");
-            }
+                EventLevel.Critical => TraceEventType.Critical,
+                EventLevel.Error => TraceEventType.Error,
+                EventLevel.Information => TraceEventType.Information,
+                EventLevel.Warning => TraceEventType.Warning,
+                EventLevel.Verbose => TraceEventType.Verbose,
+                _ => throw new NotSupportedException($"The value '{input}' is not supported.")
+            };
         }
     }
 }

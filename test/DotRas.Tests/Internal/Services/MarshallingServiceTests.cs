@@ -4,6 +4,8 @@ using DotRas.Internal.Services;
 using DotRas.Tests.Stubs;
 using NUnit.Framework;
 
+#pragma warning disable S1854 // False positive.
+
 namespace DotRas.Tests.Internal.Services
 {
     [TestFixture]
@@ -130,7 +132,7 @@ namespace DotRas.Tests.Internal.Services
         public void ThrowsAnExceptionWhenTheSizeIsLessThanZero()
         {
             var target = new MarshallingService();
-            Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
+            Assert.Throws<ArgumentException>(() => target.AllocHGlobal(-1));
         }
 
         [Test]

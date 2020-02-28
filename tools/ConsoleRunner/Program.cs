@@ -51,12 +51,12 @@ namespace ConsoleRunner
             }
         }
 
-        public Task RunAsync()
+        public async Task RunAsync()
         {
-            return Task.Run(() => Run());
+            await RunCoreAsync();
         }
 
-        private void Run()
+        private async Task RunCoreAsync()
         {
             watcher.Start();
          
@@ -68,7 +68,7 @@ namespace ConsoleRunner
                     {
                         try
                         {
-                            Connect(tcs.Token);
+                            await ConnectAsync(tcs.Token);
                         }
                         finally
                         {
@@ -87,7 +87,7 @@ namespace ConsoleRunner
             watcher.Stop();
         }
 
-        private void Connect(CancellationToken cancellationToken)
+        private async Task ConnectAsync(CancellationToken cancellationToken)
         {
             if (IsConnected)
             {
@@ -95,7 +95,7 @@ namespace ConsoleRunner
             }
 
             Console.WriteLine("Starting connection...");
-            connection = dialer.Connect(cancellationToken);
+            connection = await dialer.ConnectAsync(cancellationToken);
             Console.WriteLine("Completed connecting.");
         }
 

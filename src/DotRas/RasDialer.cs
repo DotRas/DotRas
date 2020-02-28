@@ -94,10 +94,7 @@ namespace DotRas
         /// <exception cref="System.ComponentModel.Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
         public RasConnection Connect(CancellationToken cancellationToken)
         {
-            using (var task = ConnectAsync(cancellationToken))
-            {
-                return task.Result;
-            }
+            return ConnectAsync(cancellationToken).GetResultSynchronously();
         }
 
         /// <summary>

@@ -29,7 +29,11 @@ namespace DotRas.Tests
             var api = new Mock<IRasDial>();
 
             var target = new TestableRasDialer(api.Object);
-            target.StateChanged += (sender, e) => throw new TestException();
+            target.StateChanged += (sender, e) =>
+            {
+                throw new TestException();
+            };
+
             target.Error += (sender, e) =>
             {
                 Assert.IsInstanceOf<TestException>(e.GetException());

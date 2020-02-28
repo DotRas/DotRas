@@ -20,7 +20,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DefaultRasDialCallbackHandler(null, new Mock<IRasEnumConnections>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                _ = new DefaultRasDialCallbackHandler(null, new Mock<IRasEnumConnections>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -29,7 +29,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                _ = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -38,7 +38,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, new Mock<IRasEnumConnections>().Object, null, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
+                _ = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, new Mock<IRasEnumConnections>().Object, null, new Mock<IValueWaiter<IntPtr>>().Object, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 
@@ -47,7 +47,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, new Mock<IRasEnumConnections>().Object, new Mock<IExceptionPolicy>().Object, null, new Mock<ITaskCancellationSourceFactory>().Object);
+                _ = new DefaultRasDialCallbackHandler(new Mock<IRasHangUp>().Object, new Mock<IRasEnumConnections>().Object, new Mock<IExceptionPolicy>().Object, null, new Mock<ITaskCancellationSourceFactory>().Object);
             });
         }
 

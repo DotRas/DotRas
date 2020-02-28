@@ -16,7 +16,7 @@ namespace DotRas.Tests.Internal.Services.ErrorHandling
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new RasGetErrorStringService(null);
+                _ = new RasGetErrorStringService(null);
             });
         }
 

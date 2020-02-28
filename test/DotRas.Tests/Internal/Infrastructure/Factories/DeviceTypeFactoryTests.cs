@@ -14,7 +14,7 @@ namespace DotRas.Tests.Internal.Infrastructure.Factories
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DeviceTypeFactory(null);
+                _ = new DeviceTypeFactory(null);
             });
         }
 

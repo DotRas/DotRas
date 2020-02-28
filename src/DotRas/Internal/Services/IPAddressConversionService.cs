@@ -10,17 +10,12 @@ namespace DotRas.Internal.Services
     {
         public IPAddress ConvertFromEndpoint(RASTUNNELENDPOINT endPoint)
         {
-            switch (endPoint.type)
+            return endPoint.type switch
             {
-                case RASTUNNELENDPOINTTYPE.IPv4:
-                    return CreateIPv4Address(endPoint.addr);
-
-                case RASTUNNELENDPOINTTYPE.IPv6:
-                    return CreateIPv6Address(endPoint.addr);
-
-                default:
-                    throw new NotSupportedException($"The endpoint type '{endPoint.type}' is not supported.");
-            }
+                RASTUNNELENDPOINTTYPE.IPv4 => CreateIPv4Address(endPoint.addr),
+                RASTUNNELENDPOINTTYPE.IPv6 => CreateIPv6Address(endPoint.addr),
+                _ => throw new NotSupportedException($"The endpoint type '{endPoint.type}' is not supported.")
+            };
         }
 
         private static IPAddress CreateIPv4Address(byte[] bytes)

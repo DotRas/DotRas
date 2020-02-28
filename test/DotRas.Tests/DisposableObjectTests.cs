@@ -2,6 +2,8 @@
 using DotRas.Tests.Stubs;
 using NUnit.Framework;
 
+#pragma warning disable S3966 // This is intentional to dispose multiple times to check the behavior.
+
 namespace DotRas.Tests
 {
     [TestFixture]

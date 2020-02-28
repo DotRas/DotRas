@@ -14,7 +14,7 @@ namespace DotRas.Tests.Diagnostics
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var unused = new DefaultEventLoggingPolicy(null);
+                _ = new DefaultEventLoggingPolicy(null);
             });
         }
 

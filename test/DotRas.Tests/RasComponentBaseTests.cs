@@ -13,7 +13,10 @@ namespace DotRas.Tests
         public void SwallowsErrorsWhichOccurWhileHandlingErrors()
         {
             var target = new StubRasComponent();
-            target.Error += (sender, e) => throw new TestException();
+            target.Error += (sender, e) =>
+            {
+                throw new TestException();
+            };
 
             Assert.DoesNotThrow(() => target.RaiseInternalErrorEvent(new ErrorEventArgs(new TestException())));
         }

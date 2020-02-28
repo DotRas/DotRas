@@ -9,6 +9,8 @@ using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.WinError;
 
+#pragma warning disable S1854 // False positive.
+
 namespace DotRas.Internal.Services.Dialing
 {
     internal class RasDialService : DisposableObject, IRasDial
