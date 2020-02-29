@@ -72,7 +72,7 @@ namespace ConsoleRunner
                         }
                         finally
                         {
-                            Disconnect();
+                            await DisconnectAsync(tcs.Token);
                         }
 
                         WaitUntilNextExecution(tcs.Token);
@@ -99,7 +99,7 @@ namespace ConsoleRunner
             Console.WriteLine("Completed connecting.");
         }
 
-        private void Disconnect()
+        private async Task DisconnectAsync(CancellationToken cancellationToken)
         {
             if (!IsConnected)
             {
@@ -107,7 +107,7 @@ namespace ConsoleRunner
             }
 
             Console.WriteLine("Starting disconnect...");
-            connection.Disconnect();
+            await connection.DisconnectAsync(cancellationToken);
             Console.WriteLine("Completed disconnect.");
         }
 

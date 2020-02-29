@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Connections;
@@ -33,7 +34,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            Assert.Throws<ArgumentNullException>(() => target.HangUp(null, true, CancellationToken.None));
+            Assert.ThrowsAsync<ArgumentNullException>(() => target.HangUpAsync(null, true, CancellationToken.None));
         }
 
         [Test]
@@ -48,7 +49,7 @@ namespace DotRas.Tests.Internal.Services.Connections
 
         [Test]
         [Timeout(10000)]
-        public void HangsUpTheConnectionAsExpected()
+        public async Task HangsUpTheConnectionAsExpected()
         {
             var handle = new IntPtr(1);
 
@@ -61,7 +62,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            target.HangUp(connection.Object, true, CancellationToken.None);
+            await target.HangUpAsync(connection.Object, true, CancellationToken.None);
 
             api.Verify(o => o.RasHangUp(handle), Times.Once);
         }
@@ -128,7 +129,7 @@ namespace DotRas.Tests.Internal.Services.Connections
                 cancellationSource.Cancel();                
 
                 var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                Assert.Throws<OperationCanceledException>(() => target.HangUp(connection.Object, true, cancellationSource.Token));
+                Assert.ThrowsAsync<TaskCanceledException>(async () => await target.HangUpAsync(connection.Object, true, cancellationSource.Token));
             }
         }
 

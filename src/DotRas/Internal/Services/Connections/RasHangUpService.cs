@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
@@ -19,14 +20,14 @@ namespace DotRas.Internal.Services.Connections
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
         }
 
-        public void HangUp(IRasConnection connection, bool closeAllReferences, CancellationToken cancellationToken)
+        public Task HangUpAsync(IRasConnection connection, bool closeAllReferences, CancellationToken cancellationToken)
         {
             if (connection == null)
             {
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            HangUpImpl(connection.Handle, closeAllReferences, cancellationToken);
+            return Task.Run(() => HangUpImpl(connection.Handle, closeAllReferences, cancellationToken), cancellationToken);
         }
 
         public void UnsafeHangUp(IntPtr handle, bool closeAllReferences)

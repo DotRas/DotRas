@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
 
@@ -137,9 +138,11 @@ namespace DotRas
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         public virtual void Disconnect()
         {
-            Disconnect(CancellationToken.None);
+            DisconnectAsync(CancellationToken.None).GetResultSynchronously();
         }
 
         /// <summary>
@@ -147,20 +150,47 @@ namespace DotRas
         /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         public virtual void Disconnect(CancellationToken cancellationToken)
         {
-            Disconnect(true, cancellationToken);
+            DisconnectAsync(cancellationToken).GetResultSynchronously();
         }
 
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
+        public virtual void Disconnect(CancellationToken cancellationToken, bool closeAllReferences)
+        {
+            DisconnectAsync(cancellationToken, closeAllReferences).GetResultSynchronously();
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        public virtual void Disconnect(bool closeAllReferences, CancellationToken cancellationToken)
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
+        /// <returns>The task to await.</returns>
+        public virtual Task DisconnectAsync(CancellationToken cancellationToken)
         {
-            hangUpService.HangUp(this, closeAllReferences, cancellationToken);
+            return DisconnectAsync(cancellationToken, true);
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+        /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
+        /// <returns>The task to await.</returns>
+        public virtual Task DisconnectAsync(CancellationToken cancellationToken, bool closeAllReferences)
+        {
+            return hangUpService.HangUpAsync(this, closeAllReferences, cancellationToken);
         }
 
         /// <summary>

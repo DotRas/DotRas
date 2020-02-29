@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using DotRas.Internal;
@@ -568,7 +569,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectTheConnectionAsExpected()
+        public async Task DisconnectTheConnectionAsExpected()
         {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
@@ -587,9 +588,9 @@ namespace DotRas.Tests
             var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
-            target.Disconnect(cancellationToken);
+            await target.DisconnectAsync(CancellationToken.None);
 
-            rasHangUp.Verify(o => o.HangUp(target, It.IsAny<bool>(), cancellationToken), Times.Once);
+            rasHangUp.Verify(o => o.HangUpAsync(target, It.IsAny<bool>(), cancellationToken), Times.Once);
         }
 
         [Test]
@@ -616,7 +617,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectShouldCloseAllReferencesByDefault()
+        public async Task DisconnectShouldCloseAllReferencesByDefault()
         {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
@@ -633,9 +634,9 @@ namespace DotRas.Tests
             var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
-            target.Disconnect(CancellationToken.None);
+            await target.DisconnectAsync(CancellationToken.None);
 
-            rasHangUp.Verify(o => o.HangUp(target, true, CancellationToken.None), Times.Once);
+            rasHangUp.Verify(o => o.HangUpAsync(target, true, CancellationToken.None), Times.Once);
         }
     }
 }
