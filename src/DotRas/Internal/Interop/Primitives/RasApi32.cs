@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
+using DotRas.Internal.Abstractions.Primitives;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
@@ -13,9 +13,9 @@ namespace DotRas.Internal.Interop.Primitives
             return UnsafeNativeMethods.RasClearConnectionStatistics(hRasConn);
         }
 
-        public int RasConnectionNotification(IntPtr hRasConn, SafeHandle hEvent, RASCN dwFlags)
+        public int RasConnectionNotification(IntPtr hRasConn, ISafeHandleWrapper hEvent, RASCN dwFlags)
         {
-            return SafeNativeMethods.RasConnectionNotification(hRasConn, hEvent, dwFlags);
+            return SafeNativeMethods.RasConnectionNotification(hRasConn, hEvent.UnderlyingHandle, dwFlags);
         }
 
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)

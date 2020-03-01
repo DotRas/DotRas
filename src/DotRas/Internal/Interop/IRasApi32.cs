@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
+using DotRas.Internal.Abstractions.Primitives;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
@@ -13,7 +13,7 @@ namespace DotRas.Internal.Interop
 
         int RasConnectionNotification(
             IntPtr hRasConn, 
-            SafeHandle hEvent, 
+            ISafeHandleWrapper hEvent, 
             RASCN dwFlags);
 
         int RasEnumConnections(

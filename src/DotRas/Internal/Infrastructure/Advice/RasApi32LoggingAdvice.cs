@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Text;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
+using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.ExternDll;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -38,7 +38,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public int RasConnectionNotification(IntPtr hRasConn, SafeHandle hEvent, RASCN dwFlags)
+        public int RasConnectionNotification(IntPtr hRasConn, ISafeHandleWrapper hEvent, RASCN dwFlags)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.RasConnectionNotification(hRasConn, hEvent, dwFlags);
@@ -75,6 +75,8 @@ namespace DotRas.Internal.Infrastructure.Advice
             };
 
             callEvent.Args.Add(nameof(lpRasConn), lpRasConn);
+            callEvent.Args.Add(nameof(lpCb), lpCb);
+            callEvent.Args.Add(nameof(lpConnections), lpConnections);
             callEvent.OutArgs.Add(nameof(lpCb), lpCb);
             callEvent.OutArgs.Add(nameof(lpConnections), lpConnections);
 
@@ -97,6 +99,8 @@ namespace DotRas.Internal.Infrastructure.Advice
             };
 
             callEvent.Args.Add(nameof(lpRasDevInfo), lpRasDevInfo);
+            callEvent.Args.Add(nameof(lpCb), lpCb);
+            callEvent.Args.Add(nameof(lpcDevices), lpcDevices);
             callEvent.OutArgs.Add(nameof(lpCb), lpCb);
             callEvent.OutArgs.Add(nameof(lpcDevices), lpcDevices);
 

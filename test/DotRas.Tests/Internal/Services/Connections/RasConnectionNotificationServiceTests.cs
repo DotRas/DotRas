@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
@@ -115,8 +114,8 @@ namespace DotRas.Tests.Internal.Services.Connections
             });
 
             callbackHandler.Verify(o => o.Initialize(), Times.Once);
-            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Connection), Times.Once);
-            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Disconnection), Times.Once);
+            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Connection), Times.Once);
+            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Disconnection), Times.Once);
 
             Assert.True(target.IsActive);
 
@@ -151,8 +150,8 @@ namespace DotRas.Tests.Internal.Services.Connections
             });
 
             callbackHandler.Verify(o => o.Initialize(), Times.Once);
-            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<SafeHandle>(), RASCN.Connection), Times.Once);
-            api.Verify(o => o.RasConnectionNotification(handle, It.IsAny<SafeHandle>(), RASCN.Disconnection), Times.Once);
+            api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Connection), Times.Once);
+            api.Verify(o => o.RasConnectionNotification(handle, It.IsAny<ISafeHandleWrapper>(), RASCN.Disconnection), Times.Once);
 
             Assert.True(target.IsActive);
 
@@ -197,7 +196,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var registeredCallback = new Mock<IRegisteredCallback>();
 
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<SafeHandle>(), It.IsAny<RASCN>())).Returns(1);
+            api.Setup(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<ISafeHandleWrapper>(), It.IsAny<RASCN>())).Returns(1);
 
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -217,7 +216,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         public void ThrowsAnExceptionWhenRegisteredCallbackIsNull()
         {
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<SafeHandle>(), It.IsAny<RASCN>())).Returns(1);
+            api.Setup(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<ISafeHandleWrapper>(), It.IsAny<RASCN>())).Returns(1);
 
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
