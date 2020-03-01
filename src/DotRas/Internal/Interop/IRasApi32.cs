@@ -21,6 +21,11 @@ namespace DotRas.Internal.Interop
             ref int lpCb,
             ref int lpConnections);
 
+        int RasEnumDevices(
+            RASDEVINFO[] lpRasDevInfo,
+            ref int lpCb,
+            ref int lpcDevices);
+
         int RasDial(
             ref RASDIALEXTENSIONS lpRasDialExtensions,
             string lpszPhoneBook,

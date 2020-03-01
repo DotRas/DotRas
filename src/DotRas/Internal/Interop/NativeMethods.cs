@@ -65,6 +65,17 @@ namespace DotRas.Internal.Interop
             public string szDomain;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
+        public struct RASDEVINFO
+        {
+            [SizeOf]
+            public int dwSize;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
+            public string szDeviceType;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceName + 1)]
+            public string szDeviceName;
+        }
+
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct RASDIALEXTENSIONS
         {

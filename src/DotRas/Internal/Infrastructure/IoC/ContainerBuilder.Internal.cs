@@ -8,6 +8,7 @@ using DotRas.Internal.Interop;
 using DotRas.Internal.Policies;
 using DotRas.Internal.Services;
 using DotRas.Internal.Services.Connections;
+using DotRas.Internal.Services.Devices;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Internal.Services.ErrorHandling;
 using DotRas.Internal.Services.PhoneBooks;
@@ -61,6 +62,8 @@ namespace DotRas.Internal.Infrastructure.IoC
                         container.GetRequiredService<IValueWaiter<IntPtr>>(),
                         container.GetRequiredService<ITaskCancellationSourceFactory>()),
                     container.GetRequiredService<IEventLoggingPolicy>()));
+
+            container.Register<IRasEnumDevices>(typeof(RasEnumDevicesService));
 
             container.Register<IWin32FormatMessage>(typeof(Win32FormatMessageService));
         }
