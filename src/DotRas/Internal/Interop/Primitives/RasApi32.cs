@@ -23,6 +23,11 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
         }
 
+        public int RasEnumDevices(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices)
+        {
+            return SafeNativeMethods.RasEnumDevices(lpRasDevInfo, ref lpCb, ref lpcDevices);
+        }
+
         public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
         {
             return UnsafeNativeMethods.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, lpvNotifier, out lphRasConn);

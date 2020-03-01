@@ -82,6 +82,28 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
+        public int RasEnumDevices(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasEnumDevices(lpRasDevInfo, ref lpCb, ref lpcDevices);
+            stopwatch.Stop();
+
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent
+            {
+                DllName = RasApi32Dll,
+                Duration = stopwatch.Elapsed,
+                MethodName = nameof(RasEnumDevices),
+                Result = result
+            };
+
+            callEvent.Args.Add(nameof(lpRasDevInfo), lpRasDevInfo);
+            callEvent.OutArgs.Add(nameof(lpCb), lpCb);
+            callEvent.OutArgs.Add(nameof(lpcDevices), lpcDevices);
+
+            LogVerbose(callEvent);
+            return result;
+        }
+
         public int RasDial(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn)
         {
             var stopwatch = Stopwatch.StartNew();

@@ -1,4 +1,8 @@
-﻿namespace DotRas
+﻿using System.Collections.Generic;
+using DotRas.Internal;
+using DotRas.Internal.Abstractions.Services;
+
+namespace DotRas
 {
     /// <summary>
     /// Represents a device capable of establishing a remote access connection.
@@ -24,6 +28,16 @@
         /// </summary>
         protected RasDevice()
         {
+        }
+
+        /// <summary>
+        /// Enumerates the devices.
+        /// </summary>
+        /// <returns>An enumerable used to iterate through the devices available.</returns>
+        public static IEnumerable<RasDevice> EnumerateDevices()
+        {
+            return ServiceLocator.Default.GetRequiredService<IRasEnumDevices>()
+                .EnumerateDevices();
         }
     }
 }
