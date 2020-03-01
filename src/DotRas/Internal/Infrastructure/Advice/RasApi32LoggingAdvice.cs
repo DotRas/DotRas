@@ -145,7 +145,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             {
                 DllName = RasApi32Dll,
                 Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasDial),
+                MethodName = nameof(RasGetConnectStatus),
                 Result = result,
             };
 
