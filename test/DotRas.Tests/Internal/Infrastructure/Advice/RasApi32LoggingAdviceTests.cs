@@ -232,6 +232,34 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
         }
 
         [Test]
+        public void RasGetConnectionStatisticsAsExpected()
+        {
+            var hRasConn = new IntPtr(1);
+            var lpStatistics = new RAS_STATS();
+
+            api.Setup(o => o.RasGetConnectionStatistics(hRasConn, ref It.Ref<RAS_STATS>.IsAny)).Returns(SUCCESS);
+
+            eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
+                (level, o1) =>
+                {
+                    Assert.AreEqual(EventLevel.Verbose, level);
+
+                    var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
+                    Assert.True(eventData.Args.ContainsKey(nameof(hRasConn)));
+                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpStatistics)));
+                    Assert.True(eventData.Duration > TimeSpan.Zero);
+                    Assert.AreEqual(SUCCESS, eventData.Result);
+                })).Verifiable();
+
+            var target = new RasApi32LoggingAdvice(api.Object, eventLoggingPolicy.Object);
+            var result = target.RasGetConnectionStatistics(hRasConn, ref lpStatistics);
+
+            eventLoggingPolicy.Verify();
+            Assert.AreEqual(SUCCESS, result);
+
+        }
+
+        [Test]
         public void RasGetCredentialsAsExpected()
         {
             var lpszPhoneBook = @"C:\Users\My.pbk";
@@ -258,6 +286,44 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
 
             eventLoggingPolicy.Verify();
             Assert.AreEqual(SUCCESS, result);
+        }
+
+        private delegate int RasGetEntryDialParamsCallback(string lpszPhoneBook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword);
+
+        [Test]
+        public void RasGetEntryDialParamsAsExpected()
+        {
+            var lpszPhoneBook = @"C:\Users\My.pbk";
+            RASDIALPARAMS lpDialParams = new RASDIALPARAMS();
+            bool lpfPassword;
+
+            api.Setup(o => o.RasGetEntryDialParams(lpszPhoneBook, ref It.Ref<RASDIALPARAMS>.IsAny, out It.Ref<bool>.IsAny)).Returns(new RasGetEntryDialParamsCallback(
+                (string o1, ref RASDIALPARAMS o2, out bool o3) =>
+                {
+                    o3 = true;
+                    return SUCCESS;
+                }));
+
+            eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
+                (level, o1) =>
+                {
+                    Assert.AreEqual(EventLevel.Verbose, level);
+
+                    var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpszPhoneBook)));
+                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpDialParams)));
+                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpfPassword)));
+                    Assert.True(eventData.Duration > TimeSpan.Zero);
+                    Assert.AreEqual(SUCCESS, eventData.Result);
+                })).Verifiable();
+
+
+            var target = new RasApi32LoggingAdvice(api.Object, eventLoggingPolicy.Object);
+            var result = target.RasGetEntryDialParams(lpszPhoneBook, ref lpDialParams, out lpfPassword);
+
+            eventLoggingPolicy.Verify();
+            Assert.AreEqual(SUCCESS, result);
+            Assert.True(lpfPassword);
         }
 
         [Test]
@@ -289,5 +355,56 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
             Assert.AreEqual(SUCCESS, result);
         }
 
+        [Test]
+        public void RasHangUpAsExpected()
+        {
+            var hRasConn = new IntPtr(1);
+
+            api.Setup(o => o.RasHangUp(hRasConn)).Returns(SUCCESS);
+
+            eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
+                (level, o1) =>
+                {
+                    Assert.AreEqual(EventLevel.Verbose, level);
+
+                    var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
+                    Assert.True(eventData.Args.ContainsKey(nameof(hRasConn)));
+                    Assert.True(eventData.Duration > TimeSpan.Zero);
+                    Assert.AreEqual(SUCCESS, eventData.Result);
+                })).Verifiable();
+
+            var target = new RasApi32LoggingAdvice(api.Object, eventLoggingPolicy.Object);
+            var result = target.RasHangUp(hRasConn);
+
+            eventLoggingPolicy.Verify();
+            Assert.AreEqual(SUCCESS, result);
+        }
+
+        [Test]
+        public void RasValidateEntryNameAsExpected()
+        {
+            var lpszPhoneBook = @"C:\Users\My.pbk";
+            var lpszEntryName = "My Entry";
+
+            api.Setup(o => o.RasValidateEntryName(lpszPhoneBook, lpszEntryName)).Returns(SUCCESS);
+
+            eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
+                (level, o1) =>
+                {
+                    Assert.AreEqual(EventLevel.Verbose, level);
+
+                    var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpszPhoneBook)));
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpszEntryName)));
+                    Assert.True(eventData.Duration > TimeSpan.Zero);
+                    Assert.AreEqual(SUCCESS, eventData.Result);
+                })).Verifiable();
+
+            var target = new RasApi32LoggingAdvice(api.Object, eventLoggingPolicy.Object);
+            var result = target.RasValidateEntryName(lpszPhoneBook, lpszEntryName);
+
+            eventLoggingPolicy.Verify();
+            Assert.AreEqual(SUCCESS, result);
+        }
     }
 }
