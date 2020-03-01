@@ -17,10 +17,6 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
     {
         private delegate void LogEventCallback(EventLevel eventLevel, TraceEvent eventData);
         
-        private delegate int RasEnumConnectionsCallback(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections);
-
-        private delegate int RasEnumDevicesCallback(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices);
-
         private Mock<IRasApi32> api;
         private Mock<IEventLoggingPolicy> eventLoggingPolicy;
 
@@ -83,6 +79,8 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
             Assert.AreEqual(SUCCESS, result);
         }
 
+        private delegate int RasEnumConnectionsCallback(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections);
+
         [Test]
         public void RasEnumConnectionsAsExpected()
         {
@@ -120,6 +118,8 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
             Assert.AreEqual(SUCCESS, result);
         }
 
+        private delegate int RasEnumDevicesCallback(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices);
+
         [Test]
         public void RasEnumDevicesAsExpected()
         {
@@ -156,6 +156,51 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
 
             eventLoggingPolicy.Verify();
             Assert.AreEqual(SUCCESS, result);
+        }
+
+        private delegate int RasDialCallback(ref RASDIALEXTENSIONS lpRasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS lpRasDialParams, NotifierType dwNotifierType, RasDialFunc2 lpvNotifier, out IntPtr lphRasConn);
+
+        [Test]
+        public void RasDialAsExpected()
+        {
+            var lpRasDialExtensions = new RASDIALEXTENSIONS();
+            var lpszPhoneBook = @"C:\Users\My.pbk";
+
+            var lpRasDialParams = new RASDIALPARAMS();
+            var dwNotifierType = NotifierType.RasDialFunc2;
+            RasDialFunc2 lpvNotifier = null;
+            var lphRasConn = IntPtr.Zero;
+
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, lpszPhoneBook, ref It.Ref<RASDIALPARAMS>.IsAny, dwNotifierType, lpvNotifier, out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, NotifierType o4, RasDialFunc2 o5, out IntPtr o6) =>
+                {
+                    o6 = new IntPtr(1);
+                    return SUCCESS;
+                }));
+
+                eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
+                (level, o1) =>
+                {
+                    Assert.AreEqual(EventLevel.Verbose, level);
+
+                    var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpRasDialExtensions)));
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpszPhoneBook)));
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpRasDialParams)));
+                    Assert.True(eventData.Args.ContainsKey(nameof(dwNotifierType)));
+                    Assert.True(eventData.Args.ContainsKey(nameof(lpvNotifier)));
+                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lphRasConn)));
+
+                    Assert.True(eventData.Duration > TimeSpan.Zero);
+                    Assert.AreEqual(SUCCESS, eventData.Result);
+                })).Verifiable();
+
+            var target = new RasApi32LoggingAdvice(api.Object, eventLoggingPolicy.Object);
+            var result = target.RasDial(ref lpRasDialExtensions, lpszPhoneBook, ref lpRasDialParams, dwNotifierType, null, out lphRasConn);
+
+            eventLoggingPolicy.Verify();
+            Assert.AreEqual(SUCCESS, result);
+            Assert.AreEqual(new IntPtr(1), lphRasConn);
         }
     }
 }
