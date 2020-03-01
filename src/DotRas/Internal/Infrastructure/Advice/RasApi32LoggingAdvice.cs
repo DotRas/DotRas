@@ -62,21 +62,22 @@ namespace DotRas.Internal.Infrastructure.Advice
 
         public int RasEnumConnections(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections)
         {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
-            stopwatch.Stop();
-
             var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasEnumConnections),
-                Result = result
+                MethodName = nameof(RasEnumConnections)
             };
 
             callEvent.Args.Add(nameof(lpRasConn), lpRasConn);
             callEvent.Args.Add(nameof(lpCb), lpCb);
             callEvent.Args.Add(nameof(lpConnections), lpConnections);
+
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasEnumConnections(lpRasConn, ref lpCb, ref lpConnections);
+            stopwatch.Stop();
+
+            callEvent.Duration = stopwatch.Elapsed;
+            callEvent.Result = result;
             callEvent.OutArgs.Add(nameof(lpCb), lpCb);
             callEvent.OutArgs.Add(nameof(lpConnections), lpConnections);
 
@@ -86,21 +87,22 @@ namespace DotRas.Internal.Infrastructure.Advice
 
         public int RasEnumDevices(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices)
         {
-            var stopwatch = Stopwatch.StartNew();
-            var result = AttachedObject.RasEnumDevices(lpRasDevInfo, ref lpCb, ref lpcDevices);
-            stopwatch.Stop();
-
             var callEvent = new PInvokeInt32CallCompletedTraceEvent
             {
                 DllName = RasApi32Dll,
-                Duration = stopwatch.Elapsed,
-                MethodName = nameof(RasEnumDevices),
-                Result = result
+                MethodName = nameof(RasEnumDevices)
             };
 
             callEvent.Args.Add(nameof(lpRasDevInfo), lpRasDevInfo);
             callEvent.Args.Add(nameof(lpCb), lpCb);
             callEvent.Args.Add(nameof(lpcDevices), lpcDevices);
+
+            var stopwatch = Stopwatch.StartNew();
+            var result = AttachedObject.RasEnumDevices(lpRasDevInfo, ref lpCb, ref lpcDevices);
+            stopwatch.Stop();
+
+            callEvent.Duration = stopwatch.Elapsed;
+            callEvent.Result = result;
             callEvent.OutArgs.Add(nameof(lpCb), lpCb);
             callEvent.OutArgs.Add(nameof(lpcDevices), lpcDevices);
 

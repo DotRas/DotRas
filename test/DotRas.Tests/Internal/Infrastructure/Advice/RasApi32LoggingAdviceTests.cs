@@ -16,6 +16,10 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
     public class RasApi32LoggingAdviceTests
     {
         private delegate void LogEventCallback(EventLevel eventLevel, TraceEvent eventData);
+        
+        private delegate int RasEnumConnectionsCallback(RASCONN[] lpRasConn, ref int lpCb, ref int lpConnections);
+
+        private delegate int RasEnumDevicesCallback(RASDEVINFO[] lpRasDevInfo, ref int lpCb, ref int lpcDevices);
 
         private Mock<IRasApi32> api;
         private Mock<IEventLoggingPolicy> eventLoggingPolicy;
@@ -86,7 +90,14 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
             var lpConnections = 1;
             var lpRasConn = new RASCONN[0];
 
-            api.Setup(o => o.RasEnumConnections(lpRasConn, ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny)).Returns(SUCCESS);
+            api.Setup(o => o.RasEnumConnections(lpRasConn, ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny)).Returns(new RasEnumConnectionsCallback(
+                (RASCONN[] o1, ref int o2, ref int o3) =>
+                {
+                    o2 = 1;
+                    o3 = 2;
+                    return SUCCESS;
+                }));
+
             eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
                 (level, o1) =>
                 {
@@ -94,10 +105,10 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
 
                     var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
                     Assert.True(eventData.Args.ContainsKey(nameof(lpRasConn)));
-                    Assert.True(eventData.Args.ContainsKey(nameof(lpCb)));
-                    Assert.True(eventData.Args.ContainsKey(nameof(lpConnections)));
-                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpCb)));
-                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpConnections)));
+                    Assert.AreEqual(0, (int)eventData.Args[nameof(lpCb)]);
+                    Assert.AreEqual(1, (int)eventData.Args[nameof(lpConnections)]);
+                    Assert.AreEqual(1, (int)eventData.OutArgs[nameof(lpCb)]);
+                    Assert.AreEqual(2, (int)eventData.OutArgs[nameof(lpConnections)]);
                     Assert.True(eventData.Duration > TimeSpan.Zero);
                     Assert.AreEqual(SUCCESS, eventData.Result);
                 })).Verifiable();
@@ -116,7 +127,15 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
             var lpcDevices = 1;
             var lpRasDevInfo = new RASDEVINFO[0];
 
-            api.Setup(o => o.RasEnumDevices(lpRasDevInfo, ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny)).Returns(SUCCESS);
+            api.Setup(o => o.RasEnumDevices(lpRasDevInfo, ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny)).Returns(new RasEnumDevicesCallback(
+                (RASDEVINFO[] o1, ref int o2, ref int o3) =>
+                {
+                    o2 = 1;
+                    o3 = 2;
+
+                    return SUCCESS;
+                }));
+
             eventLoggingPolicy.Setup(o => o.LogEvent(It.IsAny<EventLevel>(), It.IsAny<PInvokeInt32CallCompletedTraceEvent>())).Callback(new LogEventCallback(
                 (level, o1) =>
                 {
@@ -124,10 +143,10 @@ namespace DotRas.Tests.Internal.Infrastructure.Advice
 
                     var eventData = (PInvokeInt32CallCompletedTraceEvent)o1;
                     Assert.True(eventData.Args.ContainsKey(nameof(lpRasDevInfo)));
-                    Assert.True(eventData.Args.ContainsKey(nameof(lpCb)));
-                    Assert.True(eventData.Args.ContainsKey(nameof(lpcDevices)));
-                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpCb)));
-                    Assert.True(eventData.OutArgs.ContainsKey(nameof(lpcDevices)));
+                    Assert.AreEqual(0, (int)eventData.Args[nameof(lpCb)]);
+                    Assert.AreEqual(1, (int)eventData.Args[nameof(lpcDevices)]);
+                    Assert.AreEqual(1, (int)eventData.OutArgs[nameof(lpCb)]);
+                    Assert.AreEqual(2, (int)eventData.OutArgs[nameof(lpcDevices)]);
                     Assert.True(eventData.Duration > TimeSpan.Zero);
                     Assert.AreEqual(SUCCESS, eventData.Result);
                 })).Verifiable();
