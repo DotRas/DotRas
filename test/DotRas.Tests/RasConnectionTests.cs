@@ -46,12 +46,11 @@ namespace DotRas.Tests
         [Test]
         public void DoesNotEqualNullWhenUsingEqualsWithObject()
         {
-            var target = new Mock<RasConnection>();
-
             object other = null;
+            var target = new Mock<RasConnection>();
             target.Setup(o => o.Equals(other)).CallBase();
 
-            Assert.False(target.Object.Equals(other));
+            Assert.False(target.Object.Equals((object)null));
         }
 
         [Test]
@@ -122,7 +121,7 @@ namespace DotRas.Tests
             RasConnection other = null;
             target.Setup(o => o.Equals(other)).CallBase();
 
-            Assert.False(target.Object.Equals(other));
+            Assert.False(target.Object.Equals(null));
         }
 
         [Test]
@@ -569,7 +568,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectTheConnectionAsExpected()
+        public async Task DisconnectAsyncTheConnectionAsExpected()
         {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
@@ -591,6 +590,31 @@ namespace DotRas.Tests
             await target.DisconnectAsync(CancellationToken.None);
 
             rasHangUp.Verify(o => o.HangUpAsync(target, It.IsAny<bool>(), cancellationToken), Times.Once);
+        }
+
+        [Test]
+        public void DisconnectTheConnectionAsExpected()
+        {
+            var handle = new IntPtr(1);
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
+            var sessionId = new Luid(1, 1);
+            var correlationId = Guid.NewGuid();
+
+            var cancellationToken = CancellationToken.None;
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
+            target.Disconnect(CancellationToken.None);
+
+            rasHangUp.Verify(o => o.HangUpAsync(target, It.IsAny<bool>(), cancellationToken));
         }
 
         [Test]
@@ -617,7 +641,30 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectShouldCloseAllReferencesByDefault()
+        public void DisconnectShouldCloseAllReferencesByDefault()
+        {
+            var handle = new IntPtr(1);
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
+            var sessionId = new Luid(1, 1);
+            var correlationId = Guid.NewGuid();
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
+            target.Disconnect(CancellationToken.None);
+
+            rasHangUp.Verify(o => o.HangUpAsync(target, true, CancellationToken.None), Times.Once);
+        }
+
+        [Test]
+        public async Task DisconnectAsyncShouldCloseAllReferencesByDefault()
         {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
@@ -638,5 +685,52 @@ namespace DotRas.Tests
 
             rasHangUp.Verify(o => o.HangUpAsync(target, true, CancellationToken.None), Times.Once);
         }
+
+        [Test]
+        public async Task DisconnectAsyncShouldOptionallyCloseAllReferences()
+        {
+            var handle = new IntPtr(1);
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
+            var sessionId = new Luid(1, 1);
+            var correlationId = Guid.NewGuid();
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
+            await target.DisconnectAsync(CancellationToken.None, false);
+
+            rasHangUp.Verify(o => o.HangUpAsync(target, false, CancellationToken.None), Times.Once);
+        }
+
+        [Test]
+        public void DisconnectShouldOptionallyCloseAllReferences()
+        {
+            var handle = new IntPtr(1);
+            var device = new TestDevice("Test");
+            var entryName = "Test";
+            var phoneBook = @"C:\Test.pbk";
+            var entryId = Guid.NewGuid();
+            var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
+            var sessionId = new Luid(1, 1);
+            var correlationId = Guid.NewGuid();
+
+            var rasGetConnectStatus = new Mock<IRasGetConnectStatus>();
+            var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
+            var rasHangUp = new Mock<IRasHangUp>();
+            var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
+
+            var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, rasGetConnectStatus.Object, rasGetConnectionStatistics.Object, rasHangUp.Object, rasClearConnectionStatistics.Object);
+            target.Disconnect(CancellationToken.None, false);
+
+            rasHangUp.Verify(o => o.HangUpAsync(target, false, CancellationToken.None), Times.Once);
+        }
+
     }
 }

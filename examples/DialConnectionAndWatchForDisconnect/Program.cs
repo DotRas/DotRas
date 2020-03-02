@@ -61,7 +61,7 @@ namespace DialConnectionAndWatchForDisconnect
             Console.WriteLine("Just waiting for a bit before forcing disconnect...");
             Thread.Sleep(TimeSpan.FromSeconds(10));
 
-            connection.Disconnect();
+            connection.Disconnect(CancellationToken.None);
             watcher.Stop();
         }
 

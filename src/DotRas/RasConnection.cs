@@ -138,16 +138,6 @@ namespace DotRas
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
-        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-        public virtual void Disconnect()
-        {
-            DisconnectAsync(CancellationToken.None).GetResultSynchronously();
-        }
-
-        /// <summary>
-        /// Disconnects the remote access connection.
-        /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
