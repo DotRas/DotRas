@@ -2,6 +2,8 @@ version: 2.0.0.{build}
 image: Visual Studio 2019
 configuration: 
   - WIN7-Release
+  - WIN8-Release
+  - WIN10-Release
 platform: Any CPU
 
 skip_branch_with_pr: true
@@ -36,7 +38,7 @@ nuget:
 
 before_build:
   - cmd: appveyor-tools\secure-file.exe -decrypt Winnster.snk.enc -secret %snk_passphrase% -salt %snk_salt%
-  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.cs.nunit.reportsPaths=**/TestResult.xml" /d:"sonar.cs.opencover.reportsPaths=**/opencover.xml" /d:"sonar.exclusions=**\examples\**,**\Interop\**,**\Primitives\**"
+  - cmd: SonarScanner.MSBuild.exe begin /k:"DotRas" /v:"2.0.0-preview-%APPVEYOR_BUILD_NUMBER%" /d:"sonar.host.url=https://sonarcloud.io" /o:"winnster" /d:"sonar.login=%sonarcloud_token%" /d:"sonar.analysis.configuration=%configuration%" /d:"sonar.cs.nunit.reportsPaths=**/TestResult.xml" /d:"sonar.cs.opencover.reportsPaths=**/opencover.xml" /d:"sonar.exclusions=**\examples\**,**\Interop\**,**\Primitives\**"
   - cmd: nuget restore
 
 build:
