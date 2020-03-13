@@ -2,6 +2,6 @@
 <configuration xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <entryName></entryName>
   <phoneBookPath></phoneBookPath>
-  <password></password>
   <username></username>
+  <password></password>
 </configuration>
