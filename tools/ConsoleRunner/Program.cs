@@ -59,12 +59,12 @@ namespace ConsoleRunner
         private async Task RunCoreAsync()
         {
             watcher.Start();
-         
+
             while (ShouldContinueExecution())
             {
-                try
+                using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
                 {
-                    using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
+                    try
                     {
                         try
                         {
@@ -74,13 +74,15 @@ namespace ConsoleRunner
                         {
                             await DisconnectAsync(tcs.Token);
                         }
-
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    finally
+                    {
                         WaitUntilNextExecution(tcs.Token);
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
                 }
             }
 
