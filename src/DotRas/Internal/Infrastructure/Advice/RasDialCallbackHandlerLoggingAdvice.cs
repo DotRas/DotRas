@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
-using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 
 namespace DotRas.Internal.Infrastructure.Advice
@@ -24,7 +24,7 @@ namespace DotRas.Internal.Infrastructure.Advice
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             AttachedObject.Initialize(completionSource, onStateChangedCallback, onCompletedCallback, cancellationToken);
         }

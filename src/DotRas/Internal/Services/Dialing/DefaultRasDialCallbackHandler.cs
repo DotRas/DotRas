@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using DotRas.Internal.Abstractions.Factories;
+using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -19,40 +19,39 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasEnumConnections rasEnumConnections;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IValueWaiter<IntPtr> handle;
-        private readonly ITaskCancellationSourceFactory cancellationSourceFactory;
 
-        private ITaskCancellationSource cancellationSource;
         private CancellationToken cancellationToken;
-        private ITaskCompletionSource<RasConnection> completionSource;
+        private TaskCompletionSource<RasConnection> completionSource;
         private Action<StateChangedEventArgs> onStateChangedCallback;
         private Action onCompletedCallback;
         
         public bool Completed { get; private set; }
+
+        public bool Errored { get; private set; }
+        
         public bool Initialized { get; private set; }
 
         #endregion
 
-        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public DefaultRasDialCallbackHandler(IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle)
         {
             this.rasHangUp = rasHangUp ?? throw new ArgumentNullException(nameof(rasHangUp));
             this.rasEnumConnections = rasEnumConnections ?? throw new ArgumentNullException(nameof(rasEnumConnections));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.handle = handle ?? throw new ArgumentNullException(nameof(handle));
-            this.cancellationSourceFactory = cancellationSourceFactory ?? throw new ArgumentNullException(nameof(cancellationSourceFactory));
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                cancellationSource?.Dispose();
                 handle.Dispose();
             }
 
             base.Dispose(disposing);
         }
 
-        public void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
+        public void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
         {
             if (completionSource == null)
             {
@@ -71,28 +70,16 @@ namespace DotRas.Internal.Services.Dialing
 
             lock (syncRoot)
             {
-                cancellationSource?.Dispose();
-                cancellationSource = cancellationSourceFactory.Create(cancellationToken);
-
-                this.cancellationToken = cancellationSource.Token;
-                this.cancellationToken.Register(HangUpConnection);
-                
+                this.cancellationToken = cancellationToken;                
                 this.completionSource = completionSource;
                 this.onStateChangedCallback = onStateChangedCallback;
                 this.onCompletedCallback = onCompletedCallback;
-
+                 
                 handle.Reset();
 
                 Completed = false;
                 Initialized = true;
             }
-        }
-
-        private void HangUpConnection()
-        {
-            WaitForHandleToBeTransferred();
-
-            rasHangUp.UnsafeHangUp(handle.Value, false);
         }
 
         public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError)
@@ -122,16 +109,14 @@ namespace DotRas.Internal.Services.Dialing
             {
                 HangUpConnection();
                 SetExceptionResult(ex);
-            }
-            finally
-            {
-                if (Completed)
-                {
-                    RunPostCompleted();
-                }
-            }
+            }            
 
             return !Completed;
+        }
+
+        private void HangUpConnection()
+        {
+            rasHangUp.UnsafeHangUp(handle.Value, false);
         }
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
@@ -165,8 +150,10 @@ namespace DotRas.Internal.Services.Dialing
                 throw new InvalidOperationException("The connection was not created.");
             }
 
-            completionSource.SetResult(connection);
             FlagRequestAsCompleted();
+            RunPostCompleted();
+
+            completionSource.SetResult(connection);
         }
 
         protected virtual RasConnection CreateConnection(IntPtr handle)
@@ -176,13 +163,22 @@ namespace DotRas.Internal.Services.Dialing
 
         private void SetExceptionResult(Exception exception)
         {
-            completionSource.SetException(exception);
+            FlagRequestAsErrored();
             FlagRequestAsCompleted();
+
+            RunPostCompleted();
+
+            completionSource.SetException(exception);
         }
 
         private void FlagRequestAsCompleted()
         {
             Completed = true;
+        }
+
+        private void FlagRequestAsErrored()
+        {
+            Errored = true;
         }
 
         private void GuardMustBeInitialized()
@@ -198,7 +194,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void WaitForHandleToBeTransferred()
         {
-            handle.WaitForValue(cancellationSource.Token);
+            handle.WaitForValue(cancellationToken);
         }
 
         public void SetHandle(IntPtr handle)

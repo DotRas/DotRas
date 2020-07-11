@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
-using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.NativeMethods;
@@ -21,15 +20,14 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasDialParamsBuilder paramsBuilder;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IRasDialCallbackHandler callbackHandler;
-        private readonly ITaskCompletionSourceFactory completionSourceFactory;
-        private readonly ITaskCancellationSourceFactory cancellationSourceFactory;
         private readonly RasDialFunc2 callback;
 
-        public ITaskCancellationSource CancellationSource { get; private set; }
-        public ITaskCompletionSource<RasConnection> CompletionSource { get; private set; }
-        public bool IsBusy { get; private set; }
+        public CancellationTokenSource CancellationSource { get; private set; }
+        public TaskCompletionSource<RasConnection> CompletionSource { get; private set; }
+        public bool IsBusy { get; protected set; }
+        public IntPtr Handle { get; protected set; }
 
-        public RasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, ITaskCompletionSourceFactory completionSourceFactory, ITaskCancellationSourceFactory cancellationSourceFactory)
+        public RasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
@@ -37,8 +35,6 @@ namespace DotRas.Internal.Services.Dialing
             this.paramsBuilder = paramsBuilder ?? throw new ArgumentNullException(nameof(paramsBuilder));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
-            this.completionSourceFactory = completionSourceFactory ?? throw new ArgumentNullException(nameof(completionSourceFactory));
-            this.cancellationSourceFactory = cancellationSourceFactory ?? throw new ArgumentNullException(nameof(cancellationSourceFactory));
 
             callback = callbackHandler.OnCallback;
         }
@@ -62,15 +58,9 @@ namespace DotRas.Internal.Services.Dialing
             }
         }
 
-        private ITaskCompletionSource<RasConnection> CreateCompletionSource()
+        protected virtual TaskCompletionSource<RasConnection> CreateCompletionSource()
         {
-            var completionSource = completionSourceFactory.Create<RasConnection>();
-            if (completionSource == null)
-            {
-                throw new InvalidOperationException("The completion source was not created.");
-            }
-
-            return completionSource;
+            return new TaskCompletionSource<RasConnection>();
         }
 
         private void InitializeCallbackHandler(RasDialContext context)
@@ -81,13 +71,14 @@ namespace DotRas.Internal.Services.Dialing
         private void SetUpCancellationSource(RasDialContext context)
         {
             CancellationSource?.Dispose();
-            CancellationSource = cancellationSourceFactory.Create(context.CancellationToken);
+            CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
+
+            // Ensures that the connection can be cancelled even if the callback is stuck.
+            CancellationSource.Token.Register(HangUpIfNecessary);
         }
 
         private void BeginDial(RasDialContext context)
         {
-            var handle = IntPtr.Zero;
-
             try
             {
                 SetBusy();
@@ -95,31 +86,40 @@ namespace DotRas.Internal.Services.Dialing
                 var rasDialExtensions = ConvertToRasDialExtensions(context);
                 var rasDialParams = ConvertToRasDialParams(context);
 
-                var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out handle);
-                if (ret != SUCCESS)
+                var handle = IntPtr.Zero;
+
+                try
                 {
-                    throw exceptionPolicy.Create(ret);
+                    var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out handle);
+                    if (ret != SUCCESS)
+                    {
+                        throw exceptionPolicy.Create(ret);
+                    }
+                }
+                finally
+                {
+                    Handle = handle;
                 }
 
-                callbackHandler.SetHandle(handle);
+                callbackHandler.SetHandle(Handle);
             }
             catch (Exception)
             {
-                HangUpIfNecessary(handle);
+                HangUpIfNecessary();
                 SetNotBusy();
 
                 throw;
             }
         }
 
-        private void HangUpIfNecessary(IntPtr handle)
+        private void HangUpIfNecessary()
         {
-            if (handle == IntPtr.Zero)
+            if (Handle == IntPtr.Zero)
             {
                 return;
             }
 
-            hangUpService.UnsafeHangUp(handle, false);
+            hangUpService.UnsafeHangUp(Handle, false);
         }
 
         private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)
@@ -154,16 +154,21 @@ namespace DotRas.Internal.Services.Dialing
         {
             if (disposing)
             {
-                if (IsBusy)
-                {
-                    CancellationSource.Cancel();
-                }
+                CancelAttemptIfBusy();
 
                 CancellationSource?.Dispose();
                 callbackHandler.Dispose();
             }
 
             base.Dispose(disposing);
+        }
+
+        protected virtual void CancelAttemptIfBusy()
+        {
+            if (IsBusy)
+            {
+                CancellationSource.Cancel();
+            }
         }
     }
 }

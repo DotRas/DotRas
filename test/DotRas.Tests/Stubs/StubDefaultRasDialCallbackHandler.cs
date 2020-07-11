@@ -1,5 +1,4 @@
 ﻿using System;
-using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -11,8 +10,8 @@ namespace DotRas.Tests.Stubs
     {
         private readonly Func<IntPtr, RasConnection> connectionFactory;
 
-        public StubDefaultRasDialCallbackHandler(Func<IntPtr, RasConnection> connectionFactory, IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle, ITaskCancellationSourceFactory cancellationSourceFactory)
-            : base(rasHangUp, rasEnumConnections, exceptionPolicy, handle, cancellationSourceFactory)
+        public StubDefaultRasDialCallbackHandler(Func<IntPtr, RasConnection> connectionFactory, IRasHangUp rasHangUp, IRasEnumConnections rasEnumConnections, IExceptionPolicy exceptionPolicy, IValueWaiter<IntPtr> handle)
+            : base(rasHangUp, rasEnumConnections, exceptionPolicy, handle)
         {
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }

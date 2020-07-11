@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleRunner
 {
@@ -7,22 +8,21 @@ namespace ConsoleRunner
     {
         private static readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
-        public static void Main()
+        public static async Task Main()
         {
             try
             {
                 ConfigureIoC();
                 ConfigureApplication();
 
-                using (var program = new Program())
-                using (var task = program.RunAsync())
-                {
-                    Console.WriteLine("Press any key to cancel...");
-                    Console.ReadKey(true);
+                using var program = new Program();
+                var task = program.RunAsync();
 
-                    CancellationSource.Cancel();
-                    task.Wait();
-                }
+                Console.WriteLine("Press any key to cancel...");
+                Console.ReadKey(true);
+
+                CancellationSource.Cancel();
+                await task;
             }
             catch (Exception ex)
             {
