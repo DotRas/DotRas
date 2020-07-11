@@ -14,6 +14,7 @@ namespace DotRas.Internal.Services
             {
                 RASTUNNELENDPOINTTYPE.IPv4 => CreateIPv4Address(endPoint.addr),
                 RASTUNNELENDPOINTTYPE.IPv6 => CreateIPv6Address(endPoint.addr),
+                RASTUNNELENDPOINTTYPE.Unknown => null,
                 _ => throw new NotSupportedException($"The endpoint type '{endPoint.type}' is not supported.")
             };
         }

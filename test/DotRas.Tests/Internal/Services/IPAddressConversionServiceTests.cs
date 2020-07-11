@@ -9,10 +9,29 @@ namespace DotRas.Tests.Internal.Services
     [TestFixture]
     public class IPAddressConversionServiceTests
     {
+        private IPAddressConversionService target;
+
+        [SetUp]
+        public void Setup()
+        {
+            target = new IPAddressConversionService();
+        }
+
+        [Test]
+        public void ReturnsNullFromUnknownEndpointType()
+        {
+            var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
+            {
+                type = RASTUNNELENDPOINTTYPE.Unknown,
+                addr = null
+            });
+
+            Assert.Null(result);
+        }
+
         [Test]
         public void ThrowsAnExceptionWhenTheEndPointTypeIsNotSupported()
         {
-            var target = new IPAddressConversionService();
             Assert.Throws<NotSupportedException>(() => target.ConvertFromEndpoint(new RASTUNNELENDPOINT
             {
                 type = (RASTUNNELENDPOINTTYPE)(-1)
@@ -24,7 +43,6 @@ namespace DotRas.Tests.Internal.Services
         {
             var bytes = new byte[] { 127, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            var target = new IPAddressConversionService();
             var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
             {
                 addr = bytes,
@@ -39,7 +57,6 @@ namespace DotRas.Tests.Internal.Services
         {
             var bytes = new byte[] { 127, 0, 0, 1 };
 
-            var target = new IPAddressConversionService();
             var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
             {
                 addr = bytes,
@@ -54,7 +71,6 @@ namespace DotRas.Tests.Internal.Services
         {
             var bytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
-            var target = new IPAddressConversionService();
             var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
             {
                 addr = bytes,
