@@ -59,8 +59,7 @@ namespace DotRas.Internal.Infrastructure.IoC
                         container.GetRequiredService<IRasHangUp>(),
                         container.GetRequiredService<IRasEnumConnections>(),
                         container.GetRequiredService<RasDialCallbackExceptionPolicy>(),
-                        container.GetRequiredService<IValueWaiter<IntPtr>>(),
-                        container.GetRequiredService<ITaskCancellationSourceFactory>()),
+                        container.GetRequiredService<IValueWaiter<IntPtr>>()),
                     container.GetRequiredService<IEventLoggingPolicy>()));
 
             container.Register<IRasEnumDevices>(typeof(RasEnumDevicesService));

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
-using DotRas.Internal.Abstractions.Primitives;
+using System.Threading.Tasks;
 
 namespace DotRas.Internal.Abstractions.Services
 {
     internal interface IRasDialCallbackHandler : IDisposable
     {
-        void Initialize(ITaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
+        void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
 
         bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError);
 
