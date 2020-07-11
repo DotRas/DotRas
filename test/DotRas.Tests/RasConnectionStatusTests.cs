@@ -7,11 +7,44 @@ namespace DotRas.Tests
     [TestFixture]
     public class RasConnectionStatusTests
     {
+        private Mock<RasDevice> device;
+
+        [SetUp]
+        public void Setup()
+        {
+            device = new Mock<RasDevice>();
+        }
+
+        [Test]
+        public void DoesNotThrowAnErrorWithNullLocalEndPoint()
+        {
+            var connectionState = RasConnectionState.Connected;
+            var phoneNumber = "12345";
+            IPAddress localEndpoint = null;
+            var remoteEndpoint = IPAddress.Any;
+            var connectionSubState = RasConnectionSubState.None;
+
+            var target = new RasConnectionStatus(connectionState, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
+            Assert.Null(target.LocalEndPoint);
+        }
+
+        [Test]
+        public void DoesNotThrowAnErrorWithNullRemoteEndPoint()
+        {
+            var connectionState = RasConnectionState.Connected;
+            var phoneNumber = "12345";
+            var localEndpoint = IPAddress.Loopback;
+            IPAddress remoteEndpoint = null;
+            var connectionSubState = RasConnectionSubState.None;
+
+            var target = new RasConnectionStatus(connectionState, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
+            Assert.Null(target.RemoteEndPoint);
+        }
+
         [Test]
         public void ReturnsTheConnectionStateAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
@@ -25,7 +58,6 @@ namespace DotRas.Tests
         public void ReturnsTheDeviceAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
@@ -39,7 +71,6 @@ namespace DotRas.Tests
         public void ReturnsThePhoneNumberAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
@@ -53,7 +84,6 @@ namespace DotRas.Tests
         public void ReturnsTheLocalEndPointAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
@@ -67,7 +97,6 @@ namespace DotRas.Tests
         public void ReturnsTheRemoteEndPointAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
@@ -81,7 +110,6 @@ namespace DotRas.Tests
         public void ReturnsTheConnectionSubStateAsExpected()
         {
             var connectionState = RasConnectionState.Connected;
-            var device = new Mock<RasDevice>();
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
             var remoteEndpoint = IPAddress.Any;
