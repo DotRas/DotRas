@@ -23,7 +23,7 @@ namespace DotRas.Diagnostics
             var attribute = valueType.GetCustomAttribute<EventFormatterAttribute>();
             if (attribute == null)
             {
-                throw new FormatterNotFoundException("The formatter could not be identified.", valueType);
+                throw new FormatterNotFoundException($"The formatter for type '{valueType}' could not be identified.");
             }
 
             GuardTheFormatterIsTheCorrectType(valueType, attribute.FormatterType);
@@ -34,7 +34,7 @@ namespace DotRas.Diagnostics
             }
             catch (MissingMethodException)
             {
-                throw new FormatterNotFoundException("The formatter could not be created. Please verify the formatter contains a parameterless constructor.", valueType, attribute.FormatterType);
+                throw new FormatterNotFoundException($"The formatter for type '{valueType}' could not be created. Please verify the formatter '{attribute.FormatterType}' contains a parameterless constructor.");
             }
         }
 
