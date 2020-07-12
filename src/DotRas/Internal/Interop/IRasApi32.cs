@@ -30,7 +30,7 @@ namespace DotRas.Internal.Interop
             ref RASDIALEXTENSIONS lpRasDialExtensions,
             string lpszPhoneBook,
             ref RASDIALPARAMS lpRasDialParams,
-            Ras.NotifierType dwNotifierType,
+            NotifierType dwNotifierType,
             RasDialFunc2 lpvNotifier,
             out IntPtr lphRasConn);
 
@@ -47,6 +47,13 @@ namespace DotRas.Internal.Interop
             string lpszPhoneBook,
             ref RASDIALPARAMS lpDialParams,
             out bool lpfPassword);
+
+        int RasGetEapUserData(
+            IntPtr hToken,
+            string pzPhoneBook,
+            string pzEntry,
+            IntPtr pbEapData,
+            ref int pdwSizeofEapData);
 
         int RasGetErrorString(
             int uErrorValue,

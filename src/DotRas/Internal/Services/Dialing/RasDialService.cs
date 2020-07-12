@@ -20,14 +20,14 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasDialParamsBuilder paramsBuilder;
         private readonly IExceptionPolicy exceptionPolicy;
         private readonly IRasDialCallbackHandler callbackHandler;
+        private readonly IMarshaller marshaller;
         private readonly RasDialFunc2 callback;
 
         public CancellationTokenSource CancellationSource { get; protected set; }
         public TaskCompletionSource<RasConnection> CompletionSource { get; protected set; }
         public bool IsBusy { get; protected set; }
-        public IntPtr Handle { get; protected set; }
 
-        public RasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
+        public RasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, IMarshaller marshaller)
         {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
             this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
@@ -35,12 +35,18 @@ namespace DotRas.Internal.Services.Dialing
             this.paramsBuilder = paramsBuilder ?? throw new ArgumentNullException(nameof(paramsBuilder));
             this.exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             this.callbackHandler = callbackHandler ?? throw new ArgumentNullException(nameof(callbackHandler));
+            this.marshaller = marshaller ?? throw new ArgumentNullException(nameof(marshaller));
 
             callback = callbackHandler.OnCallback;
         }
 
         public Task<RasConnection> DialAsync(RasDialContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             GuardMustNotBeDisposed();
             GuardMustNotAlreadyBeBusy();
 
@@ -65,7 +71,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void InitializeCallbackHandler(RasDialContext context)
         {
-            callbackHandler.Initialize(CompletionSource, context.OnStateChangedCallback, SetNotBusy, CancellationSource.Token);
+            callbackHandler.Initialize(CompletionSource, context.OnStateChangedCallback, () => OnDialCompletedCallback(context), CancellationSource.Token);
         }
 
         private void SetUpCancellationSource(RasDialContext context)
@@ -74,7 +80,7 @@ namespace DotRas.Internal.Services.Dialing
             CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
 
             // Ensures that the connection can be cancelled even if the callback is stuck.
-            CancellationSource.Token.Register(HangUpIfNecessary);
+            CancellationSource.Token.Register(() => HangUpIfNecessary(context));
         }
 
         private void BeginDial(RasDialContext context)
@@ -98,43 +104,55 @@ namespace DotRas.Internal.Services.Dialing
                 }
                 finally
                 {
-                    Handle = handle;
+                    context.Handle = handle;
                 }
 
-                callbackHandler.SetHandle(Handle);
+                callbackHandler.SetHandle(context.Handle);
             }
             catch (Exception)
             {
-                HangUpIfNecessary();
+                HangUpIfNecessary(context);
                 SetNotBusy();
 
                 throw;
             }
         }
 
-        private void HangUpIfNecessary()
+        private void HangUpIfNecessary(RasDialContext context)
         {
-            if (Handle == IntPtr.Zero)
+            if (context.Handle == IntPtr.Zero)
             {
                 return;
             }
 
-            hangUpService.UnsafeHangUp(Handle, false);
+            hangUpService.UnsafeHangUp(context.Handle, false);
         }
 
         private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)
         {
-            return extensionsBuilder.Build(context);
+            var result = extensionsBuilder.Build(context);
+            context.RasDialExtensions = result;
+
+            return result;
         }
 
         private RASDIALPARAMS ConvertToRasDialParams(RasDialContext context)
         {
-            return paramsBuilder.Build(context);
+            var result = paramsBuilder.Build(context);
+            context.RasDialParams = result;
+
+            return result;
         }
 
         private void SetBusy()
         {
             IsBusy = true;
+        }
+
+        protected void OnDialCompletedCallback(RasDialContext context)
+        {
+            marshaller.FreeHGlobalIfNeeded(context.RasDialExtensions.RasEapInfo.pbEapInfo);
+            SetNotBusy();
         }
 
         private void SetNotBusy()

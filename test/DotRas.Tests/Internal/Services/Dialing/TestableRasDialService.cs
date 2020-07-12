@@ -10,8 +10,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
     {
         public bool CancelledAttempt { get; private set; }
 
-        public TestableRasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
-            : base(api, hangUpService, extensionsBuilder, paramsBuilder, exceptionPolicy, callbackHandler)
+        public TestableRasDialService(IRasApi32 api, IRasHangUp hangUpService,
+            IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder,
+            IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler, IMarshaller marshaller)
+            : base(api, hangUpService, extensionsBuilder, paramsBuilder, exceptionPolicy, callbackHandler, marshaller)
         {
         }
 
@@ -34,6 +36,11 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             CancelledAttempt = true;
             base.CancelAttemptIfBusy();
+        }
+
+        public void SimulateDialCompleted(RasDialContext context)
+        {
+            OnDialCompletedCallback(context);
         }
     }
 }

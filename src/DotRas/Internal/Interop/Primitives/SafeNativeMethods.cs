@@ -43,6 +43,14 @@ namespace DotRas.Internal.Interop.Primitives
             ref int lpcDevices);
 
         [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
+        public static extern int RasGetEapUserData(
+            IntPtr hToken,
+            string lpszPhoneBook,
+            string lpszEntry,
+            IntPtr pbEapData,
+            ref int pdwSizeOfEapData);
+
+        [DllImport(RasApi32Dll, CharSet = CharSet.Unicode)]
         public static extern int RasGetEntryDialParams(
             string lpszPhoneBook,
             [In, Out] ref RASDIALPARAMS lpDialParams,

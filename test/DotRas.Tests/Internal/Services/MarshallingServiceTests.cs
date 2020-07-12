@@ -122,10 +122,12 @@ namespace DotRas.Tests.Internal.Services
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheSizeIsZero()
+        public void ReturnsNullWhenTheSizeIsZero()
         {
             var target = new MarshallingService();
-            Assert.Throws<ArgumentException>(() => target.AllocHGlobal(0));
+            var result = target.AllocHGlobal(0);
+
+            Assert.AreEqual(IntPtr.Zero, result);
         }
 
         [Test]
@@ -170,6 +172,81 @@ namespace DotRas.Tests.Internal.Services
             finally
             {
                 Marshal.FreeHGlobal(ptr);
+            }
+        }
+
+        [Test]
+        public void ReturnsNullArrayWhenZero()
+        {
+            var target = new MarshallingService();
+            var result = target.PtrToByteArray(IntPtr.Zero, 0);
+
+            Assert.Null(result);
+        }
+
+        [Test]
+        public void ReturnsEmptyArrayWhenLengthIsZero()
+        {
+            var target = new MarshallingService();
+            var result = target.PtrToByteArray(new IntPtr(1), 0);
+
+            CollectionAssert.IsEmpty(result);
+        }
+
+        [Test]
+        public void MarshalsThePtrToByteArrayAsExpected()
+        {
+            IntPtr ptr = IntPtr.Zero;
+
+            try
+            {
+                var bytes = new byte[] {1, 2, 3, 4};
+
+                var target = new MarshallingService();
+                ptr = target.ByteArrayToPtr(bytes);
+
+                var result = target.PtrToByteArray(ptr, bytes.Length);
+
+                CollectionAssert.AreEqual(bytes, result);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+        }
+
+        [Test]
+        public void ReturnsNullPtrWhenNullBytes()
+        {
+            var target = new MarshallingService();
+            var result = target.ByteArrayToPtr(null);
+
+            Assert.AreEqual(IntPtr.Zero, result);
+        }
+
+        [Test]
+        public void MarshalsTheByteArrayToAPtrAsExpected()
+        {
+            IntPtr ptr = IntPtr.Zero;
+
+            try
+            {
+                var bytes = new byte[] {1, 2, 3, 4, 5};
+
+                var target = new MarshallingService();
+                var result = target.ByteArrayToPtr(bytes);
+
+                Assert.True(result != IntPtr.Zero);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
             }
         }
     }
