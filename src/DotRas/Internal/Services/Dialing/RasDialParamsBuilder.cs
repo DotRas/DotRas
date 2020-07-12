@@ -24,6 +24,11 @@ namespace DotRas.Internal.Services.Dialing
 
         public RASDIALPARAMS Build(RasDialContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             var rasDialParams = structFactory.Create<RASDIALPARAMS>();
             rasDialParams.szEntryName = context.EntryName;
 

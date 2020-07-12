@@ -31,6 +31,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         private Mock<IRasDialParamsBuilder> paramsBuilder;
         private Mock<IExceptionPolicy> exceptionPolicy;
         private Mock<IRasDialCallbackHandler> callbackHandler;
+        private Mock<IMarshaller> marshaller;
 
         [SetUp]
         public void Init()
@@ -41,6 +42,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             paramsBuilder = new Mock<IRasDialParamsBuilder>();
             exceptionPolicy = new Mock<IExceptionPolicy>();
             callbackHandler = new Mock<IRasDialCallbackHandler>();
+            marshaller = new Mock<IMarshaller>();
         }
 
         [Test]
@@ -48,7 +50,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(null, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object);
+                _ = new RasDialService(null, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, marshaller.Object);
             });
         }
 
@@ -57,7 +59,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null, new Mock<IRasDialCallbackHandler>().Object);
+                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null, new Mock<IRasDialCallbackHandler>().Object, marshaller.Object);
             });
         }
 
@@ -66,14 +68,14 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, null);
+                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, null, marshaller.Object);
             });
         }
 
         [Test]
         public void DisposesCorrectlyWhenNotInitialized()
         {
-            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.Dispose();
 
             callbackHandler.Verify(o => o.Dispose(), Times.Once);
@@ -90,7 +92,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }));
 
             using var cts = new CancellationTokenSource();
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
 
             var context = new RasDialContext
             {
@@ -104,16 +106,60 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             cts.Cancel();
 
-            rasHangUp.Verify(o => o.UnsafeHangUp(target.Handle, It.IsAny<bool>()));
+            rasHangUp.Verify(o => o.UnsafeHangUp(context.Handle, It.IsAny<bool>()));
         }
 
         [Test]
         public void DisposeMustDisposeTheCallbackHandler()
         {
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.Dispose();
 
             callbackHandler.Verify(o => o.Dispose(), Times.Once);
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenContextIsNull()
+        {
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
+            Assert.Throws<ArgumentNullException>(() => target.DialAsync(null));
+        }
+
+        [Test]
+        public void ReleasesTheEapUserDataWhenCompleted()
+        {
+            var ptr = new IntPtr(1);
+            var context = new RasDialContext
+            {
+                RasDialExtensions = new RASDIALEXTENSIONS
+                {
+                    RasEapInfo = new RASEAPINFO
+                    {
+                        pbEapInfo = ptr,
+                        dwSizeofEapInfo = 1
+                    }
+                }
+            };
+
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
+            target.SimulateDialCompleted(context);
+
+            marshaller.Verify(o => o.FreeHGlobalIfNeeded(ptr));
+        }
+
+        [Test]
+        public void FlagsTheServiceAsNoLongerBusyWhenCompleted()
+        {
+            var context = new RasDialContext();
+
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
+            target.FlagAsBusy();
+
+            Assert.True(target.IsBusy);
+
+            target.SimulateDialCompleted(context);
+
+            Assert.False(target.IsBusy);
         }
 
         [Test]
@@ -151,7 +197,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.SetCompletionSource(completionSource);
 
             var result = await target.DialAsync(context);
@@ -190,7 +236,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             Assert.ThrowsAsync<TestException>(() => target.DialAsync(context));
         }
 
@@ -208,7 +254,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.FlagAsBusy();
 
             Assert.IsTrue(target.IsBusy);
@@ -241,7 +287,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.DialAsync(context);
 
             Assert.IsTrue(target.IsBusy);

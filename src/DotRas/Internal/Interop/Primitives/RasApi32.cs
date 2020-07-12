@@ -43,6 +43,11 @@ namespace DotRas.Internal.Interop.Primitives
             return SafeNativeMethods.RasGetCredentials(lpszPhoneBook, lpszEntryName, ref lpCredentials);
         }
 
+        public int RasGetEapUserData(IntPtr hToken, string pzPhoneBook, string pzEntry, IntPtr pbEapData, ref int pdwSizeofEapData)
+        {
+            return SafeNativeMethods.RasGetEapUserData(hToken, pzPhoneBook, pzEntry, pbEapData, ref pdwSizeofEapData);
+        }
+
         public int RasGetEntryDialParams(string lpszPhoneBook, ref RASDIALPARAMS lpDialParams, out bool lpfPassword)
         {
             return SafeNativeMethods.RasGetEntryDialParams(lpszPhoneBook, ref lpDialParams, out lpfPassword);

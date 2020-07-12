@@ -21,22 +21,41 @@ namespace DotRas.Tests.Internal.Services.Dialing
             ref RASDIALPARAMS dialParams,
             out bool foundPassword);
 
+        private Mock<IRasApi32> api;
+        private Mock<IStructFactory> structFactory;
+        private Mock<IExceptionPolicy> exceptionPolicy;
+
+        [SetUp]
+        public void Init()
+        {
+            api = new Mock<IRasApi32>();
+            structFactory = new Mock<IStructFactory>();
+            exceptionPolicy = new Mock<IExceptionPolicy>();
+        }
+
         [Test]
         public void ThrowsAnExceptionWhenApiIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object));
+            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(null, structFactory.Object, exceptionPolicy.Object));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenStructFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object));
+            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(api.Object, null, exceptionPolicy.Object));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenRasGetCredentialsIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
+            Assert.Throws<ArgumentNullException>(() => new RasDialParamsBuilder(api.Object, structFactory.Object, null));
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenContextIsNull()
+        {
+            var target = new RasDialParamsBuilder(api.Object, structFactory.Object, exceptionPolicy.Object);
+            Assert.Throws<ArgumentNullException>(() => target.Build(null));
         }
 
         [Test]
@@ -45,11 +64,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var entryName = "Test";
             var phoneBookPath = @"C:\Test.pbk";
 
-            var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetEntryDialParams(phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, out It.Ref<bool>.IsAny)).Returns(ERROR_INSUFFICIENT_BUFFER);
 
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
             exceptionPolicy.Setup(o => o.Create(ERROR_INSUFFICIENT_BUFFER)).Returns(new TestException());
 
             var target = new RasDialParamsBuilder(api.Object, structFactory.Object, exceptionPolicy.Object);
@@ -66,7 +82,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var entryName = "Test";
             var phoneBookPath = @"C:\Test.pbk";
 
-            var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetEntryDialParams(phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, out It.Ref<bool>.IsAny)).Returns(new RasGetEntryDialParamsCallback(
                 (string o1, ref RASDIALPARAMS o2, out bool o3) =>
                 {
@@ -77,9 +92,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     o3 = true;
                     return SUCCESS;
                 }));
-
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var context = new RasDialContext
             {
@@ -102,7 +114,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var entryName = "Test";
             var phoneBookPath = @"C:\Test.pbk";
 
-            var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetEntryDialParams(phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, out It.Ref<bool>.IsAny)).Returns(new RasGetEntryDialParamsCallback(
                 (string o1, ref RASDIALPARAMS o2, out bool o3) =>
                 {
@@ -113,9 +124,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                     o3 = true;
                     return SUCCESS;
                 }));
-
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var context = new RasDialContext
             {
@@ -135,10 +143,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void BuildsTheStructureWithTheEntryName()
         {
-            var api = new Mock<IRasApi32>();
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-
             var context = new RasDialContext
             {
                 EntryName = "Test"
@@ -152,11 +156,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
         [Test]
         public void BuildsTheStructureWithTheInterfaceIndex()
-        {
-            var api = new Mock<IRasApi32>();
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-
+        { 
             var context = new RasDialContext
             {
                 Options = new RasDialerOptions
@@ -174,10 +174,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void BuildsTheStructureWithTheUserNameAndPassword()
         {
-            var api = new Mock<IRasApi32>();
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-
             var context = new RasDialContext
             {
                 Credentials = new NetworkCredential("User", "Pass")
@@ -193,10 +189,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void BuildsTheStructureWithTheUserNamePasswordAndDomain()
         {
-            var api = new Mock<IRasApi32>();
-            var structFactory = new Mock<IStructFactory>();
-            var exceptionPolicy = new Mock<IExceptionPolicy>();
-
             var context = new RasDialContext
             {
                 Credentials = new NetworkCredential("User", "Pass", "Domain")

@@ -81,5 +81,15 @@ namespace DotRas.Internal.Infrastructure.Advice
 
             return value;
         }
+
+        public byte[] PtrToByteArray(IntPtr ptr, int length)
+        {
+            return AttachedObject.PtrToByteArray(ptr, length);
+        }
+
+        public IntPtr ByteArrayToPtr(byte[] bytes)
+        {
+            return AttachedObject.ByteArrayToPtr(bytes);
+        }
     }
 }
