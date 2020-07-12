@@ -8,7 +8,6 @@ namespace DotRas.Internal.Infrastructure.IoC
     {
         private static void RegisterThreading(Container container)
         {
-            container.Register<IManualResetEvent>(typeof(ManualResetEvent));
             container.Register<IValueWaiter<IntPtr>>(typeof(ValueWaiter<IntPtr>));
             container.Register<IFileSystem>(typeof(FileSystem));
         }
