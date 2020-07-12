@@ -38,7 +38,7 @@ namespace DotRas.Internal.Services.Dialing
                     rasDialExtensions.hwndParent = options.Owner;
                 }
 
-                rasDialExtensions.dwfOptions = BuildOptions(options);
+                rasDialExtensions.dwfOptions = BuildOptions();
             }
 
             var eapUserData = getEapUserData.GetEapUserData(IntPtr.Zero, context.EntryName, context.PhoneBookPath);
@@ -63,13 +63,8 @@ namespace DotRas.Internal.Services.Dialing
             return rasDialExtensions;
         }
 
-        private static RDEOPT BuildOptions(RasDialerOptions options)
+        private static RDEOPT BuildOptions()
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
             var builder = new RasDialExtensionsOptionsBuilder();
 
             return builder.Result;
