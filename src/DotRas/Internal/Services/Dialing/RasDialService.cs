@@ -22,8 +22,8 @@ namespace DotRas.Internal.Services.Dialing
         private readonly IRasDialCallbackHandler callbackHandler;
         private readonly RasDialFunc2 callback;
 
-        public CancellationTokenSource CancellationSource { get; private set; }
-        public TaskCompletionSource<RasConnection> CompletionSource { get; private set; }
+        public CancellationTokenSource CancellationSource { get; protected set; }
+        public TaskCompletionSource<RasConnection> CompletionSource { get; protected set; }
         public bool IsBusy { get; protected set; }
         public IntPtr Handle { get; protected set; }
 
