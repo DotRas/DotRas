@@ -62,27 +62,26 @@ namespace ConsoleRunner
 
             while (ShouldContinueExecution())
             {
-                using (var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token))
+                using var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token);
+
+                try
                 {
                     try
                     {
-                        try
-                        {
-                            await ConnectAsync(tcs.Token);
-                        }
-                        finally
-                        {
-                            await DisconnectAsync(tcs.Token);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
+                        await ConnectAsync(tcs.Token);
                     }
                     finally
                     {
-                        WaitUntilNextExecution(tcs.Token);
+                        await DisconnectAsync(tcs.Token);
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    WaitUntilNextExecution(tcs.Token);
                 }
             }
 
