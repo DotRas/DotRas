@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using DotRas.Internal.Abstractions.Primitives;
 
 namespace DotRas.Internal.Infrastructure.Primitives
@@ -7,12 +6,7 @@ namespace DotRas.Internal.Infrastructure.Primitives
     internal class ValueWaiter<T> : DisposableObject, IValueWaiter<T>
     {
         private readonly object syncRoot = new object();
-        private readonly IManualResetEvent waitHandle;
-
-        public ValueWaiter(IManualResetEvent waitHandle)
-        {
-            this.waitHandle = waitHandle ?? throw new ArgumentNullException(nameof(waitHandle));
-        }
+        private readonly ManualResetEventSlim waitHandle = new ManualResetEventSlim();
 
         public T Value { get; private set; }
         public bool IsSet { get; private set; }
