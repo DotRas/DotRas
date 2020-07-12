@@ -9,7 +9,6 @@ namespace DotRas.Internal.Infrastructure.IoC
         {
             RegisterDeviceFactories(container);
 
-            container.Register<ITaskCancellationSourceFactory>(typeof(TaskCancellationSourceFactory));
             container.Register<IDeviceTypeFactory>(typeof(DeviceTypeFactory));
             container.Register<IStructFactory>(typeof(StructFactory));
             container.Register<IStructArrayFactory>(typeof(StructFactory));
