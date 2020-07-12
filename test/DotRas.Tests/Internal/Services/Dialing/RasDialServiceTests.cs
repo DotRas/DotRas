@@ -151,10 +151,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object)
-            {
-                CompletionSource = completionSource
-            };
+            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object);
+            target.SetCompletionSource(completionSource);
 
             var result = await target.DialAsync(context);
 

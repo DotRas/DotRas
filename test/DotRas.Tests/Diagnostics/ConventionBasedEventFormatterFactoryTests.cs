@@ -13,17 +13,13 @@ namespace DotRas.Tests.Diagnostics
         public void ThrowsAnExceptionWhenTheAttributeDoesNotExist()
         {
             var target = new ConventionBasedEventFormatterFactory();
-
-            var ex = Assert.Throws<FormatterNotFoundException>(() => target.Create<TraceEvent>());
-            Assert.AreEqual("The formatter could not be identified.", ex.Message);
-            Assert.AreEqual(typeof(TraceEvent), ex.TargetType);
+            Assert.Throws<FormatterNotFoundException>(() => target.Create<TraceEvent>());
         }
 
         [Test]
         public void ThrowsAnExceptionWhenTheFormatterIsTheWrongType()
         {
             var target = new ConventionBasedEventFormatterFactory();
-
             Assert.Throws<InvalidOperationException>(() => target.Create<BadTraceEvent>());
         }
 
@@ -31,11 +27,7 @@ namespace DotRas.Tests.Diagnostics
         public void ThrowsAnExceptionWhenTheFormatterCannotBeCreated()
         {
             var target = new ConventionBasedEventFormatterFactory();
-
-            var ex = Assert.Throws<FormatterNotFoundException>(() => target.Create<BadTraceEventWithBadFormatter>());
-            Assert.AreEqual("The formatter could not be created. Please verify the formatter contains a parameterless constructor.", ex.Message);
-            Assert.AreEqual(typeof(BadTraceEventWithBadFormatter), ex.TargetType);
-            Assert.AreEqual(typeof(BadFormatter), ex.FormatterType);
+            Assert.Throws<FormatterNotFoundException>(() => target.Create<BadTraceEventWithBadFormatter>());
         }
 
         [Test]

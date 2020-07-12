@@ -10,16 +10,6 @@ namespace DotRas.Diagnostics
     public class FormatterNotFoundException : Exception
     {
         /// <summary>
-        /// Gets the target type of the formatter.
-        /// </summary>
-        public Type TargetType { get; }
-
-        /// <summary>
-        /// Gets the type of formatter.
-        /// </summary>
-        public Type FormatterType { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.
         /// </summary>
         public FormatterNotFoundException()
@@ -34,19 +24,6 @@ namespace DotRas.Diagnostics
             : base(message)
         {
         }  
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.
-        /// </summary>
-        /// <param name="message">A message describing the error.</param>
-        /// <param name="targetType">The target type of the formatter.</param>
-        /// <param name="formatterType">Optional. The type of formatter used by the target type.</param>
-        public FormatterNotFoundException(string message, Type targetType, Type formatterType = null)
-            : base(message)
-        {
-            TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
-            FormatterType = formatterType;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.

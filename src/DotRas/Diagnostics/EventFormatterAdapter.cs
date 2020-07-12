@@ -34,7 +34,7 @@ namespace DotRas.Diagnostics
             var formatter = CreateFormatterForType(eventData.GetType());
             if (formatter == null)
             {
-                throw new FormatterNotFoundException($"The formatter could not be located.", eventData.GetType());
+                throw new FormatterNotFoundException($"The formatter for event data type '{eventData.GetType()}' could not be located.");
             }
 
             return FormatValue(formatter, eventData);            

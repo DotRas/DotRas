@@ -8,7 +8,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
 {
     internal class TestableRasDialService : RasDialService
     {
-        public TaskCompletionSource<RasConnection> CompletionSource { get; set; }
         public bool CancelledAttempt { get; private set; }
 
         public TestableRasDialService(IRasApi32 api, IRasHangUp hangUpService, IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder, IExceptionPolicy exceptionPolicy, IRasDialCallbackHandler callbackHandler)
@@ -19,6 +18,11 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void FlagAsBusy()
         {
             IsBusy = true;
+        }
+
+        public void SetCompletionSource(TaskCompletionSource<RasConnection> value)
+        {
+            CompletionSource = value;
         }
 
         protected override TaskCompletionSource<RasConnection> CreateCompletionSource()
