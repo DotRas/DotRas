@@ -46,7 +46,8 @@
     <DocumentationFile>$(OutputPath)\DotRas.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/winnster/DotRas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Description>Provides remote access service (RAS) components for .NET languages like C#, VB.NET, and C++ CLR projects.</Description>
     <PackageProjectUrl>https://github.com/winnster/DotRas</PackageProjectUrl>
   </PropertyGroup>
