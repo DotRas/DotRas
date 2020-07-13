@@ -25,7 +25,7 @@ namespace DotRas.Internal.Policies
 
             if (error == ERROR_INVALID_SIZE)
             {
-                return new NotSupportedException("The operating system does not support the operation being requested. Please check the compatibility matrix for features supported with this operating system.");
+                return new OperatingSystemNotSupportedException();
             }
 
             if (ShouldGetMessageFromRas(error))

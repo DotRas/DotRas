@@ -35,7 +35,7 @@ namespace DotRas.Tests.Internal.Policies
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(ERROR_INVALID_SIZE);
 
-            Assert.IsInstanceOf<NotSupportedException>(result);
+            Assert.IsInstanceOf<OperatingSystemNotSupportedException>(result);
         }
 
         [Test]
