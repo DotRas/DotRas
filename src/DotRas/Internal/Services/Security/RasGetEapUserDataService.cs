@@ -29,11 +29,6 @@ namespace DotRas.Internal.Services.Security
                 throw new ArgumentNullException(nameof(entryName));
             }
 
-            if (string.IsNullOrWhiteSpace(phoneBookPath))
-            {
-                throw new ArgumentNullException(nameof(phoneBookPath));
-            }
-
             var pbEapData = IntPtr.Zero;
             var pdwSizeofEapData = 0;
             
