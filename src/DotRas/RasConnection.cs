@@ -14,6 +14,11 @@ namespace DotRas
     {
         #region Fields and Properties
 
+        /// <summary>
+        /// Defines the default value whether all references should be closed upon disconnect.
+        /// </summary>
+        private const bool DefaultCloseAllReferences = true;
+
         private readonly IRasGetConnectStatus statusService;
         private readonly IRasHangUp hangUpService;
         private readonly IRasGetConnectionStatistics connectionStatisticsService;
@@ -138,12 +143,22 @@ namespace DotRas
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
+        public virtual void Disconnect()
+        {
+            Disconnect(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         public virtual void Disconnect(CancellationToken cancellationToken)
         {
-            DisconnectAsync(cancellationToken).GetResultSynchronously();
+            Disconnect(cancellationToken, DefaultCloseAllReferences);
         }
 
         /// <summary>
@@ -161,13 +176,24 @@ namespace DotRas
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
+        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
+        /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
+        /// <returns>The task to await.</returns>
+        public virtual Task DisconnectAsync()
+        {
+            return DisconnectAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Disconnects the remote access connection.
+        /// </summary>
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         /// <returns>The task to await.</returns>
         public virtual Task DisconnectAsync(CancellationToken cancellationToken)
         {
-            return DisconnectAsync(cancellationToken, true);
+            return DisconnectAsync(cancellationToken, DefaultCloseAllReferences);
         }
 
         /// <summary>
