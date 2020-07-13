@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <entryName></entryName>
-  <phoneBookPath></phoneBookPath>
+  <phoneBookPath i:nil="true" />
   <username></username>
   <password></password>
 </configuration>

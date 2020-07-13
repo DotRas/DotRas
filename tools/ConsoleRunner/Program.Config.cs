@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
-using ConsoleRunner.Model;
+using Configuration = ConsoleRunner.Model.Configuration;
 
 namespace ConsoleRunner
 {
@@ -22,13 +23,13 @@ namespace ConsoleRunner
 
         private static void GuardConfiguration()
         {
-            if (string.IsNullOrWhiteSpace(Config.PhoneBookPath) || !File.Exists(Config.PhoneBookPath))
+            if (!string.IsNullOrWhiteSpace(Config.PhoneBookPath) && !File.Exists(Config.PhoneBookPath))
             {
-                throw new ApplicationException("The phonebook has not been configured, or does not exist.");
+                throw new ConfigurationErrorsException("The phonebook has not been configured, or does not exist.");
             }
             else if (string.IsNullOrWhiteSpace(Config.EntryName))
             {
-                throw new ApplicationException("The entry name has not been configured.");
+                throw new ConfigurationErrorsException("The entry name has not been configured.");
             }
         }
     }
