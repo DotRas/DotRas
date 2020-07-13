@@ -48,20 +48,6 @@ namespace DotRas.Tests.Internal.Services.Security
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenPhoneBookPathIsNull()
-        {
-            var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            Assert.Throws<ArgumentNullException>(() => target.GetEapUserData(IntPtr.Zero, "Test", null));
-        }
-
-        [Test]
-        public void ThrowsAnExceptionWhenPhoneBookPathIsWhiteSpace()
-        {
-            var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            Assert.Throws<ArgumentNullException>(() => target.GetEapUserData(IntPtr.Zero, "Test", "     "));
-        }
-
-        [Test]
         public void ResizesTheStructureAsExpected()
         {
             var ptr = new IntPtr(1);
