@@ -137,7 +137,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 632, 0);
             
             Assert.IsFalse(result);
-            Assert.IsTrue(target.Errored);
+            Assert.IsTrue(target.HasEncounteredErrors);
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
-            Assert.IsTrue(target.Errored);
+            Assert.IsTrue(target.HasEncounteredErrors);
         }
 
         [Test]
@@ -211,7 +211,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
             Assert.IsFalse(result);
-            Assert.IsFalse(target.Errored);
+            Assert.IsFalse(target.HasEncounteredErrors);
             Assert.IsTrue(target.Completed);
         }
 

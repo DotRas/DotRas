@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace ConsoleRunner
             dialer.EntryName = Config.EntryName;
             dialer.PhoneBookPath = Config.PhoneBookPath;
             dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
-            
+
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;
         }
@@ -44,7 +45,7 @@ namespace ConsoleRunner
             {
                 dialer.StateChanged -= OnStateChanged;
                 dialer.Dispose();
-                
+
                 watcher.Connected -= OnConnected;
                 watcher.Disconnected -= OnDisconnected;
                 watcher.Dispose();
@@ -66,26 +67,47 @@ namespace ConsoleRunner
 
                 try
                 {
-                    try
-                    {
-                        await ConnectAsync(tcs.Token);
-                    }
-                    finally
-                    {
-                        await DisconnectAsync(tcs.Token);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
+                    await RunOnceAsync(tcs.Token);
                 }
                 finally
                 {
-                    WaitUntilNextExecution(tcs.Token);
+                    await WaitForALittleWhileAsync(tcs.Token, false);
                 }
             }
 
             watcher.Stop();
+        }
+
+        protected async Task RunOnceAsync(CancellationToken runningToken)
+        {
+            try
+            {
+                await ConnectAsync(runningToken);
+
+                await WaitForALittleWhileAsync(runningToken, true);
+
+                await DisconnectAsync(runningToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private async Task WaitForALittleWhileAsync(CancellationToken cancellationToken, bool allowThrowCancellationException)
+        {
+            try
+            {
+                await Task.Delay(5000, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow if cancellation has occurred.
+                if (allowThrowCancellationException)
+                {
+                    throw;
+                }
+            }
         }
 
         private async Task ConnectAsync(CancellationToken cancellationToken)
@@ -95,9 +117,23 @@ namespace ConsoleRunner
                 return;
             }
 
-            Console.WriteLine("Starting connection...");
-            connection = await dialer.ConnectAsync(cancellationToken);
-            Console.WriteLine("Completed connecting.");
+            connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == dialer.EntryName);
+            if (connection != null)
+            {
+                Console.WriteLine($"Already connected: {dialer.EntryName}");
+                SetConnected();
+            }
+            else
+            {
+                Console.WriteLine("Starting connection...");
+                connection = await dialer.ConnectAsync(cancellationToken);
+            }
+        }
+
+        private void OnConnected(object sender, RasConnectionEventArgs e)
+        {
+            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
+            SetConnected();
         }
 
         private async Task DisconnectAsync(CancellationToken cancellationToken)
@@ -109,18 +145,6 @@ namespace ConsoleRunner
 
             Console.WriteLine("Starting disconnect...");
             await connection.DisconnectAsync(cancellationToken);
-            Console.WriteLine("Completed disconnect.");
-        }
-
-        private void WaitUntilNextExecution(CancellationToken cancellationToken)
-        {
-            cancellationToken.WaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-        }
-
-        private void OnConnected(object sender, RasConnectionEventArgs e)
-        {
-            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
-            SetConnected();
         }
 
         private void OnDisconnected(object sender, RasConnectionEventArgs e)
@@ -146,7 +170,7 @@ namespace ConsoleRunner
 
         private void OnStateChanged(object sender, StateChangedEventArgs e)
         {
-            Console.WriteLine($"State: {e.State}");
+            Console.WriteLine($"  State: {e.State}");
             RandomlyThrowException();
         }
 

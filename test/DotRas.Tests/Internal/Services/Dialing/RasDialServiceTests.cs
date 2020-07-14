@@ -25,6 +25,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
             RasDialFunc2 rasDialFunc,
             out IntPtr handle);
 
+        private TestableRasDialService target;
+
         private Mock<IRasApi32> api;
         private Mock<IRasHangUp> rasHangUp;
         private Mock<IRasDialExtensionsBuilder> extensionsBuilder;
@@ -43,6 +45,14 @@ namespace DotRas.Tests.Internal.Services.Dialing
             exceptionPolicy = new Mock<IExceptionPolicy>();
             callbackHandler = new Mock<IRasDialCallbackHandler>();
             marshaller = new Mock<IMarshaller>();
+
+            target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
+        }
+
+        [TearDown]
+        public void Finish()
+        {
+            target?.Dispose();
         }
 
         [Test]
@@ -50,7 +60,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(null, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object, marshaller.Object);
+                _ = new RasDialService(null, new Mock<IRasHangUp>().Object,
+                    new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object,
+                    new Mock<IExceptionPolicy>().Object, new Mock<IRasDialCallbackHandler>().Object,
+                    marshaller.Object);
             });
         }
 
@@ -59,7 +72,9 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null, new Mock<IRasDialCallbackHandler>().Object, marshaller.Object);
+                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object,
+                    new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, null,
+                    new Mock<IRasDialCallbackHandler>().Object, marshaller.Object);
             });
         }
 
@@ -68,31 +83,33 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object, new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object, new Mock<IExceptionPolicy>().Object, null, marshaller.Object);
+                _ = new RasDialService(new Mock<IRasApi32>().Object, new Mock<IRasHangUp>().Object,
+                    new Mock<IRasDialExtensionsBuilder>().Object, new Mock<IRasDialParamsBuilder>().Object,
+                    new Mock<IExceptionPolicy>().Object, null, marshaller.Object);
             });
         }
 
         [Test]
         public void DisposesCorrectlyWhenNotInitialized()
         {
-            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
-            target.Dispose();
-
-            callbackHandler.Verify(o => o.Dispose(), Times.Once);
+            Assert.DoesNotThrow(() => target.Dispose());
         }
 
         [Test]
         public void HangsUpTheConnectionWhenCancelled()
         {
             var handle = new IntPtr(1);
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, It.IsAny<string>(), ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(    (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams, Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, It.IsAny<string>(),
+                ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams,
+                    Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
                 {
                     o6 = handle;
                     return SUCCESS;
                 }));
 
             using var cts = new CancellationTokenSource();
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
 
             var context = new RasDialContext
             {
@@ -106,13 +123,12 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             cts.Cancel();
 
-            rasHangUp.Verify(o => o.UnsafeHangUp(context.Handle, It.IsAny<bool>()));
+            rasHangUp.Verify(o => o.UnsafeHangUp(context.Handle, It.IsAny<bool>(), CancellationToken.None));
         }
 
         [Test]
         public void DisposeMustDisposeTheCallbackHandler()
         {
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.Dispose();
 
             callbackHandler.Verify(o => o.Dispose(), Times.Once);
@@ -121,7 +137,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void ThrowsAnExceptionWhenContextIsNull()
         {
-            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             Assert.Throws<ArgumentNullException>(() => target.DialAsync(null));
         }
 
@@ -141,7 +156,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.SimulateDialCompleted(context);
 
             marshaller.Verify(o => o.FreeHGlobalIfNeeded(ptr));
@@ -152,7 +166,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             var context = new RasDialContext();
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.FlagAsBusy();
 
             Assert.True(target.IsBusy);
@@ -172,8 +185,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
             var password = "Password";
             var interfaceIndex = 1;
 
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
-                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams, Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, phoneBookPath, ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams,
+                    Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
                 {
                     Assert.AreEqual(phoneBookPath, lpszPhoneBook);
                     o6 = handle;
@@ -197,7 +212,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.SetCompletionSource(completionSource);
 
             var result = await target.DialAsync(context);
@@ -211,8 +225,11 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void ThrowsAnExceptionWhenNonSuccessIsReturnedFromWin32()
         {
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
-                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out IntPtr o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk",
+                ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5,
+                    out IntPtr o6) =>
                 {
                     o6 = IntPtr.Zero;
 
@@ -236,7 +253,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new RasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             Assert.ThrowsAsync<TestException>(() => target.DialAsync(context));
         }
 
@@ -254,7 +270,6 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
             target.FlagAsBusy();
 
             Assert.IsTrue(target.IsBusy);
@@ -268,13 +283,43 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             var handle = new IntPtr(1);
 
-            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk", ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(), out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
-                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5, out IntPtr o6) =>
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, @"C:\Test.pbk",
+                ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS o1, string o2, ref RASDIALPARAMS o3, Ras.NotifierType o4, RasDialFunc2 o5,
+                    out IntPtr o6) =>
                 {
                     o6 = handle;
 
                     return SUCCESS;
                 }));
+
+            using var cts = new CancellationTokenSource();
+
+            var context = new RasDialContext
+            {
+                CancellationToken = cts.Token,
+                PhoneBookPath = @"C:\Test.pbk",
+                EntryName = "Entry",
+                Credentials = new NetworkCredential("User", "Password"),
+                Options = new RasDialerOptions
+                {
+                    InterfaceIndex = 0
+                }
+            };
+
+            target.DialAsync(context);
+
+            Assert.IsTrue(target.IsBusy);
+
+            target.Dispose();
+            Assert.IsTrue(target.CancelledAttempt);
+        }
+
+        [Test]
+        public void DoesNotErrorIfCancelledBeforeDialAttemptCanStart()
+        {
+            target.FlagAsBusy();
 
             var context = new RasDialContext
             {
@@ -287,13 +332,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            var target = new TestableRasDialService(api.Object, rasHangUp.Object, extensionsBuilder.Object, paramsBuilder.Object, exceptionPolicy.Object, callbackHandler.Object, marshaller.Object);
-            target.DialAsync(context);
-
-            Assert.IsTrue(target.IsBusy);
-
-            target.Dispose();
-            Assert.IsTrue(target.CancelledAttempt);
+            Assert.DoesNotThrow(() => target.SimulateCancellationWhileDialing(context));
+            Assert.False(target.IsBusy);
         }
     }
 }

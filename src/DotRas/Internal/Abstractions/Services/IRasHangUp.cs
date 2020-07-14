@@ -8,6 +8,6 @@ namespace DotRas.Internal.Abstractions.Services
     {
         Task HangUpAsync(IRasConnection connection, bool closeAllReferences, CancellationToken cancellationToken);
 
-        void UnsafeHangUp(IntPtr handle, bool closeAllReferences);
+        void UnsafeHangUp(IntPtr handle, bool closeAllReferences, CancellationToken cancellationToken);
     }
 }

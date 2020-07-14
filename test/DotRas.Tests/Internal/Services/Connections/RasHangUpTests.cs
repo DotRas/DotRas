@@ -44,7 +44,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            Assert.Throws<ArgumentNullException>(() => target.UnsafeHangUp(IntPtr.Zero, true));
+            Assert.Throws<ArgumentNullException>(() => target.UnsafeHangUp(IntPtr.Zero, true, CancellationToken.None));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            target.UnsafeHangUp(handle, true);
+            target.UnsafeHangUp(handle, true, CancellationToken.None);
 
             api.Verify(o => o.RasHangUp(handle), Times.Once);
         }
@@ -108,7 +108,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             });
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            target.UnsafeHangUp(handle, true);
+            target.UnsafeHangUp(handle, true, CancellationToken.None);
 
             api.Verify(o => o.RasHangUp(handle), Times.Exactly(3));
         }
@@ -124,13 +124,11 @@ namespace DotRas.Tests.Internal.Services.Connections
             var connection = new Mock<IRasConnection>();
             connection.Setup(o => o.Handle).Returns(handle);
 
-            using (var cancellationSource = new CancellationTokenSource())            
-            {
-                cancellationSource.Cancel();                
+            using var cancellationSource = new CancellationTokenSource();
+            cancellationSource.Cancel();
 
-                var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-                Assert.ThrowsAsync<TaskCanceledException>(async () => await target.HangUpAsync(connection.Object, true, cancellationSource.Token));
-            }
+            var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
+            Assert.ThrowsAsync<OperationCanceledException>(async () => await target.HangUpAsync(connection.Object, true, cancellationSource.Token));
         }
 
         [Test]
@@ -147,7 +145,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             api.Setup(o => o.RasHangUp(handle)).Returns(-1);
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
-            Assert.Throws<TestException>(() => target.UnsafeHangUp(handle, true));
+            Assert.Throws<TestException>(() => target.UnsafeHangUp(handle, true, CancellationToken.None));
 
             api.Verify(o => o.RasHangUp(handle), Times.Once);
         }
