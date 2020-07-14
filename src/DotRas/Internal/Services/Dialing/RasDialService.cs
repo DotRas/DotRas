@@ -80,10 +80,10 @@ namespace DotRas.Internal.Services.Dialing
             CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
 
             // Ensures that the connection can be cancelled even if the callback is stuck.
-            CancellationSource.Token.Register(() => CancelDialAttemptInProgress(context));
+            CancellationSource.Token.Register(() => OnCancellationRequestedCallback(context));
         }
 
-        protected void CancelDialAttemptInProgress(RasDialContext context)
+        protected void OnCancellationRequestedCallback(RasDialContext context)
         {
             if (!IsBusy)
             {

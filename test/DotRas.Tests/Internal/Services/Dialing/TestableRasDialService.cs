@@ -43,9 +43,9 @@ namespace DotRas.Tests.Internal.Services.Dialing
             OnDialCompletedCallback(context);
         }
 
-        public void SimulateCancellationWhileDialing(RasDialContext context)
+        public void SimulateCancellationRequested(RasDialContext context)
         {
-            CancelDialAttemptInProgress(context);
+            OnCancellationRequestedCallback(context);
         }
     }
 }

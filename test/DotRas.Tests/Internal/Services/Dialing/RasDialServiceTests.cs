@@ -332,7 +332,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
                 }
             };
 
-            Assert.DoesNotThrow(() => target.SimulateCancellationWhileDialing(context));
+            Assert.DoesNotThrow(() => target.SimulateCancellationRequested(context));
             Assert.False(target.IsBusy);
         }
     }
