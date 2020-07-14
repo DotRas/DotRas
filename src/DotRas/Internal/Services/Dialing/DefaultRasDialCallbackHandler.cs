@@ -27,7 +27,7 @@ namespace DotRas.Internal.Services.Dialing
         
         public bool Completed { get; private set; }
 
-        public bool Errored { get; private set; }
+        public bool HasEncounteredErrors { get; private set; }
         
         public bool Initialized { get; private set; }
 
@@ -116,7 +116,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void HangUpConnection()
         {
-            rasHangUp.UnsafeHangUp(handle.Value, false);
+            rasHangUp.UnsafeHangUp(handle.Value, false, CancellationToken.None);
         }
 
         private void ExecuteStateChangedCallback(RasConnectionState connectionState)
@@ -163,7 +163,7 @@ namespace DotRas.Internal.Services.Dialing
 
         private void SetExceptionResult(Exception exception)
         {
-            FlagRequestAsErrored();
+            FlagRequestAsEncounteredErrors();
             FlagRequestAsCompleted();
 
             RunPostCompleted();
@@ -176,9 +176,9 @@ namespace DotRas.Internal.Services.Dialing
             Completed = true;
         }
 
-        private void FlagRequestAsErrored()
+        private void FlagRequestAsEncounteredErrors()
         {
-            Errored = true;
+            HasEncounteredErrors = true;
         }
 
         private void GuardMustBeInitialized()

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# S4457: Parameter validation in "async"/"await" methods should be wrapped
+dotnet_diagnostic.S4457.severity = suggestion

@@ -27,17 +27,18 @@ namespace DotRas.Internal.Services.Connections
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            return Task.Run(() => HangUpImpl(connection.Handle, closeAllReferences, cancellationToken), cancellationToken);
+            HangUpImpl(connection.Handle, closeAllReferences, cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public void UnsafeHangUp(IntPtr handle, bool closeAllReferences)
+        public void UnsafeHangUp(IntPtr handle, bool closeAllReferences, CancellationToken cancellationToken)
         {
             if (handle == IntPtr.Zero)
             {
                 throw new ArgumentNullException(nameof(handle));
             }
 
-            HangUpImpl(handle, closeAllReferences, CancellationToken.None);
+            HangUpImpl(handle, closeAllReferences, cancellationToken);
         }
 
         private void HangUpImpl(IntPtr handle, bool closeAllReferences, CancellationToken cancellationToken)

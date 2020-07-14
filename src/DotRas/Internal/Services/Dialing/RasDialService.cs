@@ -80,7 +80,31 @@ namespace DotRas.Internal.Services.Dialing
             CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
 
             // Ensures that the connection can be cancelled even if the callback is stuck.
-            CancellationSource.Token.Register(() => HangUpIfNecessary(context));
+            CancellationSource.Token.Register(() => OnCancellationRequestedCallback(context));
+        }
+
+        protected void OnCancellationRequestedCallback(RasDialContext context)
+        {
+            if (!IsBusy)
+            {
+                return;
+            }
+
+            HangUpIfNecessary(context);
+            OnDialCompletedCallback(context);
+
+            CancelCompletionSourceIfNecessary();
+        }
+
+        protected virtual void CancelCompletionSourceIfNecessary()
+        {
+            var task = CompletionSource?.Task;
+            if (task == null || task.IsFaulted || task.IsCompleted || task.IsCanceled)
+            {
+                return;
+            }
+
+            CompletionSource.SetCanceled();
         }
 
         private void BeginDial(RasDialContext context)
@@ -125,7 +149,7 @@ namespace DotRas.Internal.Services.Dialing
                 return;
             }
 
-            hangUpService.UnsafeHangUp(context.Handle, false);
+            hangUpService.UnsafeHangUp(context.Handle, false, CancellationToken.None);
         }
 
         private RASDIALEXTENSIONS ConvertToRasDialExtensions(RasDialContext context)
@@ -185,7 +209,7 @@ namespace DotRas.Internal.Services.Dialing
         {
             if (IsBusy)
             {
-                CancellationSource.Cancel();
+                CancellationSource?.Cancel();
             }
         }
     }
