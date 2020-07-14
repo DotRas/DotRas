@@ -14,7 +14,7 @@ namespace DotRas.Tests
         {
             Assert.DoesNotThrow(() => new RasConnectionWatcher());
         }
-
+        
         [Test]
         public void ThrowsAnExceptionWhenTheApiIsNull()
         {

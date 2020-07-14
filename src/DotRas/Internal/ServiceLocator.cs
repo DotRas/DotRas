@@ -6,46 +6,33 @@ namespace DotRas.Internal
     internal static class ServiceLocator
     {
         private static readonly object SyncRoot = new object();
-        private static IServiceProvider @default;
+        private static Func<IServiceProvider> locator;
 
-        public static IServiceProvider Default
+        private static readonly Container Container = ContainerBuilder.Build();
+
+        static ServiceLocator()
         {
-            get
-            {
-                if (@default == null)
-                {
-                    lock (SyncRoot)
-                    {
-                        if (@default == null)
-                        {
-                            @default = ContainerBuilder.Build();
-                        }
-                    }
-                }
+            Reset();
+        }
 
-                return @default;
+        public static IServiceProvider Default => locator();
+
+        public static void SetLocator(Func<IServiceProvider> func)
+        {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
             }
 
-            set
+            lock (SyncRoot)
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                lock (SyncRoot)
-                {
-                    @default = value;
-                }
+                locator = func;
             }
         }
 
-        public static void Clear()
+        public static void Reset()
         {
-            lock (@default)
-            {
-                @default = null;
-            }
-        }       
+            SetLocator(() => Container);
+        }
     }
 }
