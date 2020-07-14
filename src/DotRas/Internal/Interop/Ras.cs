@@ -24,8 +24,6 @@ namespace DotRas.Internal.Interop
         public const int RAS_MaxReplyMessage = 1024;
         public const int RAS_MaxDnsSuffix = 256;
 
-        #region RASDT
-
         public const string RASDT_Modem = "modem";
         public const string RASDT_Isdn = "isdn";
         public const string RASDT_X25 = "x25";
@@ -40,8 +38,6 @@ namespace DotRas.Internal.Interop
         public const string RASDT_Irda = "IRDA";
         public const string RASDT_Parallel = "PARALLEL";
         public const string RASDT_PPPoE = "PPPoE";
-
-        #endregion
 
         public enum RASTUNNELENDPOINTTYPE
         {
@@ -64,11 +60,11 @@ namespace DotRas.Internal.Interop
         {
             Connection = 0x1,
             Disconnection = 0x2,
-            BandwidthAdded = 0x4,
-            BandwidthRemoved = 0x8,
-            Dormant = 0x10,
-            Reconnection = 0x20,
-            EPDGPacketArrival = 0x40
+            //BandwidthAdded = 0x4,
+            //BandwidthRemoved = 0x8,
+            //Dormant = 0x10,
+            //Reconnection = 0x20,
+            //EPDGPacketArrival = 0x40
         }
 
         [Flags]
