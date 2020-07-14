@@ -12,17 +12,23 @@ namespace DotRas.Tests.Internal.Policies
     [TestFixture]
     public class DefaultExceptionPolicyTests
     {
+        private Mock<IRasGetErrorString> rasGetErrorString;
+
+        [SetUp]
+        public void Init()
+        {
+            rasGetErrorString = new Mock<IRasGetErrorString>();
+        }
+
         [Test]
         public void ThrowsAnExceptionWhenGetErrorStringIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new DefaultExceptionPolicy(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new DefaultExceptionPolicy(null));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenErrorIsSuccess()
         {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
-
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             Assert.Throws<ArgumentException>(() => target.Create(SUCCESS));
         }
@@ -30,8 +36,6 @@ namespace DotRas.Tests.Internal.Policies
         [Test]
         public void ReturnsNotSupportedExceptionWhenErrorIsInvalidSize()
         {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
-
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(ERROR_INVALID_SIZE);
 
@@ -41,7 +45,6 @@ namespace DotRas.Tests.Internal.Policies
         [Test]
         public void ReturnsAnUnknownErrorForRasExceptionsWithNoMessage()
         {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
             rasGetErrorString.Setup(o => o.GetErrorString(600)).Returns("").Verifiable();
 
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
@@ -54,8 +57,6 @@ namespace DotRas.Tests.Internal.Policies
         [Test]
         public void ReturnsAWin32ExceptionWhenTheMessageIsNotFoundInRas()
         {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
-
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(int.MinValue);
 
@@ -66,14 +67,24 @@ namespace DotRas.Tests.Internal.Policies
         [Test]
         public void ReturnsARasExceptionWhenTheMessageIsFound()
         {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
-            rasGetErrorString.Setup(o => o.GetErrorString(ERROR_BUFFER_TOO_SMALL)).Returns("The buffer is too small.").Verifiable();
+            rasGetErrorString.Setup(o => o.GetErrorString(ERROR_BUFFER_TOO_SMALL)).Returns("The buffer is too small.")
+                .Verifiable();
 
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(ERROR_BUFFER_TOO_SMALL);
 
             rasGetErrorString.Verify();
             Assert.IsInstanceOf<RasException>(result);
+        }
+
+        [Test]
+        public void ReturnsAWin32ExceptionForIkeCredentialsUnacceptableErrorCode()
+        {
+            var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
+            var result = target.Create(13801);
+
+            Assert.IsInstanceOf<Win32Exception>(result);
+            StringAssert.Contains("IKE", result.Message);
         }
     }
 }
