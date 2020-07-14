@@ -18,7 +18,7 @@ namespace DotRas.Tests
         [Test]
         public void CanInstantiateTheDialer()
         {
-            Assert.DoesNotThrow(() => new RasDialer());
+            Assert.DoesNotThrow(() => _ = new RasDialer());
         }
 
         [Test]

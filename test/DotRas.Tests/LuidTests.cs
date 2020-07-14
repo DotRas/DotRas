@@ -15,13 +15,13 @@ namespace DotRas.Tests
         public void Setup()
         {
             container = new Mock<IServiceProvider>();
-            ServiceLocator.Default = container.Object;
+            ServiceLocator.SetLocator(() => container.Object);
         }
 
         [TearDown]
         public void TearDown()
         {
-            ServiceLocator.Clear();
+            ServiceLocator.Reset();
         }
 
         [Test]

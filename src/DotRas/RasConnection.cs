@@ -19,11 +19,6 @@ namespace DotRas
         /// </summary>
         private const bool DefaultCloseAllReferences = true;
 
-        private readonly IRasGetConnectStatus statusService;
-        private readonly IRasHangUp hangUpService;
-        private readonly IRasGetConnectionStatistics connectionStatisticsService;
-        private readonly IRasClearConnectionStatistics clearConnectionStatisticsService;
-
         /// <summary>
         /// Gets the handle of the connection.
         /// </summary>
@@ -64,9 +59,14 @@ namespace DotRas
         /// </summary>
         public virtual Guid CorrelationId { get; }
 
+        /// <summary>
+        /// Gets the services available.
+        /// </summary>
+        protected IServiceProvider Services { get; }
+
         #endregion
 
-        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IRasGetConnectStatus statusService, IRasGetConnectionStatistics connectionStatisticsService, IRasHangUp hangUpService, IRasClearConnectionStatistics clearConnectionStatisticsService)
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IServiceProvider services)
         {
             if (handle == IntPtr.Zero)
             {
@@ -89,11 +89,7 @@ namespace DotRas
             Options = options ?? throw new ArgumentNullException(nameof(options));
             SessionId = sessionId;
             CorrelationId = correlationId;
-
-            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
-            this.connectionStatisticsService = connectionStatisticsService ?? throw new ArgumentNullException(nameof(connectionStatisticsService));
-            this.hangUpService = hangUpService ?? throw new ArgumentNullException(nameof(hangUpService));
-            this.clearConnectionStatisticsService = clearConnectionStatisticsService ?? throw new ArgumentNullException(nameof(clearConnectionStatisticsService));
+            Services = services;
         }
 
         /// <summary>
@@ -119,7 +115,8 @@ namespace DotRas
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual void ClearStatistics()
         {
-            clearConnectionStatisticsService.ClearConnectionStatistics(this);
+            Services.GetRequiredService<IRasClearConnectionStatistics>()
+                .ClearConnectionStatistics(this);
         }
 
         /// <summary>
@@ -128,7 +125,8 @@ namespace DotRas
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatistics GetStatistics()
         {
-            return connectionStatisticsService.GetConnectionStatistics(this);
+            return Services.GetRequiredService<IRasGetConnectionStatistics>()
+                .GetConnectionStatistics(this);
         }
 
         /// <summary>
@@ -137,7 +135,8 @@ namespace DotRas
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
         public virtual RasConnectionStatus GetStatus()
         {
-            return statusService.GetConnectionStatus(this);
+            return Services.GetRequiredService<IRasGetConnectStatus>()
+                .GetConnectionStatus(this);
         }
 
         /// <summary>
@@ -206,7 +205,8 @@ namespace DotRas
         /// <returns>The task to await.</returns>
         public virtual Task DisconnectAsync(CancellationToken cancellationToken, bool closeAllReferences)
         {
-            return hangUpService.HangUpAsync(this, closeAllReferences, cancellationToken);
+            return Services.GetRequiredService<IRasHangUp>()
+                .HangUpAsync(this, closeAllReferences, cancellationToken);
         }
 
         /// <summary>
