@@ -10,11 +10,12 @@ namespace DialConnectionAsynchronously
     {
         private readonly RasDialer dialer;
 
-        static void Main()
+        static async Task Main()
         {
             try
             {
-                new Program().Run();
+                await new Program()
+                    .RunAsync();
             }
             catch (Exception ex)
             {
@@ -34,11 +35,6 @@ namespace DialConnectionAsynchronously
         private void OnDialerStateChanged(object sender, StateChangedEventArgs e)
         {
             Console.WriteLine($"State: {e.State}");
-        }
-
-        private void Run()
-        {
-            RunAsync().Wait();
         }
 
         private async Task RunAsync()
