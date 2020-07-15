@@ -37,11 +37,22 @@ namespace DotRas.Internal.Services.Connections
 
             return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
+                GetErrorCode(rasConnStatus.dwError),
                 CreateDevice(rasConnStatus),
                 rasConnStatus.szPhoneNumber,
-                CreateLocalIPAddress(rasConnStatus),
-                CreateRemoteIPAddress(rasConnStatus),
+                CreateLocalIpAddress(rasConnStatus),
+                CreateRemoteIpAddress(rasConnStatus),
                 rasConnStatus.rasconnsubstate);
+        }
+
+        private int? GetErrorCode(int dwError)
+        {
+            if (dwError == SUCCESS)
+            {
+                return null;
+            }
+
+            return dwError;
         }
 
         private RASCONNSTATUS GetConnectionStatusByHandle(IntPtr handle)
@@ -62,12 +73,12 @@ namespace DotRas.Internal.Services.Connections
             return deviceTypeFactory.Create(rasConnStatus.szDeviceName, rasConnStatus.szDeviceType);
         }
 
-        private IPAddress CreateLocalIPAddress(RASCONNSTATUS rasConnStatus)
+        private IPAddress CreateLocalIpAddress(RASCONNSTATUS rasConnStatus)
         {
             return ipAddressConverter.ConvertFromEndpoint(rasConnStatus.localEndpoint);
         }
 
-        private IPAddress CreateRemoteIPAddress(RASCONNSTATUS rasConnStatus)
+        private IPAddress CreateRemoteIpAddress(RASCONNSTATUS rasConnStatus)
         {
             return ipAddressConverter.ConvertFromEndpoint(rasConnStatus.remoteEndpoint);
         }
