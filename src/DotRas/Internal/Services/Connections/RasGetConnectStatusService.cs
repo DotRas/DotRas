@@ -37,11 +37,22 @@ namespace DotRas.Internal.Services.Connections
 
             return new RasConnectionStatus(
                 rasConnStatus.rasconnstate,
+                GetErrorCode(rasConnStatus.dwError),
                 CreateDevice(rasConnStatus),
                 rasConnStatus.szPhoneNumber,
                 CreateLocalIPAddress(rasConnStatus),
                 CreateRemoteIPAddress(rasConnStatus),
                 rasConnStatus.rasconnsubstate);
+        }
+
+        private int? GetErrorCode(int dwError)
+        {
+            if (dwError == SUCCESS)
+            {
+                return null;
+            }
+
+            return dwError;
         }
 
         private RASCONNSTATUS GetConnectionStatusByHandle(IntPtr handle)
