@@ -40,8 +40,8 @@ namespace DotRas.Internal.Services.Connections
                 GetErrorCode(rasConnStatus.dwError),
                 CreateDevice(rasConnStatus),
                 rasConnStatus.szPhoneNumber,
-                CreateLocalIPAddress(rasConnStatus),
-                CreateRemoteIPAddress(rasConnStatus),
+                CreateLocalIpAddress(rasConnStatus),
+                CreateRemoteIpAddress(rasConnStatus),
                 rasConnStatus.rasconnsubstate);
         }
 
@@ -73,12 +73,12 @@ namespace DotRas.Internal.Services.Connections
             return deviceTypeFactory.Create(rasConnStatus.szDeviceName, rasConnStatus.szDeviceType);
         }
 
-        private IPAddress CreateLocalIPAddress(RASCONNSTATUS rasConnStatus)
+        private IPAddress CreateLocalIpAddress(RASCONNSTATUS rasConnStatus)
         {
             return ipAddressConverter.ConvertFromEndpoint(rasConnStatus.localEndpoint);
         }
 
-        private IPAddress CreateRemoteIPAddress(RASCONNSTATUS rasConnStatus)
+        private IPAddress CreateRemoteIpAddress(RASCONNSTATUS rasConnStatus)
         {
             return ipAddressConverter.ConvertFromEndpoint(rasConnStatus.remoteEndpoint);
         }
