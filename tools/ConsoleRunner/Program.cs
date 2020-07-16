@@ -19,11 +19,6 @@ namespace ConsoleRunner
         public Program()
         {
             dialer.StateChanged += OnStateChanged;
-
-            dialer.EntryName = Config.EntryName;
-            dialer.PhoneBookPath = Config.PhoneBookPath;
-            dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
-
             watcher.Connected += OnConnected;
             watcher.Disconnected += OnDisconnected;
         }
@@ -54,6 +49,10 @@ namespace ConsoleRunner
 
         public async Task RunAsync()
         {
+            dialer.EntryName = Config.EntryName;
+            dialer.PhoneBookPath = Config.PhoneBookPath;
+            dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
+
             await RunCoreAsync();
         }
 
