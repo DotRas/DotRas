@@ -72,7 +72,7 @@ namespace DotRas.Internal.Interop
         {
             None = 0x0,
             //UsePrefixSuffix = 0x1,
-            //PausedStates = 0x2,
+            PausedStates = 0x2,
             //IgnoreModemSpeaker = 0x4,
             //SetModemSpeaker = 0x8,
             //IgnoreSoftwareCompression = 0x10,
