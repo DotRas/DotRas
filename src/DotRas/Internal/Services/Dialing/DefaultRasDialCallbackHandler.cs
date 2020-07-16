@@ -101,10 +101,6 @@ namespace DotRas.Internal.Services.Dialing
                     SetConnectionResult();
                 }
             }
-            catch (OperationCanceledException operationCanceledEx)
-            {
-                SetExceptionResult(operationCanceledEx);
-            }
             catch (Exception ex)
             {
                 HangUpConnection();
