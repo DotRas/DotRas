@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Autofac;
-using ConsoleRunner.Infrastructure.Providers;
-using DotRas;
 
 namespace ConsoleRunner
 {
@@ -15,8 +13,6 @@ namespace ConsoleRunner
             builder.RegisterAssemblyModules(Assembly.GetExecutingAssembly());
 
             container = builder.Build();
-
-            DependencyResolver.SetLocator(() => new AutofacServiceProvider(container));
         }
     }
 }

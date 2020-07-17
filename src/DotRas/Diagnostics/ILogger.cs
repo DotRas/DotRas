@@ -5,7 +5,7 @@ namespace DotRas.Diagnostics
     /// <summary>
     /// Identifies a mechanism which can log events that occur.
     /// </summary>
-    public interface ILog
+    public interface ILogger
     {
         /// <summary>
         /// Logs the event.

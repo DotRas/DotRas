@@ -21,14 +21,14 @@ namespace DotRas.Tests.Diagnostics
         [Test]
         public void ThrowsAnExceptionWhenTheEventDataIsNull()
         {
-            var target = new DefaultEventLoggingPolicy(new Mock<ILog>().Object);
+            var target = new DefaultEventLoggingPolicy(new Mock<ILogger>().Object);
             Assert.Throws<ArgumentNullException>(() => target.LogEvent(EventLevel.Error, null));
         }
 
         [Test]
         public void LogsTheEventInformation()
         {
-            var log = new Mock<ILog>();
+            var log = new Mock<ILogger>();
 
             var target = new DefaultEventLoggingPolicy(log.Object);
             target.LogEvent(EventLevel.Error, new PInvokeInt32CallCompletedTraceEvent());
@@ -39,7 +39,7 @@ namespace DotRas.Tests.Diagnostics
         [Test]
         public void SwallowExceptionsWhenLoggingEvents()
         {
-            var log = new Mock<ILog>();
+            var log = new Mock<ILogger>();
             log.Setup(o => o.Log(EventLevel.Error, It.IsAny<TraceEvent>())).Throws<Exception>().Verifiable();
 
             var target = new DefaultEventLoggingPolicy(log.Object);

@@ -4,10 +4,10 @@ using NLog;
 
 namespace ConsoleRunner.Infrastructure.Diagnostics
 {
-    class DotRasLoggingAdapter : ILog
+    class DotRasLoggingAdapter : DotRas.Diagnostics.ILogger
     {
         private readonly IEventFormatterAdapter adapter;
-        private readonly ILogger logger;
+        private readonly NLog.ILogger logger;
 
         public DotRasLoggingAdapter()
         {

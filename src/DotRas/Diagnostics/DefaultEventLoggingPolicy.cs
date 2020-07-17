@@ -5,11 +5,11 @@ namespace DotRas.Diagnostics
 {
     internal class DefaultEventLoggingPolicy : IEventLoggingPolicy
     {
-        private readonly ILog log;
+        private readonly ILogger logger;
 
-        public DefaultEventLoggingPolicy(ILog log)
+        public DefaultEventLoggingPolicy(ILogger logger)
         {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void LogEvent(EventLevel eventLevel, TraceEvent eventData)
@@ -21,7 +21,7 @@ namespace DotRas.Diagnostics
 
             try
             {
-                log.Log(eventLevel, eventData);
+                logger.Log(eventLevel, eventData);
             }
             catch (Exception)
             {
