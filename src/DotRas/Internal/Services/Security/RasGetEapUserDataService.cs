@@ -2,6 +2,7 @@
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
+using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.RasError;
 using static DotRas.Internal.Interop.WinError;
 
@@ -22,7 +23,7 @@ namespace DotRas.Internal.Services.Security
             this.marshaller = marshaller ?? throw new ArgumentNullException(nameof(marshaller));
         }
 
-        public byte[] GetEapUserData(IntPtr impersonationToken, string entryName, string phoneBookPath)
+        public bool TryUnsafeGetEapUserData(IntPtr impersonationToken, string entryName, string phoneBookPath, out RASEAPINFO eapInfo)
         {
             if (string.IsNullOrWhiteSpace(entryName))
             {
@@ -59,7 +60,24 @@ namespace DotRas.Internal.Services.Security
                 throw;
             }
 
-            return marshaller.PtrToByteArray(pbEapData, pdwSizeofEapData);
+            if (pbEapData != IntPtr.Zero && pdwSizeofEapData > 0)
+            {
+                eapInfo = new RASEAPINFO
+                {
+                    pbEapInfo = pbEapData,
+                    dwSizeofEapInfo = pdwSizeofEapData
+                };
+
+                return true;
+            }
+
+            eapInfo = new RASEAPINFO
+            {
+                dwSizeofEapInfo = 0,
+                pbEapInfo = IntPtr.Zero
+            };
+
+            return false;
         }
     }
 }
