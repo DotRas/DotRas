@@ -37,14 +37,14 @@ namespace DotRas.Tests.Internal.Services.Security
         public void ThrowsAnExceptionWhenEntryNameIsNull()
         {
             var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            Assert.Throws<ArgumentNullException>(() => target.GetEapUserData(IntPtr.Zero, null, @"C:\\Test.pbk"));
+            Assert.Throws<ArgumentNullException>(() => target.TryUnsafeGetEapUserData(IntPtr.Zero, null, @"C:\\Test.pbk", out _));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenEntryNameIsWhiteSpace()
         {
             var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            Assert.Throws<ArgumentNullException>(() => target.GetEapUserData(IntPtr.Zero, "     ", @"C:\\Test.pbk"));
+            Assert.Throws<ArgumentNullException>(() => target.TryUnsafeGetEapUserData(IntPtr.Zero, "     ", @"C:\\Test.pbk", out _));
         }
 
         [Test]
@@ -53,36 +53,52 @@ namespace DotRas.Tests.Internal.Services.Security
             var ptr = new IntPtr(1);
             var entryName = "Test";
             var phoneBookPath = @"C:\Test.pbk";
-            var expected = new byte[] { 1 };
+            var length = 1;
 
             marshaller.Setup(o => o.AllocHGlobal(0)).Returns(IntPtr.Zero);
             marshaller.Setup(o => o.AllocHGlobal(1)).Returns(ptr);
 
-            marshaller.Setup(o => o.PtrToByteArray(ptr, 1)).Returns(expected);
-
             api.Setup(o => o.RasGetEapUserData(It.IsAny<IntPtr>(), It.IsAny<string>(), It.IsAny<string>(), IntPtr.Zero, ref It.Ref<int>.IsAny)).Returns(new RasGetEapUserDataCallback(
-                (IntPtr token, string path, string name, IntPtr data, ref int eapData) =>
+                (IntPtr token, string path, string name, IntPtr h, ref int l) =>
                 {
-                    eapData = 1;
+                    l = length;
                     return ERROR_BUFFER_TOO_SMALL;
                 }));
 
             api.Setup(o => o.RasGetEapUserData(It.IsAny<IntPtr>(), It.IsAny<string>(), It.IsAny<string>(), ptr, ref It.Ref<int>.IsAny)).Returns(new RasGetEapUserDataCallback(
-                (IntPtr token, string path, string name, IntPtr data, ref int eapData) =>
-                {
-                    eapData = 1;
-                    return SUCCESS;
-                }));
+                (IntPtr token, string path, string name, IntPtr h, ref int l) => SUCCESS ));
 
             var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            var result = target.GetEapUserData(IntPtr.Zero, entryName, phoneBookPath);
+            var success = target.TryUnsafeGetEapUserData(IntPtr.Zero, entryName, phoneBookPath, out var eapInfo);
+
+            Assert.True(success);
+            Assert.AreEqual(ptr, eapInfo.pbEapInfo);
+            Assert.AreEqual(length, eapInfo.dwSizeofEapInfo);
 
             marshaller.Verify(o => o.FreeHGlobalIfNeeded(IntPtr.Zero), Times.Once);
-            CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void MustFreeTheMemoryAndThrowAnExceptionAsExpected()
+        public void DoesNotThrowAnErrorWhenEapIsNotRequired()
+        {
+            var entryName = "Test";
+            var phoneBookPath = @"C:\Test.pbk";
+
+            marshaller.Setup(o => o.AllocHGlobal(0)).Returns(IntPtr.Zero);
+
+            api.Setup(o => o.RasGetEapUserData(It.IsAny<IntPtr>(), It.IsAny<string>(), It.IsAny<string>(), IntPtr.Zero, ref It.Ref<int>.IsAny)).Returns(new RasGetEapUserDataCallback(
+                (IntPtr token, string path, string name, IntPtr h, ref int l) => SUCCESS));
+
+            var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
+            var success = target.TryUnsafeGetEapUserData(IntPtr.Zero, entryName, phoneBookPath, out var eapInfo);
+
+            Assert.False(success);
+            Assert.AreEqual(IntPtr.Zero, eapInfo.pbEapInfo);
+            Assert.AreEqual(0, eapInfo.dwSizeofEapInfo);
+        }
+
+        [Test]
+        public void MustFreeTheMemoryAndThrowTheExceptionAsExpected()
         {
             var ptr = new IntPtr(1);
 
@@ -92,7 +108,7 @@ namespace DotRas.Tests.Internal.Services.Security
             api.Setup(o => o.RasGetEapUserData(It.IsAny<IntPtr>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IntPtr>(), ref It.Ref<int>.IsAny)).Returns(-1);
 
             var target = new RasGetEapUserDataService(api.Object, exceptionPolicy.Object, marshaller.Object);
-            Assert.Throws<TestException>(() => target.GetEapUserData(IntPtr.Zero, "Test", @"C:\Test.pbk"));
+            Assert.Throws<TestException>(() => target.TryUnsafeGetEapUserData(IntPtr.Zero, "Test", @"C:\Test.pbk", out _));
 
             marshaller.Verify(o => o.FreeHGlobalIfNeeded(ptr), Times.Once);
         }

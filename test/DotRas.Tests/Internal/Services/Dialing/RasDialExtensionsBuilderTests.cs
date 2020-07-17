@@ -13,32 +13,30 @@ namespace DotRas.Tests.Internal.Services.Dialing
     {
         private Mock<IStructFactory> factory;
         private Mock<IRasGetEapUserData> getEapUserData;
-        private Mock<IMarshaller> marshaller;
 
         [SetUp]
         public void Init()
         {
             factory = new Mock<IStructFactory>();
             getEapUserData = new Mock<IRasGetEapUserData>();
-            marshaller = new Mock<IMarshaller>();
         }
 
         [Test]
         public void ThrowsAnExceptionWhenStructFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new RasDialExtensionsBuilder(null, getEapUserData.Object, marshaller.Object));
+            Assert.Throws<ArgumentNullException>(() => _ = new RasDialExtensionsBuilder(null, getEapUserData.Object));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenGetEapUserDataIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new RasDialExtensionsBuilder(factory.Object, null, marshaller.Object));
+            Assert.Throws<ArgumentNullException>(() => _ = new RasDialExtensionsBuilder(factory.Object, null));
         }
 
         [Test]
         public void ThrowsAnExceptionWhenContextIsNull()
         {
-            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object, marshaller.Object);
+            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object);
             Assert.Throws<ArgumentNullException>(() => target.Build(null));
         }
 
@@ -47,7 +45,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         {
             var expected = new IntPtr(1);
 
-            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object, marshaller.Object);
+            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object);
             var result = target.Build(new RasDialContext
             {
                Options = new RasDialerOptions
@@ -62,7 +60,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         [Test]
         public void ConfiguresNoOptionsByDefault()
         {
-            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object, marshaller.Object);
+            var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object);
             var result = target.Build(new RasDialContext());
 
             Assert.AreEqual(RDEOPT.None, result.dwfOptions);
