@@ -1,4 +1,12 @@
 ﻿[*.cs]
+# Indentation and spacing
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+# Organize usings
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
 
 # S4457: Parameter validation in "async"/"await" methods should be wrapped
 dotnet_diagnostic.S4457.severity = suggestion

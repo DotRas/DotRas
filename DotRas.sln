@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C1AE3EAA-AFFF-4D81-8BAF-53A000F40235}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		appveyor.yml = appveyor.yml
 	EndProjectSection
 EndProject
@@ -38,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAsynchronousl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAndWatchForDisconnect", "examples\DialConnectionAndWatchForDisconnect\DialConnectionAndWatchForDisconnect.csproj", "{93C7B0A4-8D7A-4059-AABF-3F0ECC83D789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRunner", "tools\ConsoleRunner\ConsoleRunner.csproj", "{82CDADEF-9BA9-480C-A059-DAF35FD69B08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleRunner", "tools\ConsoleRunner\ConsoleRunner.csproj", "{82CDADEF-9BA9-480C-A059-DAF35FD69B08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
