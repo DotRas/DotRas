@@ -15,6 +15,10 @@
 #include <corecrt_wstdlib.h>
 #include <limits.h>
 
+#pragma warning(push)
+#pragma warning(disable: _UCRT_DISABLED_WARNINGS)
+_UCRT_DISABLE_CLANG_WARNINGS
+
 _CRT_BEGIN_C_HEADER
 
 
@@ -76,7 +80,7 @@ _ACRTIMP unsigned int __cdecl _set_abort_behavior(
     #endif
 #endif
 
-#if _CRT_INTERNAL_NONSTDC_NAMES
+#if defined(_CRT_INTERNAL_NONSTDC_NAMES) && _CRT_INTERNAL_NONSTDC_NAMES
     // Non-ANSI name for compatibility
     #define onexit_t _onexit_t
 #endif
@@ -85,7 +89,7 @@ _ACRTIMP unsigned int __cdecl _set_abort_behavior(
 
 #ifdef _M_CEE
     #pragma warning (push)
-    #pragma warning (disable: 4985)
+    #pragma warning (disable: 4985) // Attributes not present on previous declaration
 
     _Check_return_ int __clrcall _atexit_m_appdomain(_In_opt_ void (__clrcall* _Function)(void));
 
@@ -301,8 +305,8 @@ _Check_return_ _ACRTIMP lldiv_t __cdecl lldiv(_In_ long long _Numerator, _In_ lo
 
 // These functions have declspecs in their declarations in the Windows headers,
 // which cause PREfast to fire 6540.
-#pragma warning (push)
-#pragma warning (disable:6540)
+#pragma warning(push)
+#pragma warning(disable: 6540)
 
 unsigned int __cdecl _rotl(
     _In_ unsigned int _Value,
@@ -336,7 +340,7 @@ unsigned __int64 __cdecl _rotr64(
     _In_ int              _Shift
     );
 
-#pragma warning (pop)
+#pragma warning(pop)
 
 
 
@@ -634,16 +638,12 @@ __DEFINE_CPP_OVERLOAD_SECURE_FUNC_1_1(
     _In_ int,  _Radix
     )
 
-#pragma warning(push)
-#pragma warning(disable: 28719) // __WARNING_BANNED_API_USAGE
-#pragma warning(disable: 28726) // __WARNING_BANNED_API_USAGEL2
 __DEFINE_CPP_OVERLOAD_STANDARD_FUNC_1_1(
     char*, __RETURN_POLICY_DST, _ACRTIMP, _itoa,
     _In_                    int,  _Value,
     _Pre_notnull_ _Post_z_, char, _Buffer,
     _In_                    int,  _Radix
     )
-#pragma warning(pop)
 
 _Success_(return == 0)
 _Check_return_opt_
@@ -684,15 +684,12 @@ __DEFINE_CPP_OVERLOAD_SECURE_FUNC_1_1(
     _In_ int,           _Radix
     )
 
-#pragma warning(push)
-#pragma warning(disable: 28726) // __WARNING_BANNED_API_USAGEL2
 __DEFINE_CPP_OVERLOAD_STANDARD_FUNC_1_1(
     char*, __RETURN_POLICY_DST, _ACRTIMP, _ultoa,
     _In_                    unsigned long, _Value,
     _Pre_notnull_ _Post_z_, char,          _Buffer,
     _In_                    int,           _Radix
     )
-#pragma warning(pop)
 
 _Success_(return == 0)
 _Check_return_opt_
@@ -1095,9 +1092,6 @@ __DEFINE_CPP_OVERLOAD_SECURE_FUNC_0_4(
     _In_opt_z_ char const*, _Ext
     )
 
-#pragma warning(push)
-#pragma warning(disable: 28719) // __WARNING_BANNED_API_USAGE
-#pragma warning(disable: 28726) // __WARNING_BANNED_API_USAGEL2
 __DEFINE_CPP_OVERLOAD_STANDARD_FUNC_0_4(
     void, __RETURN_POLICY_VOID, _ACRTIMP, _makepath,
     _Pre_notnull_ _Post_z_, char,        _Buffer,
@@ -1106,7 +1100,6 @@ __DEFINE_CPP_OVERLOAD_STANDARD_FUNC_0_4(
     _In_opt_z_              char const*, _Filename,
     _In_opt_z_              char const*, _Ext
     )
-#pragma warning(pop)
 
 _CRT_INSECURE_DEPRECATE(_splitpath_s)
 _ACRTIMP void __cdecl _splitpath(
@@ -1199,7 +1192,7 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
         _In_z_ char const*, _VarName
         )
 
-    #if defined (_DEBUG) && defined (_CRTDBG_MAP_ALLOC)
+    #if defined(_DEBUG) && defined(_CRTDBG_MAP_ALLOC)
         #pragma push_macro("_dupenv_s")
         #undef _dupenv_s
     #endif
@@ -1211,7 +1204,7 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
         _In_z_                                                                      char const* _VarName
         );
 
-    #if defined (_DEBUG) && defined (_CRTDBG_MAP_ALLOC)
+    #if defined(_DEBUG) && defined(_CRTDBG_MAP_ALLOC)
         #pragma pop_macro("_dupenv_s")
     #endif
 
@@ -1221,8 +1214,8 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
 
     // The functions below have declspecs in their declarations in the Windows
     // headers, causing PREfast to fire 6540 here
-    #pragma warning (push)
-    #pragma warning (disable:6540)
+    #pragma warning(push)
+    #pragma warning(disable: 6540)
 
     _Check_return_
     _DCRTIMP int __cdecl _putenv(
@@ -1235,7 +1228,7 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
         _In_z_ char const* _Value
         );
 
-    #pragma warning (pop)
+    #pragma warning(pop)
 
     _DCRTIMP errno_t __cdecl _searchenv_s(
         _In_z_                       char const* _Filename,
@@ -1283,7 +1276,7 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
 // Non-ANSI Names for Compatibility
 //
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#if _CRT_INTERNAL_NONSTDC_NAMES
+#if defined(_CRT_INTERNAL_NONSTDC_NAMES) && _CRT_INTERNAL_NONSTDC_NAMES
 
     #ifndef __cplusplus
         #define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -1364,4 +1357,6 @@ _DCRTIMP wchar_t*** __cdecl __p__wenviron(void);
 
 
 _CRT_END_C_HEADER
+_UCRT_RESTORE_CLANG_WARNINGS
+#pragma warning(pop) // _UCRT_DISABLED_WARNINGS
 #endif // _INC_STDLIB

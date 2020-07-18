@@ -15,5 +15,7 @@
         public const int ERROR_AUTHENTICATION_FAILURE = RASBASE + 91;
 
         public const int ERROR_DEVICE_COMPLIANCE = RASBASE + 275;
+
+        public const int RASBASEEND = RASBASE + 275;
     }
 }
