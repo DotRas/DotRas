@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Services.Dialing;
@@ -44,13 +45,16 @@ namespace DotRas.Tests.Internal.Services.Dialing
         public void ConfiguresTheOwnerHandleAsExpected()
         {
             var expected = new IntPtr(1);
+            
+            var win32Window = new Mock<IWin32Window>();
+            win32Window.Setup(o => o.Handle).Returns(expected);
 
             var target = new RasDialExtensionsBuilder(factory.Object, getEapUserData.Object);
             var result = target.Build(new RasDialContext
             {
                Options = new RasDialerOptions
                {
-                   Owner = expected
+                   Owner = win32Window.Object
                }
             });
 
