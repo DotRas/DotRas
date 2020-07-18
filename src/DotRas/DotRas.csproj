@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Authors>Winnster.io</Authors>
     <Product>DotRas</Product>
@@ -10,6 +10,7 @@
     <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
     <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('-')) ))</_RuntimeIdentifier>
     <RuntimeIdentifier>$(_RuntimeIdentifier.ToLower())</RuntimeIdentifier>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <!-- These properties will be managed by the build server. -->

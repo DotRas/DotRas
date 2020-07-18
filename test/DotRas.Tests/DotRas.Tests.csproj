@@ -1,12 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Public.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <Configurations>WIN7-Debug;WIN7-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
     <LangVersion>latest</LangVersion>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
