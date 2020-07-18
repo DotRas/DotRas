@@ -38,7 +38,7 @@ namespace DotRas.Internal.Policies
 
         private bool ShouldGetMessageFromRas(int error)
         {
-            return error >= RASBASE && error <= ERROR_DEVICE_COMPLIANCE;
+            return error >= RASBASE && error <= RASBASEEND;
         }
 
         private Exception CreateExceptionFromRas(int error)

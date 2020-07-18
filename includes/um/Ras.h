@@ -1545,6 +1545,10 @@ RASENTRYW
 #define RASEO2_IsPrivateNetwork         0x40000000
 #endif
 
+#if (WINVER >= 0xA00)
+#define RASEO2_PlumbIKEv2TSAsRoutes     0x80000000
+#endif
+
 /* RASENTRY 'dwProtocols' bit flags.
 */
 #define RASNP_NetBEUI                   0x00000001
