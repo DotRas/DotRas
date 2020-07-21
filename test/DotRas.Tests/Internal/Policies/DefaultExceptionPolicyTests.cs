@@ -78,12 +78,12 @@ namespace DotRas.Tests.Internal.Policies
         }
 
         [Test]
-        public void ReturnsAWin32ExceptionForIkeCredentialsUnacceptableErrorCode()
+        public void ReturnsAnIPSecExceptionForIkeCredentialsUnacceptableErrorCode()
         {
             var target = new DefaultExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(13801);
 
-            Assert.IsInstanceOf<Win32Exception>(result);
+            Assert.IsInstanceOf<IPSecException>(result);
             StringAssert.Contains("IKE", result.Message);
         }
     }

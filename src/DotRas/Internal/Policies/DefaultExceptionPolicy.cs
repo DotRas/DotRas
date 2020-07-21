@@ -28,20 +28,29 @@ namespace DotRas.Internal.Policies
                 return new OperatingSystemNotSupportedException();
             }
 
-            if (ShouldGetMessageFromRas(error))
+            if (IsRasErrorCode(error))
             {
-                return CreateExceptionFromRas(error);
+                return CreateRasException(error);
+            }
+            else if (IsIPSecErrorCode(error))
+            {
+                return CreateIPSecException(error);
             }
 
             return new Win32Exception(error);
         }
 
-        private bool ShouldGetMessageFromRas(int error)
+        private bool IsRasErrorCode(int error)
         {
             return error >= RASBASE && error <= RASBASEEND;
         }
 
-        private Exception CreateExceptionFromRas(int error)
+        private bool IsIPSecErrorCode(int error)
+        {
+            return error >= IPSECBASE && error <= IPSECBASEEND;
+        }
+
+        private Exception CreateRasException(int error)
         {
             var message = rasGetErrorString.GetErrorString(error);
             if (string.IsNullOrWhiteSpace(message))
@@ -50,6 +59,11 @@ namespace DotRas.Internal.Policies
             }
 
             return new RasException(error, message);
+        }
+
+        private Exception CreateIPSecException(int error)
+        {
+            return new IPSecException(error);
         }
     }
 }
