@@ -48,7 +48,7 @@ jobs:
       run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
 
     - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }} --version-suffix "${{ env.VERSION_SUFFIX }}"
+      run: dotnet build --configuration ${{ matrix.configuration }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
 
     - name: Test
       run: dotnet test --configuration ${{ matrix.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
