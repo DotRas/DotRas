@@ -4,7 +4,7 @@ on: push
 
 env:
   VERSION: 2.0.0
-  VERSION_SUFFIX: -rc-${{ github.run_id }}
+  VERSION_SUFFIX: -preview-${{ github.run_id }}
 
 jobs:
   build:
