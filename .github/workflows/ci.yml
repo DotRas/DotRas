@@ -32,7 +32,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Begin SonarScanner      
-      run: dotnet sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ github.run_id }}" /d:sonar.branch.name="${{ github.ref }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.login="${{ secrets.sonarcloud_token }}" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.nunit.reportsPaths="**/TestResult.xml" /d:sonar.cs.opencover.reportsPaths="**/opencover.xml" /d:sonar.exclusions="**\examples\**,**\Interop\**,**\Primitives\**,**\tools\**"
+      run: dotnet sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ github.run_id }}" /d:sonar.branch.name="${{ github.ref }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.login="${{ secrets.sonarcloud_token }}" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.nunit.reportsPaths="**/TestResult.xml" /d:sonar.cs.opencover.reportsPaths="**/opencover.xml" /d:sonar.exclusions="**\examples\**,**\Interop\**,**\Primitives\**,**\tools\**" /d:sonar.verbose=true
 
     - name: Build
       run: dotnet build --configuration ${{ matrix.configuration }} 
@@ -41,4 +41,4 @@ jobs:
       run: dotnet test --configuration ${{ matrix.configuration }} --no-build
 
     - name: End SonarScanner
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.sonarcloud_token }}" /d:sonar.verbose=true
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.sonarcloud_token }}"
