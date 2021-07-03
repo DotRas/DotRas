@@ -8,6 +8,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration WIN10-Release
     - name: Test
-      run: dotnet test --configuration Release --no-build
+      run: dotnet test --configuration WIN10-Release --no-build
