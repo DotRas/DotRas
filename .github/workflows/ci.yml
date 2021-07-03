@@ -2,9 +2,11 @@ on: push
 
 jobs:
   build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+
     strategy:
       matrix:
-        os: windows-latest
         include:
           - node: Windows 7
             configuration: WIN7-Release
@@ -15,8 +17,6 @@ jobs:
           - node: Windows 10
             configuration: WIN10-Release
 
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -26,8 +26,8 @@ jobs:
         snk_passphrase: ${{ secrets.snk_passphrase }}
       run: ./.github/scripts/decrypt_snk.bat
 
-    - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }}
+    - name: Build WIN10
+      run: dotnet build --configuration ${{ matrix.configuration }} 
 
     - name: Test
-      run: dotnet test --configuration ${{ matrix.configuration }} --no-build
+      run: dotnet test --configuration WIN10-Release --no-build
