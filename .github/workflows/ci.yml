@@ -41,7 +41,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
-      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ github.run_id }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.nunit.reportsPaths="**/TestResult.xml" /d:sonar.cs.opencover.reportsPaths="**/opencover.xml" /d:sonar.exclusions="**\examples\**,**\Interop\**,**\Primitives\**,**\tools\**"
+      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ github.run_id }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.nunit.reportsPaths="**/TestResult.xml" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml" /d:sonar.exclusions="**\examples\**,**\Interop\**,**\Primitives\**,**\tools\**"
 
     - name: Build
       run: dotnet build --configuration ${{ matrix.configuration }} 
