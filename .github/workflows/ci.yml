@@ -13,15 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - node: Windows 7
-            configuration: WIN7-Release
-
-          - node: Windows 8
-            configuration: WIN8-Release
-
-          - node: Windows 10
-            configuration: WIN10-Release
+        node: [WIN7-Release,WIN8-Release,WIN10-Release]
 
     steps:
     - name: Checkout
@@ -48,10 +40,10 @@ jobs:
       run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.configuration }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
 
     - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
+      run: dotnet build --configuration ${{ matrix.node }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
 
     - name: Test
-      run: dotnet test --configuration ${{ matrix.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration ${{ matrix.node }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: End analyze with SonarScanner
       env:
