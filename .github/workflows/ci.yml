@@ -38,7 +38,7 @@ jobs:
       run: dotnet build --configuration ${{ matrix.configuration }} 
 
     - name: Test
-      run: dotnet test --configuration ${{ matrix.configuration }} --no-build
+      run: dotnet test --configuration ${{ matrix.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: End SonarScanner
       run: dotnet sonarscanner end /d:sonar.login="${{ secrets.sonarcloud_token }}"
