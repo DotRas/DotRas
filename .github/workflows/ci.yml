@@ -7,7 +7,16 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    
+    - name: Decrypt SNK file
+      env:
+        snk_passphrase: ${{ secrets.snk_passphrase }}
+      run: ./.github/scripts/decrypt_snk.bat
+
     - name: Build
+      env:
+        snk_file: $HOME/secrets/Winnster.snk
       run: dotnet build --configuration WIN10-Release
+
     - name: Test
       run: dotnet test --configuration WIN10-Release --no-build
