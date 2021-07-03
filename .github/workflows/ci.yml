@@ -14,8 +14,6 @@ jobs:
       run: ./.github/scripts/decrypt_snk.bat
 
     - name: Build
-      env:
-        snk_file: $HOME/secrets/Winnster.snk
       run: dotnet build --configuration WIN10-Release
 
     - name: Test
