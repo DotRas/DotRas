@@ -1,2 +1,1 @@
-gpg --version
-gpg --quiet --batch --yes --decrypt --passphrase="$SNK_PASSPHRASE" --symmetric --cipher-algo AES256 --output Winnster.snk Winnster.snk.gpg
+gpg --quiet --batch --yes --passphrase $SNK_PASSPHRASE --output Winnster.snk -d Winnster.snk.gpg
