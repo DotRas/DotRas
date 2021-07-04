@@ -34,22 +34,30 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Prepare analyze with SonarScanner  
-      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.node }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+      run: dotnet-sonarscanner begin /k:"${{ env.BRANCH_NAME }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="${{ env.SONAR_URL }}" /o:"${{ env.ORGANIZATION }}" /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        BRANCH_NAME: ${{ github.event.repository.name }}
+        SONAR_URL: https://sonarcloud.io
+        ORGANIZATION: winnster
+        CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
-      run: dotnet build --configuration ${{ matrix.node }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
+      env:
+        CONFIGURATION: ${{ matrix.node }}
 
     - name: Test
-      run: dotnet test --configuration ${{ matrix.node }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      env:
+        CONFIGURATION: ${{ matrix.node }}
 
     - name: End analyze with SonarScanner
       run: dotnet-sonarscanner end
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
