@@ -34,7 +34,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Prepare analyze with SonarScanner  
-      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"Winnster" /d:sonar.analysis.configuration="${{ matrix.node }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"winnster" /d:sonar.analysis.configuration="${{ matrix.node }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
