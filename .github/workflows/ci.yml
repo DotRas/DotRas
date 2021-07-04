@@ -5,7 +5,6 @@ on: push
 env:
   VERSION: 2.0.0
   VERSION_SUFFIX: -preview-${{ github.run_id }}
-  ORGANIZATION: winnster
 
 jobs:
   build:
@@ -35,7 +34,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Prepare analyze with SonarScanner  
-      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"${{ env.ORGANIZATION }}" /d:sonar.analysis.configuration="${{ matrix.node }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+      run: dotnet-sonarscanner begin /k:"${{ github.event.repository.name }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="https://sonarcloud.io" /o:"Winnster" /d:sonar.analysis.configuration="${{ matrix.node }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
@@ -80,4 +79,4 @@ jobs:
       run: dotnet nuget push **/*.nupkg -k ${GITHUB_TOKEN} -s ${SOURCE_URL} --skip-duplicate --no-symbols true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SOURCE_URL: https://nuget.pkg.github.com/${ORGANIZATION}/index.json
+        SOURCE_URL: https://nuget.pkg.github.com/winnster/index.json
