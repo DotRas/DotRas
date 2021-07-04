@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../.build/netcoreandfx.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
-    <ApplicationIcon />
     <OutputType>Exe</OutputType>
-    <StartupObject />
     <AssemblyName>DialConnection</AssemblyName>
   </PropertyGroup>
 

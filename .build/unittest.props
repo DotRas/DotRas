@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="common.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net472;net5.0-windows</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>
