@@ -71,4 +71,9 @@
     <DefineConstants>$(DefineConstants);$(RuntimeIdentifier.ToUpper())</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.coverage.exclusions">
+      <Value>**/Primitives/**,**/Interop/**</Value>
+    </SonarQubeSetting>
+  </ItemGroup>
 </Project>
