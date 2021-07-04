@@ -50,3 +50,18 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.sonarcloud_token }}
       run: dotnet-sonarscanner end
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: |
+          **/*.nupkg
+    
+    - name: Upload coverage results
+      uses: actions/upload-artifact@v2
+      with:
+        name: opencover-reports
+        path: |
+          **/*.opencover.xml
+          
