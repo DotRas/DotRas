@@ -2,7 +2,7 @@ name: Release (Preview)
 
 on: 
   push:
-    include:
+    branches:
     - 'master'
 
 env:
