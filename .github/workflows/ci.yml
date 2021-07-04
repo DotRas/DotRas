@@ -77,7 +77,7 @@ jobs:
         name: nuget-packages
     
     - name: Publish packages
-      run: dotnet nuget push **/*.nupkg -k ${GITHUB_TOKEN} -s ${SOURCE_URL} --skip-duplicate --no-symbols
+      run: dotnet nuget push **/*.nupkg -k ${GITHUB_TOKEN} -s ${SOURCE_URL} --skip-duplicate --no-symbols true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SOURCE_URL: https://nuget.pkg.github.com/${ORGANIZATION}/index.json
