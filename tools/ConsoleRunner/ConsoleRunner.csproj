@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../.build/netcoreandfx.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
-    <OutputType>Exe</OutputType>
-    <LangVersion>latest</LangVersion>
+	  <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
