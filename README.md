@@ -5,4 +5,4 @@ Provides remote access service (RAS) components for .NET languages like C#, VB.N
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DotRas&metric=alert_status)](https://sonarcloud.io/dashboard?id=DotRas)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DotRas&metric=coverage)](https://sonarcloud.io/dashboard?id=DotRas)
 
-The private build feed is located at: https://www.myget.org/F/winnster/api/v3/index.json
+The build feed is located at: https://nuget.pkg.github.com/winnster/index.json
