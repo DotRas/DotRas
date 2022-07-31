@@ -65,4 +65,3 @@ jobs:
     #     name: opencover-reports
     #     path: |
     #       **/*.opencover.xml
-  

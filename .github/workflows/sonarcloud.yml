@@ -6,7 +6,7 @@ env:
   VERSION_SUFFIX: -rc-${{ github.sha }}
   
 jobs:
-  analyze:
+  analysis:
     runs-on: windows-latest
     timeout-minutes: 15
 
@@ -15,26 +15,26 @@ jobs:
         node: [WIN10-Release]
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-        
-      - name: Install AdoptOpenJDK 11
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '11'
+    - uses: actions/checkout@v2
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+      
+    - name: Install AdoptOpenJDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
 
-      - name: Install SonarScanner for MSBuild
-        run: dotnet tool install --global dotnet-sonarscanner
+    - name: Install SonarScanner for MSBuild
+      run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: Prepare analysis with SonarScanner  
-        run: dotnet-sonarscanner begin /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          CONFIGURATION: ${{ matrix.node }}
+    - name: Prepare analysis with SonarScanner  
+      run: dotnet-sonarscanner begin /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
@@ -51,4 +51,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
