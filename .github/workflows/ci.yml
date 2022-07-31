@@ -3,7 +3,7 @@ name: CI
 on: [ push, pull_request ]
 
 env:
-  VERSION_SUFFIX: -rc-${{ github.run_id }}
+  VERSION_SUFFIX: -rc-${{ github.sha::6 }}
 
 jobs:
   build:
