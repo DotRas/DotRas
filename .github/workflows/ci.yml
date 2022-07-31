@@ -5,10 +5,6 @@ on:
     branches-ignore:
     - 'master'
 
-env:
-  VERSION: 2.0.0
-  VERSION_SUFFIX: -preview-${{ github.run_id }}
-
 jobs:
   build:
     runs-on: windows-latest
@@ -21,17 +17,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Install AdoptOpenJDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
     
-    - name: Decrypt SNK file
-      run: ./.github/scripts/decrypt_snk.bat
-      env:
-        snk_passphrase: ${{ secrets.snk_passphrase }}
+    # - name: Decrypt SNK file
+    #   run: ./.github/scripts/decrypt_snk.bat
+    #   env:
+    #     snk_passphrase: ${{ secrets.snk_passphrase }}
 
     # - name: Install SonarScanner for MSBuild
     #   run: dotnet tool install --global dotnet-sonarscanner
@@ -47,7 +37,7 @@ jobs:
     #     CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
       env:
         CONFIGURATION: ${{ matrix.node }}
 
@@ -62,17 +52,17 @@ jobs:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #     SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: nuget-packages
-        path: |
-          **/*.nupkg
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: nuget-packages
+    #     path: |
+    #       **/*.nupkg
     
-    - name: Upload coverage results
-      uses: actions/upload-artifact@v2
-      with:
-        name: opencover-reports
-        path: |
-          **/*.opencover.xml
+    # - name: Upload coverage results
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: opencover-reports
+    #     path: |
+    #       **/*.opencover.xml
   

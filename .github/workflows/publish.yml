@@ -1,9 +1,8 @@
-name: Release (Preview)
+name: Publish
 
-on: 
-  push:
-    branches:
-    - 'master'
+on:
+  release:
+    types: [published]
 
 env:
   VERSION: 2.0.0
