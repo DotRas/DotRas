@@ -26,7 +26,7 @@ jobs:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
     - name: Run build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}"
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
       env:
         CONFIGURATION: ${{ matrix.node }}
 
