@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
+  PUBLISH_URL: https://api.nuget.org/v3/index.json
 
 jobs:
   build:
@@ -56,6 +56,7 @@ jobs:
         name: nuget-packages
     
     - name: Publish packages
-      run: dotnet nuget push **/*.nupkg -k ${GITHUB_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols true
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}

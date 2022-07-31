@@ -2,6 +2,11 @@ name: CI
 
 on: [ push, pull_request ]
 
+env:
+  VERSION: 2.0.0
+  VERSION_SUFFIX: -preview-${{ github.run_id }}
+  PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
+
 jobs:
   build:
     runs-on: windows-latest
@@ -21,7 +26,7 @@ jobs:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
     - name: Run build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }}
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}"
       env:
         CONFIGURATION: ${{ matrix.node }}
 
@@ -29,3 +34,25 @@ jobs:
       run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:
         CONFIGURATION: ${{ matrix.node }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: |
+          **/*.nupkg
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget-packages
+    
+    - name: Publish packages
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols true
+      env:
+        NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
