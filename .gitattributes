@@ -6,7 +6,7 @@
 ###############################################################################
 # Set default behavior to disable linguist vendor scanning
 ###############################################################################
-includes/* linguist-vendored
+includes/** linguist-vendored
 
 ###############################################################################
 # Set default behavior for command prompt diff.
