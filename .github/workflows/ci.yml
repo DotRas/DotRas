@@ -18,10 +18,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    # - name: Decrypt SNK file
-    #   run: ./.github/scripts/decrypt_snk.bat
-    #   env:
-    #     snk_passphrase: ${{ secrets.snk_passphrase }}
+    - name: Decrypt SNK file
+      run: ./.github/scripts/decrypt_snk.bat
+      env:
+        snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
     # - name: Install SonarScanner for MSBuild
     #   run: dotnet tool install --global dotnet-sonarscanner
