@@ -2,9 +2,6 @@ name: CI
 
 on: [ push, pull_request ]
 
-env:
-  VERSION_SUFFIX: -rc-${{ github.sha }}
-
 jobs:
   build:
     runs-on: windows-latest
@@ -24,7 +21,7 @@ jobs:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
     - name: Run build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
+      run: dotnet build --configuration ${{ env.CONFIGURATION }}
       env:
         CONFIGURATION: ${{ matrix.node }}
 
@@ -32,17 +29,3 @@ jobs:
       run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:
         CONFIGURATION: ${{ matrix.node }}
-
-    # - name: Upload artifacts
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: nuget-packages
-    #     path: |
-    #       **/*.nupkg
-    
-    # - name: Upload coverage results
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: opencover-reports
-    #     path: |
-    #       **/*.opencover.xml

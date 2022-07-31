@@ -3,7 +3,6 @@ name: SonarCloud
 on: [ push, pull_request ]
 
 env:
-  VERSION_SUFFIX: -rc-${{ github.sha }}
   SONAR_PROJECT_KEY: DotRas_DotRas
   SONAR_ORGANIZATION: dotras
   SONAR_URL: https://sonarcloud.io
@@ -45,7 +44,7 @@ jobs:
         CONFIGURATION: ${{ matrix.node }}
 
     - name: Run build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
+      run: dotnet build --configuration ${{ env.CONFIGURATION }}
       env:
         CONFIGURATION: ${{ matrix.node }}
 
