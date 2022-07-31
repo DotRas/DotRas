@@ -3,7 +3,7 @@ name: CI
 on: [ push, pull_request ]
 
 env:
-  VERSION_SUFFIX: -rc-${{ github.sha::6 }}
+  VERSION_SUFFIX: -rc-${{ github.sha }}
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    
+
     # - name: Decrypt SNK file
     #   run: ./.github/scripts/decrypt_snk.bat
     #   env:
@@ -37,7 +37,7 @@ jobs:
     #     CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }}
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
       env:
         CONFIGURATION: ${{ matrix.node }}
 
