@@ -33,18 +33,18 @@ jobs:
       env:
         snk_passphrase: ${{ secrets.snk_passphrase }}
 
-    - name: Install SonarScanner for MSBuild
-      run: dotnet tool install --global dotnet-sonarscanner
+    # - name: Install SonarScanner for MSBuild
+    #   run: dotnet tool install --global dotnet-sonarscanner
 
-    - name: Prepare analyze with SonarScanner  
-      run: dotnet-sonarscanner begin /k:"${{ env.BRANCH_NAME }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="${{ env.SONAR_URL }}" /o:"${{ env.ORGANIZATION }}" /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-        BRANCH_NAME: ${{ github.event.repository.name }}
-        SONAR_URL: https://sonarcloud.io
-        ORGANIZATION: winnster
-        CONFIGURATION: ${{ matrix.node }}
+    # - name: Prepare analyze with SonarScanner  
+    #   run: dotnet-sonarscanner begin /k:"${{ env.BRANCH_NAME }}" /v:"${{ env.VERSION }}${{ env.VERSION_SUFFIX }}" /d:sonar.host.url="${{ env.SONAR_URL }}" /o:"${{ env.ORGANIZATION }}" /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+    #     BRANCH_NAME: ${{ github.event.repository.name }}
+    #     SONAR_URL: https://sonarcloud.io
+    #     ORGANIZATION: winnster
+    #     CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
@@ -56,11 +56,11 @@ jobs:
       env:
         CONFIGURATION: ${{ matrix.node }}
 
-    - name: End analyze with SonarScanner
-      run: dotnet-sonarscanner end
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+    # - name: End analyze with SonarScanner
+    #   run: dotnet-sonarscanner end
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
