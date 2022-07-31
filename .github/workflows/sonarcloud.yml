@@ -41,7 +41,7 @@ jobs:
     #     CONFIGURATION: ${{ matrix.node }}
 
     - name: Build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} --version-suffix ${{ env.VERSION_SUFFIX }}
       env:
         CONFIGURATION: ${{ matrix.node }}
 
