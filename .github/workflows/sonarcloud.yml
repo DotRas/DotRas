@@ -5,11 +5,11 @@ on: [ push, pull_request ]
 env:
   VERSION_SUFFIX: -rc-${{ github.sha }}
   SONAR_PROJECT_KEY: DotRas_DotRas
-  SONAR_ORGANIZATION: DotRas
+  SONAR_ORGANIZATION: dotras
   SONAR_URL: https://sonarcloud.io
   
 jobs:
-  analysis:
+  analyze:
     runs-on: windows-latest
     timeout-minutes: 15
 
@@ -33,7 +33,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Prepare analysis with SonarScanner  
-      run: dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION }}" /d:sonar.host.url="${{ env.SONAR_URL }}" /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"
+      run: dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION }}" /d:sonar.host.url="${{ env.SONAR_URL }}" /d:sonar.analysis.configuration="${{ env.CONFIGURATION }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
