@@ -1,9 +1,6 @@
 name: CI
 
-on: 
-  push:
-    branches-ignore:
-    - 'master'
+on: [ push, pull_request ]
 
 jobs:
   build:

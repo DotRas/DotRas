@@ -5,7 +5,7 @@ on: [ push, pull_request ]
 env:
   VERSION: 2.0.0
   VERSION_SUFFIX: -preview-${{ github.run_id }}
-
+  
 jobs:
   analyze:
     runs-on: windows-latest
