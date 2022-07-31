@@ -25,6 +25,9 @@ jobs:
       env:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
+    - name: Set environment variables
+      uses: FranzDiebold/github-env-vars-action@v2
+
     - name: Run build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.CI_ACTION_REF_NAME }}"
       env:
