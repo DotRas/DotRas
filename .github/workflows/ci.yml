@@ -4,7 +4,6 @@ on: [ push, pull_request ]
 
 env:
   VERSION: 2.0.0
-  VERSION_SUFFIX: -preview-${{ github.run_id }}
   PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
 
 jobs:
@@ -25,9 +24,13 @@ jobs:
       env:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+      
     - name: Run build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
       env:
+        VERSION_SUFFIX: -preview-${{ steps.short-sha.outputs.sha }}
         CONFIGURATION: ${{ matrix.node }}
 
     - name: Run test
@@ -55,6 +58,6 @@ jobs:
         name: nuget-packages
     
     - name: Publish packages
-      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols true
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
         NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
