@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <Configurations>WIN7-Debug;WIN7-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
   </PropertyGroup>
 
 </Project>

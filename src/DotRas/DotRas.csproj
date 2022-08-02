@@ -1,14 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <Import Project="../../.build/netcoreandfx.props" />
-
+  
   <PropertyGroup>
-    <Authors>DotRas</Authors>
-    <Product>DotRas</Product>
-    <Configurations>WIN7-Debug;WIN7-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
     <_BuildConfiguration>$(Configuration.Substring( $(Configuration.LastIndexOf('-')) ))</_BuildConfiguration>
-    <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
     <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('-')) ))</_RuntimeIdentifier>
+    <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
     <RuntimeIdentifier>$(_RuntimeIdentifier.ToLower())</RuntimeIdentifier>
+
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
