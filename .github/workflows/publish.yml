@@ -4,9 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  PUBLISH_URL: https://api.nuget.org/v3/index.json
-
 jobs:
   build:
     runs-on: windows-latest
@@ -55,8 +52,14 @@ jobs:
       with:
         name: nuget-packages
     
-    - name: Publish packages
+    - name: Publish to NuGet
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        PUBLISH_URL: https://api.nuget.org/v3/index.json
+
+    - name: Publish to GitHub
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
+      env:
+        NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
