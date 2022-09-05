@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Authors>DotRas</Authors>
     <Product>DotRas</Product>
-    <Configurations>WIN7-Debug;WIN7-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
-    <_BuildConfiguration>$(Configuration.Substring( $(Configuration.LastIndexOf('-')) ))</_BuildConfiguration>
+    <Configurations>WIN7_Debug;WIN7_Release;WIN8_Debug;WIN8_Release;WIN10_Debug;WIN10_Release</Configurations>
+    <_BuildConfiguration>$(Configuration.Substring( $(Configuration.LastIndexOf('_')) ))</_BuildConfiguration>
     <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
-    <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('-')) ))</_RuntimeIdentifier>
+    <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('_')) ))</_RuntimeIdentifier>
     <RuntimeIdentifier>$(_RuntimeIdentifier.ToLower())</RuntimeIdentifier>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

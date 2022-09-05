@@ -5,7 +5,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Public.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
-    <Configurations>WIN7-Debug;WIN7-Release;WIN8-Debug;WIN8-Release;WIN10-Debug;WIN10-Release</Configurations>
+    <Configurations>WIN7_Debug;WIN7_Release;WIN8_Debug;WIN8_Release;WIN10_Debug;WIN10_Release</Configurations>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 

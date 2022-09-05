@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [WIN7-Release,WIN8-Release,WIN10-Release]
+        node: [WIN7_Release,WIN8_Release,WIN10_Release]
 
     steps:
     - name: Checkout
