@@ -4,11 +4,6 @@
   <PropertyGroup>
     <Authors>DotRas</Authors>
     <Product>DotRas</Product>
-    <Configurations>WIN7_Debug;WIN7_Release;WIN8_Debug;WIN8_Release;WIN10_Debug;WIN10_Release</Configurations>
-    <_BuildConfiguration>$(Configuration.Substring( $(Configuration.LastIndexOf('_')) ))</_BuildConfiguration>
-    <BuildConfiguration>$(_BuildConfiguration.Substring(1))</BuildConfiguration>
-    <_RuntimeIdentifier>$(Configuration.Substring(0, $(Configuration.LastIndexOf('_')) ))</_RuntimeIdentifier>
-    <RuntimeIdentifier>$(_RuntimeIdentifier.ToLower())</RuntimeIdentifier>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
@@ -21,19 +16,19 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition=" '$(RuntimeIdentifier)' == 'win10' ">
+    <When Condition=" '$(HostIdentifier)' == 'win10' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win10</PackageId>
         <Title>DotRas for Windows 10</Title>
       </PropertyGroup>
     </When>
-    <When Condition=" '$(RuntimeIdentifier)' == 'win8' ">
+    <When Condition=" '$(HostIdentifier)' == 'win8' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win8</PackageId>
         <Title>DotRas for Windows 8</Title>
       </PropertyGroup>
     </When>
-    <When Condition=" '$(RuntimeIdentifier)' == 'win7' ">
+    <When Condition=" '$(HostIdentifier)' == 'win7' ">
       <PropertyGroup>
         <PackageId>DotRas.for.Win7</PackageId>
         <Title>DotRas for Windows 7</Title>
@@ -42,7 +37,7 @@
   </Choose>
 
   <PropertyGroup>
-    <OutputPath>bin\$(BuildConfiguration)</OutputPath>
+    <OutputPath>bin\$(HostIdentifier)\$(Configuration)</OutputPath>
     <DocumentationFile>$(OutputPath)\DotRas.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/DotRas/DotRas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -52,14 +47,14 @@
     <PackageProjectUrl>https://github.com/DotRas/DotRas</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(BuildConfiguration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Public.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(BuildConfiguration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Winnster.snk</AssemblyOriginatorKeyFile>
@@ -67,7 +62,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);$(RuntimeIdentifier.ToUpper())</DefineConstants>
+    <DefineConstants>$(DefineConstants);$(HostIdentifier.ToUpper())</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

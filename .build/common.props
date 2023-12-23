@@ -4,4 +4,12 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- 
+      Defines the default host identifier when none has been provided. 
+      Possible values are: win7, win8, win10 
+    -->
+    <HostIdentifier Condition=" '$(HostIdentifier)' == ''">win10</HostIdentifier>
+  </PropertyGroup>
+
 </Project>
