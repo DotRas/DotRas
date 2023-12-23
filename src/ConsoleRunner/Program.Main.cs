@@ -8,21 +8,12 @@ namespace ConsoleRunner
     {
         private static readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
-        static Program()
-        {
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                Console.WriteLine("Terminating the application...");
-
-                CancellationSource.Cancel();
-                e.Cancel = true;
-            };
-        }
-
         public static async Task Main()
         {
             Console.WriteLine("Press CTRL+C at any time to to cancel the application...");
             Console.WriteLine();
+
+            AttachCancellationSourceToCancelKeyPress();
 
             try
             {
@@ -36,6 +27,20 @@ namespace ConsoleRunner
             {
                 Console.WriteLine(ex);
             }
+            finally {
+                CancellationSource.Dispose();
+            }
+        }
+
+        private static void AttachCancellationSourceToCancelKeyPress()
+        {
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                Console.WriteLine("Terminating the application...");
+
+                CancellationSource.Cancel();
+                e.Cancel = true;
+            };
         }
     }
 }
