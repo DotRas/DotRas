@@ -23,7 +23,7 @@ jobs:
       env:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
               
-    - name: Install AdoptOpenJDK 11
+    - name: Install Java JDK
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
