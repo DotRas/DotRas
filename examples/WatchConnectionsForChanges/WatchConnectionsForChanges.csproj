@@ -4,6 +4,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>WatchConnectionsForChanges</AssemblyName>
+
+    <!-- Exclude the project from analysis -->
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>

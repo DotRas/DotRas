@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [WIN7-Release,WIN8-Release,WIN10-Release]
+        node: [win7,win8,win10]
 
     steps:
     - name: Checkout
@@ -26,14 +26,14 @@ jobs:
       uses: FranzDiebold/github-env-vars-action@v2
 
     - name: Run build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} /p:Version="${{ env.CI_ACTION_REF_NAME }}"
+      run: dotnet build --configuration Release /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:Version="${{ env.CI_ACTION_REF_NAME }}"
       env:
-        CONFIGURATION: ${{ matrix.node }}
+        HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Run test
-      run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration Release --no-build /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:
-        CONFIGURATION: ${{ matrix.node }}
+        HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2

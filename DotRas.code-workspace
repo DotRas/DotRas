@@ -1,0 +1,16 @@
+{
+    "folders": [
+        {
+            "path": "./"
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.vs": true,
+            "**/.build": true,
+            "**/.git": true,
+            "**/bin": true,
+            "**/obj": true
+        }
+    }
+}
