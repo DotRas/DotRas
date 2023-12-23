@@ -3,6 +3,9 @@
 
   <PropertyGroup>
 	  <OutputType>Exe</OutputType>
+
+    <!-- Exclude the project from analysis -->
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>
