@@ -26,12 +26,12 @@ jobs:
       uses: FranzDiebold/github-env-vars-action@v2
 
     - name: Run build
-      run: dotnet build --configuration Release /p:HostIdentifier:"${{ env.HOST_IDENTIFIER }}" /p:Version="${{ env.CI_ACTION_REF_NAME }}"
+      run: dotnet build --configuration Release /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:Version="${{ env.CI_ACTION_REF_NAME }}"
       env:
         HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Run test
-      run: dotnet test --configuration Release /p:HostIdentifier:"${{ env.HOST_IDENTIFIER }}" --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration Release --no-build /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:
         HOST_IDENTIFIER: ${{ matrix.node }}
 
