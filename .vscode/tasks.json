@@ -9,7 +9,6 @@
             "type": "shell",
             "args": [
                 "build",
-                "--configuration=Debug",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
