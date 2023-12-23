@@ -11,8 +11,6 @@
   <PropertyGroup>
     <Version>0.0.0</Version>
     <FileVersion>$(Version)</FileVersion>
-    <PackageVersion>$(Version)</PackageVersion>
-    <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>
 
   <Choose>
