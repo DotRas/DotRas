@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace DotRas;
 
@@ -50,6 +51,16 @@ public class IPSecException : Win32Exception
     /// <param name="innerException">An exception which is the cause of this exception.</param>
     public IPSecException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IPSecException"/> class.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/>.</param>
+    /// <param name="context">The <see cref="StreamingContext"/>.</param>
+    protected IPSecException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

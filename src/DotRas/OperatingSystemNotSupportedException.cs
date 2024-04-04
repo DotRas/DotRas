@@ -1,4 +1,6 @@
-﻿namespace DotRas;
+﻿using System.Runtime.Serialization;
+
+namespace DotRas;
 
 /// <summary>
 /// Thrown when the application is not using a product version compatible with the version of Windows upon which the application is executing.
@@ -30,6 +32,16 @@ public class OperatingSystemNotSupportedException : Exception
     /// <param name="innerException">The exception which was the cause of this exception.</param>
     public OperatingSystemNotSupportedException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OperatingSystemNotSupportedException"/> class.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/>.</param>
+    /// <param name="context">The <see cref="StreamingContext"/>.</param>
+    protected OperatingSystemNotSupportedException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

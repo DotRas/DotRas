@@ -1,4 +1,6 @@
-﻿namespace DotRas;
+﻿using System.Runtime.Serialization;
+
+namespace DotRas;
 
 /// <summary>
 /// Thrown when an invalid handle has been used to perform an operation.
@@ -29,6 +31,16 @@ public class InvalidHandleException : Exception
     /// <param name="innerException">An exception which is the cause of this exception.</param>
     public InvalidHandleException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InvalidHandleException"/> class.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/>.</param>
+    /// <param name="context">The <see cref="StreamingContext"/>.</param>
+    protected InvalidHandleException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

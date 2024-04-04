@@ -1,4 +1,6 @@
-﻿namespace DotRas.Diagnostics;
+﻿using System.Runtime.Serialization;
+
+namespace DotRas.Diagnostics;
 
 /// <summary>
 /// Thrown when an exception occurs while attempting to find the formatter for an event.
@@ -29,6 +31,16 @@ public class FormatterNotFoundException : Exception
     /// <param name="innerException">An exception which is the cause of this exception.</param>
     public FormatterNotFoundException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FormatterNotFoundException"/> class.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/>.</param>
+    /// <param name="context">The <see cref="StreamingContext"/>.</param>
+    protected FormatterNotFoundException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }
