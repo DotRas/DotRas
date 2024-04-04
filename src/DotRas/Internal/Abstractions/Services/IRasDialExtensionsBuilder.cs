@@ -1,9 +1,8 @@
 ﻿using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Internal.Abstractions.Services
+namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IRasDialExtensionsBuilder
 {
-    internal interface IRasDialExtensionsBuilder
-    {
-        RASDIALEXTENSIONS Build(RasDialContext context);
-    }
+    RASDIALEXTENSIONS Build(RasDialContext context);
 }

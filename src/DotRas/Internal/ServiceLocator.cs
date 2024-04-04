@@ -1,38 +1,36 @@
-﻿using System;
-using DotRas.Internal.Infrastructure.IoC;
+﻿using DotRas.Internal.Infrastructure.IoC;
 
-namespace DotRas.Internal
+namespace DotRas.Internal;
+
+internal static class ServiceLocator
 {
-    internal static class ServiceLocator
+    private static readonly object SyncRoot = new object();
+    private static Func<IServiceProvider> locator;
+
+    private static readonly Container Container = ContainerBuilder.Build();
+
+    static ServiceLocator()
     {
-        private static readonly object SyncRoot = new object();
-        private static Func<IServiceProvider> locator;
+        Reset();
+    }
 
-        private static readonly Container Container = ContainerBuilder.Build();
+    public static IServiceProvider Default => locator();
 
-        static ServiceLocator()
+    public static void SetLocator(Func<IServiceProvider> func)
+    {
+        if (func == null)
         {
-            Reset();
+            throw new ArgumentNullException(nameof(func));
         }
 
-        public static IServiceProvider Default => locator();
-
-        public static void SetLocator(Func<IServiceProvider> func)
+        lock (SyncRoot)
         {
-            if (func == null)
-            {
-                throw new ArgumentNullException(nameof(func));
-            }
-
-            lock (SyncRoot)
-            {
-                locator = func;
-            }
+            locator = func;
         }
+    }
 
-        public static void Reset()
-        {
-            SetLocator(() => Container);
-        }
+    public static void Reset()
+    {
+        SetLocator(() => Container);
     }
 }

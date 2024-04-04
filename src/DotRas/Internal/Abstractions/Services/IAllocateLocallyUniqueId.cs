@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Services
+﻿namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IAllocateLocallyUniqueId
 {
-    internal interface IAllocateLocallyUniqueId
-    {
-        Luid AllocateLocallyUniqueId();
-    }
+    Luid AllocateLocallyUniqueId();
 }

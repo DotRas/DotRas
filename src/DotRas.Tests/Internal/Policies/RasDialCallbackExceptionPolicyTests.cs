@@ -1,43 +1,41 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Policies;
 using Moq;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.EapHostError;
 
-namespace DotRas.Tests.Internal.Policies
+namespace DotRas.Tests.Internal.Policies;
+
+[TestFixture]
+public class RasDialCallbackExceptionPolicyTests
 {
-    [TestFixture]
-    public class RasDialCallbackExceptionPolicyTests
+    [Test]
+    public void ThrowsAnExceptionWhenGetErrorStringIsNull()
     {
-        [Test]
-        public void ThrowsAnExceptionWhenGetErrorStringIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasDialCallbackExceptionPolicy(null));
-        }
+        Assert.Throws<ArgumentNullException>(() => new RasDialCallbackExceptionPolicy(null));
+    }
 
-        [Test]
-        public void ShouldReturnTheMessageFromEapAsExpected()
-        {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
-            
-            var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
-            var result = target.Create(EAP_E_USER_NAME_PASSWORD_REJECTED) as EapException;
+    [Test]
+    public void ShouldReturnTheMessageFromEapAsExpected()
+    {
+        var rasGetErrorString = new Mock<IRasGetErrorString>();
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Authenticator rejected user credentials for authentication.", result.Message);
-        }
+        var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
+        var result = target.Create(EAP_E_USER_NAME_PASSWORD_REJECTED) as EapException;
 
-        [Test]
-        public void PassesTheErrorOnWhenNotKnown()
-        {
-            var rasGetErrorString = new Mock<IRasGetErrorString>();
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Authenticator rejected user credentials for authentication.", result.Message);
+    }
 
-            var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
-            var result = target.Create(-1);
+    [Test]
+    public void PassesTheErrorOnWhenNotKnown()
+    {
+        var rasGetErrorString = new Mock<IRasGetErrorString>();
 
-            Assert.IsInstanceOf<Win32Exception>(result);
-        }
+        var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
+        var result = target.Create(-1);
+
+        Assert.IsInstanceOf<Win32Exception>(result);
     }
 }

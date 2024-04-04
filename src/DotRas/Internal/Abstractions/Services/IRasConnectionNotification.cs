@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace DotRas.Internal.Abstractions.Services;
 
-namespace DotRas.Internal.Abstractions.Services
+internal interface IRasConnectionNotification : IDisposable
 {
-    internal interface IRasConnectionNotification : IDisposable
-    {
-        bool IsActive { get; }
+    bool IsActive { get; }
 
-        void Subscribe(RasNotificationContext context);
-        void Reset();
-    }
+    void Subscribe(RasNotificationContext context);
+    void Reset();
 }

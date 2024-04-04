@@ -1,15 +1,14 @@
-﻿namespace DotRas.Diagnostics
+﻿namespace DotRas.Diagnostics;
+
+/// <summary>
+/// Identifies a generic adapter for formatting events.
+/// </summary>
+public interface IEventFormatterAdapter
 {
     /// <summary>
-    /// Identifies a generic adapter for formatting events.
+    /// Formats the event data to a string.
     /// </summary>
-    public interface IEventFormatterAdapter
-    {
-        /// <summary>
-        /// Formats the event data to a string.
-        /// </summary>
-        /// <param name="eventData">The event data to format.</param>
-        /// <returns>The formatted event data.</returns>
-        string Format(object eventData);
-    }
+    /// <param name="eventData">The event data to format.</param>
+    /// <returns>The formatted event data.</returns>
+    string Format(object eventData);
 }

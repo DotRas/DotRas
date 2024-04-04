@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Abstractions.Primitives
+internal interface IRegisteredCallback : IDisposable
 {
-    internal interface IRegisteredCallback : IDisposable
-    {
-        ISafeHandleWrapper Handle { get; }
-    }
+    ISafeHandleWrapper Handle { get; }
 }

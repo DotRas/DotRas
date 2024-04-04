@@ -1,19 +1,16 @@
-﻿using System;
+﻿namespace DotRas.Tests.Stubs;
 
-namespace DotRas.Tests.Stubs
+public class StubServiceProvider : IServiceProvider
 {
-    public class StubServiceProvider : IServiceProvider
+    private readonly object result;
+
+    public StubServiceProvider(object result)
     {
-        private readonly object result;
+        this.result = result;
+    }
 
-        public StubServiceProvider(object result)
-        {
-            this.result = result;
-        }
-
-        public object GetService(Type serviceType)
-        {
-            return result;
-        }
+    public object GetService(Type serviceType)
+    {
+        return result;
     }
 }

@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace DotRas.Internal.Abstractions.Services;
 
-namespace DotRas.Internal.Abstractions.Services
+internal class RasNotificationContext
 {
-    internal class RasNotificationContext
-    {
-        public IRasConnection Connection { get; set; }
+    public IRasConnection Connection { get; set; }
 
-        public Action<RasConnectionEventArgs> OnConnectedCallback { get; set; }
-        public Action<RasConnectionEventArgs> OnDisconnectedCallback { get; set; }
-    }
+    public Action<RasConnectionEventArgs> OnConnectedCallback { get; set; }
+    public Action<RasConnectionEventArgs> OnDisconnectedCallback { get; set; }
 }

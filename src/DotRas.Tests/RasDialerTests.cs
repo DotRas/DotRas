@@ -1,261 +1,257 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
 
-namespace DotRas.Tests
+namespace DotRas.Tests;
+
+[TestFixture]
+public class RasDialerTests
 {
-    [TestFixture]
-    public class RasDialerTests
+    private const string PhoneBookPath = "PATH";
+    private const string EntryName = "ENTRY";
+
+    [Test]
+    public void CanInstantiateTheDialer()
     {
-        private const string PhoneBookPath = "PATH";
-        private const string EntryName = "ENTRY";
+        Assert.DoesNotThrow(() => _ = new RasDialer());
+    }
 
-        [Test]
-        public void CanInstantiateTheDialer()
+    [Test]
+    public void RaisesTheErrorEventWhenAnErrorOccursDuringStateChanged()
+    {
+        bool called = false;
+
+        var api = new Mock<IRasDial>();
+
+        var target = new TestableRasDialer(api.Object);
+        target.StateChanged += (sender, e) =>
         {
-            Assert.DoesNotThrow(() => _ = new RasDialer());
-        }
+            throw new TestException();
+        };
 
-        [Test]
-        public void RaisesTheErrorEventWhenAnErrorOccursDuringStateChanged()
+        target.Error += (sender, e) =>
         {
-            bool called = false;
+            Assert.IsInstanceOf<TestException>(e.GetException());
+            called = true;
+        };
 
-            var api = new Mock<IRasDial>();
+        target.RaiseStateChangedEvent(new StateChangedEventArgs(RasConnectionState.AuthNotify));
 
-            var target = new TestableRasDialer(api.Object);
-            target.StateChanged += (sender, e) =>
-            {
-                throw new TestException();
-            };
+        Assert.True(called, "The event was not called as expected.");
+    }
 
-            target.Error += (sender, e) =>
-            {
-                Assert.IsInstanceOf<TestException>(e.GetException());
-                called = true;
-            };
+    [Test]
+    public void ConnectSynchronouslyWithAnExistingCancellationToken()
+    {
+        var connection = new Mock<RasConnection>();
+        var cancellationToken = new CancellationToken();
 
-            target.RaiseStateChangedEvent(new StateChangedEventArgs(RasConnectionState.AuthNotify));
-
-            Assert.True(called, "The event was not called as expected.");
-        }
-
-        [Test]
-        public void ConnectSynchronouslyWithAnExistingCancellationToken()
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
         {
-            var connection = new Mock<RasConnection>();
-            var cancellationToken = new CancellationToken();
+            Assert.AreEqual(cancellationToken, c.CancellationToken);
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.AreEqual(cancellationToken, c.CancellationToken);
+            return Task.FromResult(connection.Object);
+        }).Verifiable();
 
-                return Task.FromResult(connection.Object);
-            }).Verifiable();
-
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath,
-                Credentials = new NetworkCredential("TEST", "USER")
-            };
-
-            var result = target.Connect(cancellationToken);
-            
-            Assert.IsNotNull(result);
-            api.Verify();
-        }
-
-        [Test]
-        public void ConnectSynchronouslyWithoutACancellationToken()
+        var target = new RasDialer(api.Object)
         {
-            var connection = new Mock<RasConnection>();
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath,
+            Credentials = new NetworkCredential("TEST", "USER")
+        };
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.AreEqual(CancellationToken.None, c.CancellationToken);
-                
-                return Task.FromResult(connection.Object);
-            }).Verifiable();
+        var result = target.Connect(cancellationToken);
 
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath,
-                Credentials = new NetworkCredential("TEST", "USER")
-            };
+        Assert.IsNotNull(result);
+        api.Verify();
+    }
 
-            var result = target.Connect();
+    [Test]
+    public void ConnectSynchronouslyWithoutACancellationToken()
+    {
+        var connection = new Mock<RasConnection>();
 
-            Assert.IsNotNull(result);
-            api.Verify();
-        }
-
-        [Test]
-        public async Task ConnectAsynchronouslyWithoutACancellationToken()
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
         {
-            var result = new Mock<RasConnection>();
+            Assert.AreEqual(CancellationToken.None, c.CancellationToken);
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.AreEqual(CancellationToken.None, c.CancellationToken);
+            return Task.FromResult(connection.Object);
+        }).Verifiable();
 
-                return Task.FromResult(result.Object);
-            }).Verifiable();
-
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath,
-                Credentials = new NetworkCredential("TEST", "USER")
-            };
-
-            await target.ConnectAsync();
-
-            api.Verify();
-        }
-
-        [Test]
-        public async Task BuildsTheContextCorrectly()
+        var target = new RasDialer(api.Object)
         {
-            var cancellationToken = CancellationToken.None;
-            var credentials = new NetworkCredential("USERNAME", "PASSWORD", "DOMAIN");
-            var result = new Mock<RasConnection>();
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath,
+            Credentials = new NetworkCredential("TEST", "USER")
+        };
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.AreEqual(cancellationToken, c.CancellationToken);
-                Assert.AreEqual(credentials, c.Credentials);
-                Assert.AreEqual(EntryName, c.EntryName);
-                Assert.AreEqual(PhoneBookPath, c.PhoneBookPath);
+        var result = target.Connect();
 
-                return Task.FromResult(result.Object);
-            });
+        Assert.IsNotNull(result);
+        api.Verify();
+    }
 
-            var target = new RasDialer(api.Object)
-            {
-                Credentials = credentials,
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath
-            };
+    [Test]
+    public async Task ConnectAsynchronouslyWithoutACancellationToken()
+    {
+        var result = new Mock<RasConnection>();
 
-            var connection = await target.ConnectAsync(cancellationToken);
-            Assert.AreSame(result.Object, connection);
-        }
-
-        [Test]
-        public async Task ThrowsAnExceptionWhenTheEventArgsIsNull()
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
         {
-            var executed = false;
-            var result = new Mock<RasConnection>();
+            Assert.AreEqual(CancellationToken.None, c.CancellationToken);
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.IsNotNull(c.OnStateChangedCallback);
-                Assert.Throws<ArgumentNullException>(() => c.OnStateChangedCallback(null));
+            return Task.FromResult(result.Object);
+        }).Verifiable();
 
-                executed = true;
-                return Task.FromResult(result.Object);
-            });
-
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath
-            };
-
-            await target.ConnectAsync();
-
-            Assert.True(executed);
-        }
-
-        [Test]
-        public async Task RaisesTheEventFromTheOnStateChangedCallback()
+        var target = new RasDialer(api.Object)
         {
-            var e = new StateChangedEventArgs(RasConnectionState.OpenPort);
-            var result = new Mock<RasConnection>();
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath,
+            Credentials = new NetworkCredential("TEST", "USER")
+        };
 
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
-            {
-                Assert.IsNotNull(c.OnStateChangedCallback);
-                c.OnStateChangedCallback(e);                
+        await target.ConnectAsync();
 
-                return Task.FromResult(result.Object);
-            });
+        api.Verify();
+    }
 
-            var raised = false;
+    [Test]
+    public async Task BuildsTheContextCorrectly()
+    {
+        var cancellationToken = CancellationToken.None;
+        var credentials = new NetworkCredential("USERNAME", "PASSWORD", "DOMAIN");
+        var result = new Mock<RasConnection>();
 
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = PhoneBookPath
-            };
-
-            target.StateChanged += (sender, args) =>
-            {
-                Assert.AreEqual(e, args);
-                raised = true;
-            };
-
-            await target.ConnectAsync();
-
-            Assert.True(raised);
-        }
-
-        [Test]
-        public void DisposesTheApiAsExpected()
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
         {
-            var api = new Mock<IRasDial>();
+            Assert.AreEqual(cancellationToken, c.CancellationToken);
+            Assert.AreEqual(credentials, c.Credentials);
+            Assert.AreEqual(EntryName, c.EntryName);
+            Assert.AreEqual(PhoneBookPath, c.PhoneBookPath);
 
-            var target = new RasDialer(api.Object);
-            target.Dispose();
+            return Task.FromResult(result.Object);
+        });
 
-            api.Verify(o => o.Dispose(), Times.Once);
-        }
-
-        [Test]
-        public void DoesNotThrowsAnExceptionWhenThePhoneBookPathHasNotBeenSet()
+        var target = new RasDialer(api.Object)
         {
-            var api = new Mock<IRasDial>();
+            Credentials = credentials,
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath
+        };
 
-            var target = new RasDialer(api.Object)
-            {
-                EntryName = EntryName,
-                PhoneBookPath = null
-            };
+        var connection = await target.ConnectAsync(cancellationToken);
+        Assert.AreSame(result.Object, connection);
+    }
 
-            Assert.DoesNotThrow(() => target.Connect());
-        }
+    [Test]
+    public async Task ThrowsAnExceptionWhenTheEventArgsIsNull()
+    {
+        var executed = false;
+        var result = new Mock<RasConnection>();
 
-        [Test]
-        public void IndicatesTheObjectIsBusyAsExpected()
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
         {
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.IsBusy).Returns(true);
+            Assert.IsNotNull(c.OnStateChangedCallback);
+            Assert.Throws<ArgumentNullException>(() => c.OnStateChangedCallback(null));
 
-            var target = new RasDialer(api.Object);
-            Assert.True(target.IsBusy);
-        }
+            executed = true;
+            return Task.FromResult(result.Object);
+        });
 
-        [Test]
-        public void IndicatesTheObjectIsNotBusyAsExpected()
+        var target = new RasDialer(api.Object)
         {
-            var api = new Mock<IRasDial>();
-            api.Setup(o => o.IsBusy).Returns(false);
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath
+        };
 
-            var target = new RasDialer(api.Object);
-            Assert.False(target.IsBusy);
-        }
+        await target.ConnectAsync();
+
+        Assert.True(executed);
+    }
+
+    [Test]
+    public async Task RaisesTheEventFromTheOnStateChangedCallback()
+    {
+        var e = new StateChangedEventArgs(RasConnectionState.OpenPort);
+        var result = new Mock<RasConnection>();
+
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.DialAsync(It.IsAny<RasDialContext>())).Returns<RasDialContext>(c =>
+        {
+            Assert.IsNotNull(c.OnStateChangedCallback);
+            c.OnStateChangedCallback(e);
+
+            return Task.FromResult(result.Object);
+        });
+
+        var raised = false;
+
+        var target = new RasDialer(api.Object)
+        {
+            EntryName = EntryName,
+            PhoneBookPath = PhoneBookPath
+        };
+
+        target.StateChanged += (sender, args) =>
+        {
+            Assert.AreEqual(e, args);
+            raised = true;
+        };
+
+        await target.ConnectAsync();
+
+        Assert.True(raised);
+    }
+
+    [Test]
+    public void DisposesTheApiAsExpected()
+    {
+        var api = new Mock<IRasDial>();
+
+        var target = new RasDialer(api.Object);
+        target.Dispose();
+
+        api.Verify(o => o.Dispose(), Times.Once);
+    }
+
+    [Test]
+    public void DoesNotThrowsAnExceptionWhenThePhoneBookPathHasNotBeenSet()
+    {
+        var api = new Mock<IRasDial>();
+
+        var target = new RasDialer(api.Object)
+        {
+            EntryName = EntryName,
+            PhoneBookPath = null
+        };
+
+        Assert.DoesNotThrow(() => target.Connect());
+    }
+
+    [Test]
+    public void IndicatesTheObjectIsBusyAsExpected()
+    {
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.IsBusy).Returns(true);
+
+        var target = new RasDialer(api.Object);
+        Assert.True(target.IsBusy);
+    }
+
+    [Test]
+    public void IndicatesTheObjectIsNotBusyAsExpected()
+    {
+        var api = new Mock<IRasDial>();
+        api.Setup(o => o.IsBusy).Returns(false);
+
+        var target = new RasDialer(api.Object);
+        Assert.False(target.IsBusy);
     }
 }

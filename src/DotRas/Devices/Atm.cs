@@ -1,17 +1,16 @@
-﻿namespace DotRas.Devices
+﻿namespace DotRas.Devices;
+
+/// <summary>
+/// Represents an Asynchronous Transfer Mode (ATM) device.
+/// </summary>
+public class Atm : RasDevice
 {
     /// <summary>
-    /// Represents an Asynchronous Transfer Mode (ATM) device.
+    /// Initializes a new instance of the <see cref="Atm"/> class.
     /// </summary>
-    public class Atm : RasDevice
+    /// <param name="name">The name of the device.</param>
+    public Atm(string name)
+        : base(name)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Atm"/> class.
-        /// </summary>
-        /// <param name="name">The name of the device.</param>
-        public Atm(string name) 
-            : base(name)
-        {
-        }
     }
 }

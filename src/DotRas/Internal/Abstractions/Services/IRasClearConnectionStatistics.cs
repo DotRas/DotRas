@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Services
+﻿namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IRasClearConnectionStatistics
 {
-    internal interface IRasClearConnectionStatistics
-    {
-        void ClearConnectionStatistics(IRasConnection connection);
-    }
+    void ClearConnectionStatistics(IRasConnection connection);
 }

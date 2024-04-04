@@ -1,10 +1,8 @@
-﻿using System.Threading;
-using DotRas.Internal.Abstractions.Primitives;
+﻿using DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Abstractions.Factories
+namespace DotRas.Internal.Abstractions.Factories;
+
+internal interface IRegisteredCallbackFactory
 {
-    internal interface IRegisteredCallbackFactory
-    {
-        IRegisteredCallback Create(WaitOrTimerCallback callback, object state);
-    }
+    IRegisteredCallback Create(WaitOrTimerCallback callback, object state);
 }

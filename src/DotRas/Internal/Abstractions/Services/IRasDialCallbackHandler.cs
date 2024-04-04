@@ -1,15 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace DotRas.Internal.Abstractions.Services;
 
-namespace DotRas.Internal.Abstractions.Services
+internal interface IRasDialCallbackHandler : IDisposable
 {
-    internal interface IRasDialCallbackHandler : IDisposable
-    {
-        void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
+    void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken);
 
-        bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError);
+    bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError);
 
-        void SetHandle(IntPtr handle);
-    }
+    void SetHandle(IntPtr handle);
 }

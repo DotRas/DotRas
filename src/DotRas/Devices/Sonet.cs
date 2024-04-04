@@ -1,17 +1,16 @@
-﻿namespace DotRas.Devices
+﻿namespace DotRas.Devices;
+
+/// <summary>
+/// Represents a Sonet device.
+/// </summary>
+public class Sonet : RasDevice
 {
     /// <summary>
-    /// Represents a Sonet device.
+    /// Initializes a new instance of the <see cref="Sonet"/> class.
     /// </summary>
-    public class Sonet : RasDevice
+    /// <param name="name">The name of the device.</param>
+    public Sonet(string name)
+        : base(name)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sonet"/> class.
-        /// </summary>
-        /// <param name="name">The name of the device.</param>
-        public Sonet(string name) 
-            : base(name)
-        {
-        }
     }
 }

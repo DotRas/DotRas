@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace DotRas.Internal.Abstractions.Services;
 
-namespace DotRas.Internal.Abstractions.Services
+internal interface IRasEnumConnections
 {
-    internal interface IRasEnumConnections
-    {
-        IEnumerable<RasConnection> EnumerateConnections();
-    }
+    IEnumerable<RasConnection> EnumerateConnections();
 }

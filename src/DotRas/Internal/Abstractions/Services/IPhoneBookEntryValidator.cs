@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Services
+﻿namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IPhoneBookEntryValidator
 {
-    internal interface IPhoneBookEntryValidator
-    {
-        bool VerifyEntryExists(string entryName, string phoneBookPath);
-    }
+    bool VerifyEntryExists(string entryName, string phoneBookPath);
 }

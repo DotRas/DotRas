@@ -1,17 +1,16 @@
 ﻿using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas.Internal.Services.Dialing
-{
-    internal class RasDialExtensionsOptionsBuilder
-    {
-        public RDEOPT Result { get; private set; }
+namespace DotRas.Internal.Services.Dialing;
 
-        public void AppendFlagIfTrue(bool check, RDEOPT value)
+internal class RasDialExtensionsOptionsBuilder
+{
+    public RDEOPT Result { get; private set; }
+
+    public void AppendFlagIfTrue(bool check, RDEOPT value)
+    {
+        if (check)
         {
-            if (check)
-            {
-                Result |= value;
-            }
+            Result |= value;
         }
     }
 }

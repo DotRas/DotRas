@@ -1,12 +1,10 @@
-﻿using System;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 
-namespace DotRas.Tests.Stubs
+namespace DotRas.Tests.Stubs;
+
+[Serializable]
+[EventFormatter(typeof(BadFormatter))]
+public class BadTraceEventWithBadFormatter : TraceEvent
 {
-    [Serializable]
-    [EventFormatter(typeof(BadFormatter))]
-    public class BadTraceEventWithBadFormatter : TraceEvent
-    {
-    }
 }

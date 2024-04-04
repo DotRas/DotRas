@@ -1,83 +1,81 @@
-﻿using System;
-using DotRas.Internal.Services;
+﻿using DotRas.Internal.Services;
 using NUnit.Framework;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas.Tests.Internal.Services
+namespace DotRas.Tests.Internal.Services;
+
+[TestFixture]
+public class IPAddressConversionServiceTests
 {
-    [TestFixture]
-    public class IPAddressConversionServiceTests
+    private IPAddressConversionService target;
+
+    [SetUp]
+    public void Setup()
     {
-        private IPAddressConversionService target;
+        target = new IPAddressConversionService();
+    }
 
-        [SetUp]
-        public void Setup()
+    [Test]
+    public void ReturnsNullFromUnknownEndpointType()
+    {
+        var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
         {
-            target = new IPAddressConversionService();
-        }
+            type = RASTUNNELENDPOINTTYPE.Unknown,
+            addr = null
+        });
 
-        [Test]
-        public void ReturnsNullFromUnknownEndpointType()
+        Assert.Null(result);
+    }
+
+    [Test]
+    public void ThrowsAnExceptionWhenTheEndPointTypeIsNotSupported()
+    {
+        Assert.Throws<NotSupportedException>(() => target.ConvertFromEndpoint(new RASTUNNELENDPOINT
         {
-            var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
-            {
-                type = RASTUNNELENDPOINTTYPE.Unknown,
-                addr = null
-            });
+            type = (RASTUNNELENDPOINTTYPE)(-1)
+        }));
+    }
 
-            Assert.Null(result);
-        }
+    [Test]
+    public void ConvertsAnIPv4AddressWithMoreBytesThanNeeded()
+    {
+        var bytes = new byte[] { 127, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        [Test]
-        public void ThrowsAnExceptionWhenTheEndPointTypeIsNotSupported()
+        var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
         {
-            Assert.Throws<NotSupportedException>(() => target.ConvertFromEndpoint(new RASTUNNELENDPOINT
-            {
-                type = (RASTUNNELENDPOINTTYPE)(-1)
-            }));
-        }
+            addr = bytes,
+            type = RASTUNNELENDPOINTTYPE.IPv4
+        });
 
-        [Test]
-        public void ConvertsAnIPv4AddressWithMoreBytesThanNeeded()
+        Assert.AreEqual("127.0.0.1", result.ToString());
+    }
+
+    [Test]
+    public void ConvertsAnIPv4AddressWithTheExpectedBytes()
+    {
+        var bytes = new byte[] { 127, 0, 0, 1 };
+
+        var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
         {
-            var bytes = new byte[] { 127, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            addr = bytes,
+            type = RASTUNNELENDPOINTTYPE.IPv4
+        });
 
-            var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
-            {
-                addr = bytes,
-                type = RASTUNNELENDPOINTTYPE.IPv4
-            });
+        Assert.AreEqual("127.0.0.1", result.ToString());
+    }
 
-            Assert.AreEqual("127.0.0.1", result.ToString());
-        }
+    [Test]
+    public void ConvertsAnIPv6AddressWithTheExpectedBytes()
+    {
+        var bytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
-        [Test]
-        public void ConvertsAnIPv4AddressWithTheExpectedBytes()
+        var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
         {
-            var bytes = new byte[] { 127, 0, 0, 1 };
+            addr = bytes,
+            type = RASTUNNELENDPOINTTYPE.IPv6
+        });
 
-            var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
-            {
-                addr = bytes,
-                type = RASTUNNELENDPOINTTYPE.IPv4
-            });
-
-            Assert.AreEqual("127.0.0.1", result.ToString());
-        }
-
-        [Test]
-        public void ConvertsAnIPv6AddressWithTheExpectedBytes()
-        {
-            var bytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-
-            var result = target.ConvertFromEndpoint(new RASTUNNELENDPOINT
-            {
-                addr = bytes,
-                type = RASTUNNELENDPOINTTYPE.IPv6
-            });
-
-            Assert.AreEqual("::1", result.ToString());
-        }
+        Assert.AreEqual("::1", result.ToString());
     }
 }

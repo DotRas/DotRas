@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Events
+/// <summary>
+/// Describes a trace event.
+/// </summary>
+[Serializable]
+public abstract class TraceEvent
 {
-    /// <summary>
-    /// Describes a trace event.
-    /// </summary>
-    [Serializable]
-    public abstract class TraceEvent
-    {
-    }
 }

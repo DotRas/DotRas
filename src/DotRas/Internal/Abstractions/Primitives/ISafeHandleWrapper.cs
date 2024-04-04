@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace DotRas.Internal.Abstractions.Primitives
+namespace DotRas.Internal.Abstractions.Primitives;
+
+internal interface ISafeHandleWrapper
 {
-    internal interface ISafeHandleWrapper
-    {
-        SafeHandle UnderlyingHandle { get; }
-    }
+    SafeHandle UnderlyingHandle { get; }
 }

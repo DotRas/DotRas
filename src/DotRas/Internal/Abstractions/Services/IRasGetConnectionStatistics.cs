@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Services
+﻿namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IRasGetConnectionStatistics
 {
-    internal interface IRasGetConnectionStatistics
-    {
-        RasConnectionStatistics GetConnectionStatistics(IRasConnection connection);
-    }
+    RasConnectionStatistics GetConnectionStatistics(IRasConnection connection);
 }

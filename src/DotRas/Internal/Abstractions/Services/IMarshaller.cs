@@ -1,21 +1,18 @@
-﻿using System;
+﻿namespace DotRas.Internal.Abstractions.Services;
 
-namespace DotRas.Internal.Abstractions.Services
+internal interface IMarshaller
 {
-    internal interface IMarshaller
-    {
-        int SizeOf<T>();
+    int SizeOf<T>();
 
-        IntPtr AllocHGlobal(int size);
+    IntPtr AllocHGlobal(int size);
 
-        bool FreeHGlobalIfNeeded(IntPtr ptr);
+    bool FreeHGlobalIfNeeded(IntPtr ptr);
 
-        void StructureToPtr<T>(T structure, IntPtr ptr);
+    void StructureToPtr<T>(T structure, IntPtr ptr);
 
-        string PtrToUnicodeString(IntPtr ptr, int length);
+    string PtrToUnicodeString(IntPtr ptr, int length);
 
-        byte[] PtrToByteArray(IntPtr ptr, int length);
+    byte[] PtrToByteArray(IntPtr ptr, int length);
 
-        IntPtr ByteArrayToPtr(byte[] bytes);
-    }
+    IntPtr ByteArrayToPtr(byte[] bytes);
 }

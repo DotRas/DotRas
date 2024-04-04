@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Factories
+﻿namespace DotRas.Internal.Abstractions.Factories;
+
+internal interface IDeviceFactory
 {
-    internal interface IDeviceFactory
-    {
-        RasDevice Create(string name);
-    }
+    RasDevice Create(string name);
 }

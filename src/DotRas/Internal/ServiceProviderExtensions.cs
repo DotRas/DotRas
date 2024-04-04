@@ -1,33 +1,30 @@
-﻿using System;
+﻿namespace DotRas.Internal;
 
-namespace DotRas.Internal
+internal static class ServiceProviderExtensions
 {
-    internal static class ServiceProviderExtensions
+    public static T GetService<T>(this IServiceProvider serviceProvider)
     {
-        public static T GetService<T>(this IServiceProvider serviceProvider)
+        return (T)serviceProvider.GetService(typeof(T));
+    }
+
+    public static object GetRequiredService(this IServiceProvider serviceProvider, Type serviceType)
+    {
+        if (serviceType == null)
         {
-            return (T)serviceProvider.GetService(typeof(T));
+            throw new ArgumentNullException(nameof(serviceType));
         }
 
-        public static object GetRequiredService(this IServiceProvider serviceProvider, Type serviceType)
+        var result = serviceProvider.GetService(serviceType);
+        if (result == null)
         {
-            if (serviceType == null)
-            {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
-
-            var result = serviceProvider.GetService(serviceType);
-            if (result == null)
-            {
-                throw new InvalidOperationException($"The required service '{serviceType}' could not be found.");
-            }
-
-            return result;
+            throw new InvalidOperationException($"The required service '{serviceType}' could not be found.");
         }
 
-        public static T GetRequiredService<T>(this IServiceProvider serviceProvider)
-        {
-            return (T)serviceProvider.GetRequiredService(typeof(T));
-        }
+        return result;
+    }
+
+    public static T GetRequiredService<T>(this IServiceProvider serviceProvider)
+    {
+        return (T)serviceProvider.GetRequiredService(typeof(T));
     }
 }

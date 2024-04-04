@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Services
+﻿namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IRasGetErrorString
 {
-    internal interface IRasGetErrorString
-    {
-        string GetErrorString(int errorCode);
-    }
+    string GetErrorString(int errorCode);
 }

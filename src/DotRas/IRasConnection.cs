@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace DotRas;
 
-namespace DotRas
+/// <summary>
+/// Identifies a remote access service (RAS) connection.
+/// </summary>
+public interface IRasConnection
 {
     /// <summary>
-    /// Identifies a remote access service (RAS) connection.
+    /// Gets the handle of the connection.
     /// </summary>
-    public interface IRasConnection
-    {
-        /// <summary>
-        /// Gets the handle of the connection.
-        /// </summary>
-        IntPtr Handle { get; }
-    }
+    IntPtr Handle { get; }
 }

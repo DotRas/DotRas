@@ -1,8 +1,7 @@
-﻿namespace DotRas.Internal.Abstractions.Factories
+﻿namespace DotRas.Internal.Abstractions.Factories;
+
+internal interface IStructFactory
 {
-    internal interface IStructFactory
-    {
-        T Create<T>() where T : new();
-        T Create<T>(out int size) where T : new();
-    }
+    T Create<T>() where T : new();
+    T Create<T>(out int size) where T : new();
 }

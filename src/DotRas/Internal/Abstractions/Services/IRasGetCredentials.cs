@@ -1,9 +1,8 @@
 ﻿using System.Net;
 
-namespace DotRas.Internal.Abstractions.Services
+namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IRasGetCredentials
 {
-    internal interface IRasGetCredentials
-    {
-        NetworkCredential GetNetworkCredential(string entryName, string phoneBookPath);
-    }
+    NetworkCredential GetNetworkCredential(string entryName, string phoneBookPath);
 }

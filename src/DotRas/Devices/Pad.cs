@@ -1,17 +1,16 @@
-﻿namespace DotRas.Devices
+﻿namespace DotRas.Devices;
+
+/// <summary>
+/// Represents a Packet Assembler/Disassembler (PAD) device.
+/// </summary>
+public class Pad : RasDevice
 {
     /// <summary>
-    /// Represents a Packet Assembler/Disassembler (PAD) device.
+    /// Initializes a new instance of the <see cref="Pad"/> class.
     /// </summary>
-    public class Pad : RasDevice
+    /// <param name="name">The name of the device.</param>
+    public Pad(string name)
+        : base(name)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pad"/> class.
-        /// </summary>
-        /// <param name="name">The name of the device.</param>
-        public Pad(string name) 
-            : base(name)
-        {
-        }
     }
 }

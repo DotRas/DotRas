@@ -1,112 +1,110 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using DotRas.Internal.Abstractions.Services;
 
 #pragma warning disable S1168
 #pragma warning disable S1854
 
-namespace DotRas.Internal.Services
+namespace DotRas.Internal.Services;
+
+internal class MarshallingService : IMarshaller
 {
-    internal class MarshallingService : IMarshaller
+    public int SizeOf<T>()
     {
-        public int SizeOf<T>()
+        return Marshal.SizeOf(typeof(T));
+    }
+
+    public IntPtr AllocHGlobal(int size)
+    {
+        if (size < 0)
         {
-            return Marshal.SizeOf(typeof(T));
+            throw new ArgumentException("The size must be greater than or equal to zero.");
+        }
+        else if (size == 0)
+        {
+            return IntPtr.Zero;
         }
 
-        public IntPtr AllocHGlobal(int size)
-        {
-            if (size < 0)
-            {
-                throw new ArgumentException("The size must be greater than or equal to zero.");
-            }
-            else if (size == 0)
-            {
-                return IntPtr.Zero;
-            }
+        return Marshal.AllocHGlobal(size);
+    }
 
-            return Marshal.AllocHGlobal(size);
+    public bool FreeHGlobalIfNeeded(IntPtr ptr)
+    {
+        if (ptr == IntPtr.Zero)
+        {
+            return false;
         }
 
-        public bool FreeHGlobalIfNeeded(IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero)
-            {
-                return false;
-            }
+        FreeHGlobalImpl(ptr);
+        return true;
+    }
 
-            FreeHGlobalImpl(ptr);
-            return true;
+    protected virtual void FreeHGlobalImpl(IntPtr ptr)
+    {
+        Marshal.FreeHGlobal(ptr);
+    }
+
+    public void StructureToPtr<T>(T structure, IntPtr ptr)
+    {
+        if (ptr == IntPtr.Zero)
+        {
+            throw new ArgumentNullException(nameof(ptr));
         }
 
-        protected virtual void FreeHGlobalImpl(IntPtr ptr)
+        Marshal.StructureToPtr(structure, ptr, true);
+    }
+
+    public string PtrToUnicodeString(IntPtr ptr, int length)
+    {
+        if (ptr == IntPtr.Zero)
         {
-            Marshal.FreeHGlobal(ptr);
+            return null;
+        }
+        else if (length == 0)
+        {
+            return string.Empty;
         }
 
-        public void StructureToPtr<T>(T structure, IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero)
-            {
-                throw new ArgumentNullException(nameof(ptr));
-            }
+        return Marshal.PtrToStringUni(ptr, length);
+    }
 
-            Marshal.StructureToPtr(structure, ptr, true);
+    public byte[] PtrToByteArray(IntPtr ptr, int length)
+    {
+        if (ptr == IntPtr.Zero)
+        {
+            return null;
+        }
+        else if (length == 0)
+        {
+            return new byte[0];
         }
 
-        public string PtrToUnicodeString(IntPtr ptr, int length)
-        {
-            if (ptr == IntPtr.Zero)
-            {
-                return null;
-            }
-            else if (length == 0)
-            {
-                return string.Empty;
-            }
+        var result = new byte[length];
+        Marshal.Copy(ptr, result, 0, length);
 
-            return Marshal.PtrToStringUni(ptr, length);
+        return result;
+    }
+
+    public IntPtr ByteArrayToPtr(byte[] bytes)
+    {
+        if (bytes == null)
+        {
+            return IntPtr.Zero;
         }
 
-        public byte[] PtrToByteArray(IntPtr ptr, int length)
+        IntPtr ptr = IntPtr.Zero;
+
+        try
         {
-            if (ptr == IntPtr.Zero)
-            {
-                return null;
-            }
-            else if (length == 0)
-            {
-                return new byte[0];
-            }
+            ptr = AllocHGlobal(bytes.Length);
 
-            var result = new byte[length];
-            Marshal.Copy(ptr, result, 0, length);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
 
-            return result;
+            return ptr;
         }
-
-        public IntPtr ByteArrayToPtr(byte[] bytes)
+        catch (Exception)
         {
-            if (bytes == null)
-            {
-                return IntPtr.Zero;
-            }
-
-            IntPtr ptr = IntPtr.Zero;
-
-            try
-            {
-                ptr = AllocHGlobal(bytes.Length);
-
-                Marshal.Copy(bytes, 0, ptr, bytes.Length);
-
-                return ptr;
-            }
-            catch (Exception)
-            {
-                FreeHGlobalIfNeeded(ptr);
-                throw;
-            }
+            FreeHGlobalIfNeeded(ptr);
+            throw;
         }
     }
 }

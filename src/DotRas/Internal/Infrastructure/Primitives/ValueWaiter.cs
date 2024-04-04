@@ -1,51 +1,49 @@
-﻿using System.Threading;
-using DotRas.Internal.Abstractions.Primitives;
+﻿using DotRas.Internal.Abstractions.Primitives;
 
-namespace DotRas.Internal.Infrastructure.Primitives
+namespace DotRas.Internal.Infrastructure.Primitives;
+
+internal class ValueWaiter<T> : DisposableObject, IValueWaiter<T>
 {
-    internal class ValueWaiter<T> : DisposableObject, IValueWaiter<T>
+    private readonly object syncRoot = new object();
+    private readonly ManualResetEventSlim waitHandle = new ManualResetEventSlim();
+
+    public T Value { get; private set; }
+    public bool IsSet { get; private set; }
+
+    public void Reset()
     {
-        private readonly object syncRoot = new object();
-        private readonly ManualResetEventSlim waitHandle = new ManualResetEventSlim();
-
-        public T Value { get; private set; }
-        public bool IsSet { get; private set; }
-
-        public void Reset()
+        lock (syncRoot)
         {
-            lock (syncRoot)
-            {
-                Value = default;
-                IsSet = false;
-            }
-
-            waitHandle.Reset();
+            Value = default;
+            IsSet = false;
         }
 
-        public void WaitForValue(CancellationToken cancellationToken)
+        waitHandle.Reset();
+    }
+
+    public void WaitForValue(CancellationToken cancellationToken)
+    {
+        waitHandle.Wait(cancellationToken);
+    }
+
+    public void Set(T value)
+    {
+        lock (syncRoot)
         {
-            waitHandle.Wait(cancellationToken);
+            Value = value;
+            IsSet = true;
         }
 
-        public void Set(T value)
-        {
-            lock (syncRoot)
-            {
-                Value = value;
-                IsSet = true;
-            }
+        waitHandle.Set();
+    }
 
-            waitHandle.Set();        
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            waitHandle.Dispose();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                waitHandle.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
+        base.Dispose(disposing);
     }
 }

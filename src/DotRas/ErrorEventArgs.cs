@@ -1,30 +1,27 @@
-﻿using System;
+﻿namespace DotRas;
 
-namespace DotRas
+/// <summary>
+/// Contains event data for error events.
+/// </summary>
+public class ErrorEventArgs : EventArgs
 {
+    private readonly Exception error;
+
     /// <summary>
-    /// Contains event data for error events.
+    /// Initializes a new instance of the <see cref="ErrorEventArgs"/> class.
     /// </summary>
-    public class ErrorEventArgs : EventArgs
+    /// <param name="error">The exception which occurred.</param>
+    public ErrorEventArgs(Exception error)
     {
-        private readonly Exception error;
+        this.error = error ?? throw new ArgumentNullException(nameof(error));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorEventArgs"/> class.
-        /// </summary>
-        /// <param name="error">The exception which occurred.</param>
-        public ErrorEventArgs(Exception error)
-        {
-            this.error = error ?? throw new ArgumentNullException(nameof(error));
-        }
-
-        /// <summary>
-        /// Gets the exception which occurred.
-        /// </summary>
-        /// <returns>The exception which occurred.</returns>
-        public Exception GetException()
-        {
-            return error;
-        }
+    /// <summary>
+    /// Gets the exception which occurred.
+    /// </summary>
+    /// <returns>The exception which occurred.</returns>
+    public Exception GetException()
+    {
+        return error;
     }
 }

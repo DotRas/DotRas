@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization;
-using Configuration = ConsoleRunner.Model.Configuration;
 using ConsoleRunner.Diagnostics;
 using DotRas.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Configuration = ConsoleRunner.Model.Configuration;
 
 namespace ConsoleRunner;
 

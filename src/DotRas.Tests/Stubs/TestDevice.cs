@@ -1,10 +1,9 @@
-﻿namespace DotRas.Tests.Stubs
+﻿namespace DotRas.Tests.Stubs;
+
+public class TestDevice : RasDevice
 {
-    public class TestDevice : RasDevice
+    public TestDevice(string name)
+        : base(name)
     {
-        public TestDevice(string name) 
-            : base(name)
-        {
-        }
     }
 }

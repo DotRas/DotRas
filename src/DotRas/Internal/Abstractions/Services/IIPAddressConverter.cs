@@ -1,10 +1,9 @@
 ﻿using System.Net;
 using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Internal.Abstractions.Services
+namespace DotRas.Internal.Abstractions.Services;
+
+internal interface IIPAddressConverter
 {
-    internal interface IIPAddressConverter
-    {
-        IPAddress ConvertFromEndpoint(RASTUNNELENDPOINT endPoint);
-    }
+    IPAddress ConvertFromEndpoint(RASTUNNELENDPOINT endPoint);
 }

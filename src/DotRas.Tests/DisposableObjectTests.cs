@@ -1,42 +1,40 @@
-﻿using System;
-using DotRas.Tests.Stubs;
+﻿using DotRas.Tests.Stubs;
 using NUnit.Framework;
 
 #pragma warning disable S3966 // This is intentional to dispose multiple times to check the behavior.
 
-namespace DotRas.Tests
+namespace DotRas.Tests;
+
+[TestFixture]
+public class DisposableObjectTests
 {
-    [TestFixture]
-    public class DisposableObjectTests
+    [Test]
+    public void DoesNotThrowAnExceptionWhenNotDisposed()
     {
-        [Test]
-        public void DoesNotThrowAnExceptionWhenNotDisposed()
-        {
-            var target = new StubDisposableObject();
-            Assert.DoesNotThrow(() => target.GuardMustNotBeDisposed());
-        }
+        var target = new StubDisposableObject();
+        Assert.DoesNotThrow(() => target.GuardMustNotBeDisposed());
+    }
 
-        [Test]
-        public void ThrowsAnExceptionWhenDisposed()
-        {
-            var target = new StubDisposableObject();
-            target.Dispose();
+    [Test]
+    public void ThrowsAnExceptionWhenDisposed()
+    {
+        var target = new StubDisposableObject();
+        target.Dispose();
 
-            var ex = Assert.Throws<ObjectDisposedException>(() => target.GuardMustNotBeDisposed());
-            Assert.AreEqual(typeof(StubDisposableObject).FullName, ex.ObjectName);
-        }
+        var ex = Assert.Throws<ObjectDisposedException>(() => target.GuardMustNotBeDisposed());
+        Assert.AreEqual(typeof(StubDisposableObject).FullName, ex.ObjectName);
+    }
 
-        [Test]
-        public void DoesNotDisposeTheObjectMoreThanOnce()
-        {
-            var target = new StubDisposableObject();
-            target.Dispose();
+    [Test]
+    public void DoesNotDisposeTheObjectMoreThanOnce()
+    {
+        var target = new StubDisposableObject();
+        target.Dispose();
 
-            Assert.AreEqual(1, target.Counter);
+        Assert.AreEqual(1, target.Counter);
 
-            target.Dispose();
+        target.Dispose();
 
-            Assert.AreEqual(1, target.Counter);
-        }
+        Assert.AreEqual(1, target.Counter);
     }
 }

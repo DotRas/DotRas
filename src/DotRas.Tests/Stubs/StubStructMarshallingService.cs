@@ -1,17 +1,15 @@
-﻿using System;
-using DotRas.Internal.Services;
+﻿using DotRas.Internal.Services;
 
-namespace DotRas.Tests.Stubs
+namespace DotRas.Tests.Stubs;
+
+internal class StubStructMarshallingService : MarshallingService
 {
-    internal class StubStructMarshallingService : MarshallingService
+    public bool ReleasedUnmanagedMemory { get; private set; }
+
+    protected override void FreeHGlobalImpl(IntPtr ptr)
     {
-        public bool ReleasedUnmanagedMemory { get; private set; }
+        base.FreeHGlobalImpl(ptr);
 
-        protected override void FreeHGlobalImpl(IntPtr ptr)
-        {
-            base.FreeHGlobalImpl(ptr);
-
-            ReleasedUnmanagedMemory = true;
-        }
+        ReleasedUnmanagedMemory = true;
     }
 }

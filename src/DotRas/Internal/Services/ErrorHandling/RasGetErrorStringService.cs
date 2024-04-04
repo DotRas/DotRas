@@ -1,41 +1,39 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services.ErrorHandling
+namespace DotRas.Internal.Services.ErrorHandling;
+
+internal class RasGetErrorStringService : IRasGetErrorString
 {
-    internal class RasGetErrorStringService : IRasGetErrorString
+    /// <summary>
+    /// Defines the default buffer size as defined within the Microsoft documentation.
+    /// </summary>
+    private const int DefaultBufferSize = 1024;
+
+    private readonly IRasApi32 api;
+
+    public RasGetErrorStringService(IRasApi32 api)
     {
-        /// <summary>
-        /// Defines the default buffer size as defined within the Microsoft documentation.
-        /// </summary>
-        private const int DefaultBufferSize = 1024;
+        this.api = api ?? throw new ArgumentNullException(nameof(api));
+    }
 
-        private readonly IRasApi32 api;
+    public string GetErrorString(int errorCode)
+    {
+        var errorBuilder = new StringBuilder(DefaultBufferSize);
 
-        public RasGetErrorStringService(IRasApi32 api)
+        var ret = api.RasGetErrorString(errorCode, errorBuilder, errorBuilder.Capacity);
+        if (ret == ERROR_INSUFFICIENT_BUFFER)
         {
-            this.api = api ?? throw new ArgumentNullException(nameof(api));
+            throw new Win32Exception(ret);
+        }
+        else if (ret != SUCCESS)
+        {
+            return null;
         }
 
-        public string GetErrorString(int errorCode)
-        {
-            var errorBuilder = new StringBuilder(DefaultBufferSize);
-
-            var ret = api.RasGetErrorString(errorCode, errorBuilder, errorBuilder.Capacity);
-            if (ret == ERROR_INSUFFICIENT_BUFFER)
-            {
-                throw new Win32Exception(ret);
-            }
-            else if (ret != SUCCESS)
-            {
-                return null;
-            }
-
-            return errorBuilder.ToString();
-        }
+        return errorBuilder.ToString();
     }
 }

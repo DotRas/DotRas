@@ -1,13 +1,12 @@
 ﻿using DotRas.Devices;
 using DotRas.Internal.Abstractions.Factories;
 
-namespace DotRas.Internal.Infrastructure.Factories.Devices
+namespace DotRas.Internal.Infrastructure.Factories.Devices;
+
+internal class SonetDeviceFactory : IDeviceFactory
 {
-    internal class SonetDeviceFactory : IDeviceFactory
+    public RasDevice Create(string name)
     {
-        public RasDevice Create(string name)
-        {
-            return new Sonet(name);
-        }
+        return new Sonet(name);
     }
 }

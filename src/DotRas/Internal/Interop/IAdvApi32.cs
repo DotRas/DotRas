@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Interop
+﻿namespace DotRas.Internal.Interop;
+
+internal interface IAdvApi32
 {
-    internal interface IAdvApi32
-    {
-        bool AllocateLocallyUniqueId(out Luid luid);
-    }
+    bool AllocateLocallyUniqueId(out Luid luid);
 }

@@ -1,28 +1,26 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Services;
+﻿using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services.PhoneBooks
+namespace DotRas.Internal.Services.PhoneBooks;
+
+internal class PhoneBookEntryNameValidationService : IPhoneBookEntryValidator
 {
-    internal class PhoneBookEntryNameValidationService : IPhoneBookEntryValidator
+    private readonly IRasApi32 api;
+
+    public PhoneBookEntryNameValidationService(IRasApi32 api)
     {
-        private readonly IRasApi32 api;
+        this.api = api ?? throw new ArgumentNullException(nameof(api));
+    }
 
-        public PhoneBookEntryNameValidationService(IRasApi32 api)
+    public bool VerifyEntryExists(string entryName, string phoneBookPath)
+    {
+        if (string.IsNullOrWhiteSpace(entryName))
         {
-            this.api = api ?? throw new ArgumentNullException(nameof(api));
+            throw new ArgumentNullException(nameof(entryName));
         }
 
-        public bool VerifyEntryExists(string entryName, string phoneBookPath)
-        {
-            if (string.IsNullOrWhiteSpace(entryName))
-            {
-                throw new ArgumentNullException(nameof(entryName));
-            }
-
-            var ret = api.RasValidateEntryName(phoneBookPath, entryName);
-            return ret == ERROR_ALREADY_EXISTS;
-        }
+        var ret = api.RasValidateEntryName(phoneBookPath, entryName);
+        return ret == ERROR_ALREADY_EXISTS;
     }
 }

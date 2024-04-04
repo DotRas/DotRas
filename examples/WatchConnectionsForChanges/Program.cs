@@ -1,65 +1,63 @@
-﻿using System;
-using DotRas;
+﻿using DotRas;
 
-namespace WatchConnectionsForChanges
+namespace WatchConnectionsForChanges;
+
+internal class Program
 {
-    internal class Program
+    private readonly RasConnectionWatcher watcher;
+
+    public static void Main()
     {
-        private readonly RasConnectionWatcher watcher;
-
-        public static void Main()
+        try
         {
-            try
-            {
-                new Program().Run();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
-            Console.WriteLine("Press any key to terminate...");
-            Console.ReadKey(true);
+            new Program().Run();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
         }
 
-        public Program()
-        {
-            watcher = new RasConnectionWatcher();
+        Console.WriteLine("Press any key to terminate...");
+        Console.ReadKey(true);
+    }
 
-            watcher.Connected += OnConnectionConnected;
-            watcher.Disconnected += OnConnectionDisconnected;
-        }
+    public Program()
+    {
+        watcher = new RasConnectionWatcher();
 
-        /// <summary>
-        /// This method gets called when the operating system notifies DotRas that a new connection has been established.
-        /// </summary>
-        /// <param name="sender">This is the object which raised the event.</param>
-        /// <param name="e">This object carries the event data.</param>
-        private void OnConnectionConnected(object sender, RasConnectionEventArgs e)
-        {
-            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
-        }
+        watcher.Connected += OnConnectionConnected;
+        watcher.Disconnected += OnConnectionDisconnected;
+    }
 
-        /// <summary>
-        /// This method gets called when the operating system notifies DotRas that an existing connection has disconnected.
-        /// </summary>
-        /// <param name="sender">This is the object which raised the event.</param>
-        /// <param name="e">This object carries the event data.</param>
-        private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
-        {
-            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
-        }
+    /// <summary>
+    /// This method gets called when the operating system notifies DotRas that a new connection has been established.
+    /// </summary>
+    /// <param name="sender">This is the object which raised the event.</param>
+    /// <param name="e">This object carries the event data.</param>
+    private void OnConnectionConnected(object sender, RasConnectionEventArgs e)
+    {
+        Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
+    }
 
-        private void Run()
-        {
-            // Start watching for connection changes.
-            watcher.Start();
+    /// <summary>
+    /// This method gets called when the operating system notifies DotRas that an existing connection has disconnected.
+    /// </summary>
+    /// <param name="sender">This is the object which raised the event.</param>
+    /// <param name="e">This object carries the event data.</param>
+    private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
+    {
+        Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
+    }
 
-            Console.WriteLine("Press any key to stop watching for connection changes...");
-            Console.ReadKey(true);
+    private void Run()
+    {
+        // Start watching for connection changes.
+        watcher.Start();
 
-            // Stop watching for connection changes.
-            watcher.Stop();
-        }
+        Console.WriteLine("Press any key to stop watching for connection changes...");
+        Console.ReadKey(true);
+
+        // Stop watching for connection changes.
+        watcher.Stop();
     }
 }

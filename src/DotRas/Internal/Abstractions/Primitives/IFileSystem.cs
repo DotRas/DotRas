@@ -1,7 +1,6 @@
-﻿namespace DotRas.Internal.Abstractions.Primitives
+﻿namespace DotRas.Internal.Abstractions.Primitives;
+
+internal interface IFileSystem
 {
-    internal interface IFileSystem
-    {
-        bool VerifyFileExists(string fileName);
-    }
+    bool VerifyFileExists(string fileName);
 }

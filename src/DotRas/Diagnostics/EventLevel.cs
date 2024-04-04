@@ -1,33 +1,32 @@
-﻿namespace DotRas.Diagnostics
+﻿namespace DotRas.Diagnostics;
+
+/// <summary>
+/// Defines the levels of events.
+/// </summary>
+public enum EventLevel
 {
     /// <summary>
-    /// Defines the levels of events.
+    /// A critical event has occurred.
     /// </summary>
-    public enum EventLevel
-    {
-        /// <summary>
-        /// A critical event has occurred.
-        /// </summary>
-        Critical,
+    Critical,
 
-        /// <summary>
-        /// An error has occurred.
-        /// </summary>
-        Error,
+    /// <summary>
+    /// An error has occurred.
+    /// </summary>
+    Error,
 
-        /// <summary>
-        /// A warning has been identified.
-        /// </summary>
-        Warning,
+    /// <summary>
+    /// A warning has been identified.
+    /// </summary>
+    Warning,
 
-        /// <summary>
-        /// An informational message has occurred.
-        /// </summary>
-        Information,
+    /// <summary>
+    /// An informational message has occurred.
+    /// </summary>
+    Information,
 
-        /// <summary>
-        /// A diagnostic message has occurred.
-        /// </summary>
-        Verbose
-    }
+    /// <summary>
+    /// A diagnostic message has occurred.
+    /// </summary>
+    Verbose
 }

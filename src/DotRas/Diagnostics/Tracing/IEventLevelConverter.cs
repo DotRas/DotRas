@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
 
-namespace DotRas.Diagnostics.Tracing
+namespace DotRas.Diagnostics.Tracing;
+
+internal interface IEventLevelConverter
 {
-    internal interface IEventLevelConverter
-    {
-        TraceEventType Convert(EventLevel input);
-    }
+    TraceEventType Convert(EventLevel input);
 }
