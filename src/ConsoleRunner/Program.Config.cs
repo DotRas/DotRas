@@ -1,35 +1,32 @@
-﻿using System;
-using System.IO;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Configuration = ConsoleRunner.Model.Configuration;
 
-namespace ConsoleRunner
+namespace ConsoleRunner;
+
+partial class Program
 {
-    partial class Program
+    private static Configuration Config;
+
+    private static void ConfigureApplication()
     {
-        private static Configuration Config;
-
-        private static void ConfigureApplication()
+        var dcs = new DataContractSerializer(typeof(Configuration));
+        using (var fs = File.OpenRead($@"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\Config.xml"))
         {
-            var dcs = new DataContractSerializer(typeof(Configuration));
-            using (var fs = File.OpenRead($@"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\Config.xml"))
-            {
-                Config = (Configuration)dcs.ReadObject(fs);
-            }
-
-            GuardConfiguration();
+            Config = (Configuration)dcs.ReadObject(fs);
         }
 
-        private static void GuardConfiguration()
+        GuardConfiguration();
+    }
+
+    private static void GuardConfiguration()
+    {
+        if (!string.IsNullOrWhiteSpace(Config.PhoneBookPath) && !File.Exists(Config.PhoneBookPath))
         {
-            if (!string.IsNullOrWhiteSpace(Config.PhoneBookPath) && !File.Exists(Config.PhoneBookPath))
-            {
-                throw new NotSupportedException("The phonebook has not been configured, or does not exist.");
-            }
-            else if (string.IsNullOrWhiteSpace(Config.EntryName))
-            {
-                throw new NotSupportedException("The entry name has not been configured.");
-            }
+            throw new NotSupportedException("The phonebook has not been configured, or does not exist.");
+        }
+        else if (string.IsNullOrWhiteSpace(Config.EntryName))
+        {
+            throw new NotSupportedException("The entry name has not been configured.");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using DotRas.Devices;
-using DotRas.Internal.Abstractions.Factories;
+﻿using DotRas.Internal.Abstractions.Factories;
 
 namespace DotRas.Internal.Infrastructure.Factories.Devices
 {
@@ -7,7 +6,7 @@ namespace DotRas.Internal.Infrastructure.Factories.Devices
     {
         public RasDevice Create(string name)
         {
-            return new Parallel(name);
+            return new DotRas.Devices.Parallel(name);
         }
     }
 }

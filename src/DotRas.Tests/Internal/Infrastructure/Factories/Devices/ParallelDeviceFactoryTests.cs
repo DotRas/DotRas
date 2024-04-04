@@ -1,5 +1,4 @@
-﻿using DotRas.Devices;
-using DotRas.Internal.Infrastructure.Factories.Devices;
+﻿using DotRas.Internal.Infrastructure.Factories.Devices;
 using NUnit.Framework;
 
 namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices
@@ -14,7 +13,7 @@ namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices
             var result = target.Create("Test");
 
             Assert.AreEqual("Test", result.Name);
-            Assert.IsAssignableFrom<Parallel>(result);
+            Assert.IsAssignableFrom<DotRas.Devices.Parallel>(result);
         }
     }
 }

@@ -1,18 +1,18 @@
-﻿using System.Reflection;
-using Autofac;
+﻿using ConsoleRunner.Diagnostics;
+using DotRas.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ConsoleRunner
+namespace ConsoleRunner;
+
+partial class Program
 {
-    partial class Program
+    private static IServiceProvider serviceProvider;
+
+    private static void ConfigureIoC()
     {
-        private static IContainer container;
+        var services = new ServiceCollection();
+        services.AddTransient<ILogger, DotRasLoggingAdapter>();
 
-        private static void ConfigureIoC()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules(Assembly.GetExecutingAssembly());
-
-            container = builder.Build();
-        }
+        serviceProvider = services.BuildServiceProvider();
     }
 }
