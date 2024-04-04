@@ -138,32 +138,11 @@ public class RasConnection : IRasConnection, IEquatable<RasConnection>
     /// <summary>
     /// Disconnects the remote access connection.
     /// </summary>
-    /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-    /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-    public virtual void Disconnect()
-    {
-        Disconnect(CancellationToken.None);
-    }
-
-    /// <summary>
-    /// Disconnects the remote access connection.
-    /// </summary>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-    /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-    public virtual void Disconnect(CancellationToken cancellationToken)
-    {
-        Disconnect(cancellationToken, DefaultCloseAllReferences);
-    }
-
-    /// <summary>
-    /// Disconnects the remote access connection.
-    /// </summary>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
     /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
     /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-    public virtual void Disconnect(CancellationToken cancellationToken, bool closeAllReferences)
+    public virtual void Disconnect(CancellationToken cancellationToken = default, bool closeAllReferences = DefaultCloseAllReferences)
     {
         DisconnectAsync(cancellationToken, closeAllReferences).GetResultSynchronously();
     }
@@ -171,35 +150,12 @@ public class RasConnection : IRasConnection, IEquatable<RasConnection>
     /// <summary>
     /// Disconnects the remote access connection.
     /// </summary>
-    /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-    /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-    /// <returns>The task to await.</returns>
-    public virtual Task DisconnectAsync()
-    {
-        return DisconnectAsync(CancellationToken.None);
-    }
-
-    /// <summary>
-    /// Disconnects the remote access connection.
-    /// </summary>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-    /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-    /// <returns>The task to await.</returns>
-    public virtual Task DisconnectAsync(CancellationToken cancellationToken)
-    {
-        return DisconnectAsync(cancellationToken, DefaultCloseAllReferences);
-    }
-
-    /// <summary>
-    /// Disconnects the remote access connection.
-    /// </summary>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
     /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
     /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
     /// <returns>The task to await.</returns>
-    public virtual Task DisconnectAsync(CancellationToken cancellationToken, bool closeAllReferences)
+    public virtual Task DisconnectAsync(CancellationToken cancellationToken = default, bool closeAllReferences = DefaultCloseAllReferences)
     {
         return Services.GetRequiredService<IRasHangUp>()
             .HangUpAsync(this, closeAllReferences, cancellationToken);

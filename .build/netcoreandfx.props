@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net47;net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
