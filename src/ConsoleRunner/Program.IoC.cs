@@ -11,7 +11,7 @@ partial class Program
     private static void ConfigureIoC()
     {
         var services = new ServiceCollection();
-        services.AddTransient<ILogger, DotRasLoggingAdapter>();
+        services.AddTransient<DotRasLoggingAdapter>();
 
         serviceProvider = services.BuildServiceProvider();
     }

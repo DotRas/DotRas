@@ -1,8 +1,4 @@
-﻿using ConsoleRunner.Diagnostics;
-using DotRas.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ConsoleRunner;
+﻿namespace ConsoleRunner;
 
 partial class Program
 {
@@ -10,8 +6,6 @@ partial class Program
 
     public static async Task Main()
     {
-        LoggerLocator.SetLocator(serviceProvider.GetRequiredService<DotRasLoggingAdapter>);
-
         Console.WriteLine("Press CTRL+C at any time to to cancel the application...");
         Console.WriteLine();
 
