@@ -6,6 +6,7 @@ env:
   SONAR_PROJECT_KEY: DotRas_DotRas
   SONAR_ORGANIZATION: dotras
   SONAR_URL: https://sonarcloud.io
+  TARGET_FRAMEWORKS: net481
   
 jobs:
   analyze:
@@ -39,10 +40,10 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Run build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release /p:TargetFrameworks="${{ env.TARGET_FRAMEWORKS }}"
 
     - name: Run test
-      run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:TargetFrameworks="${{ env.TARGET_FRAMEWORKS }}"
 
     - name: End analysis with SonarScanner
       run: dotnet-sonarscanner end

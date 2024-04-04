@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net481;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net481;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
@@ -11,7 +11,7 @@
       Defines the default host identifier when none has been provided. 
       Possible values are: win7, win8, win10 
     -->
-    <HostIdentifier Condition=" '$(HostIdentifier)' == ''">win10</HostIdentifier>
+    <HostIdentifier Condition=" '$(HostIdentifier)' == '' ">win10</HostIdentifier>
   </PropertyGroup>
 
 </Project>
