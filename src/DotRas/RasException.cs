@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace DotRas;
 
@@ -41,6 +42,16 @@ public class RasException : Win32Exception
     /// <param name="message">A message describing the error.</param>
     public RasException(int error, string message)
         : base(error, message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RasException"/> class.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/>.</param>
+    /// <param name="context">The <see cref="StreamingContext"/>.</param>
+    protected RasException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }
