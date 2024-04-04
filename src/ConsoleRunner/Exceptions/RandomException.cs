@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace ConsoleRunner.Exceptions
 {
@@ -18,13 +17,8 @@ namespace ConsoleRunner.Exceptions
         {
         }
 
-        public RandomException(string message, Exception innerException) 
+        public RandomException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        protected RandomException(SerializationInfo info, StreamingContext context) 
-            : base(info, context)
         {
         }
     }
