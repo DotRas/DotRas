@@ -51,7 +51,11 @@ namespace ConsoleRunner
         {
             dialer.EntryName = Config.EntryName;
             dialer.PhoneBookPath = Config.PhoneBookPath;
-            dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
+
+            if (!string.IsNullOrWhiteSpace(Config.Username) && !string.IsNullOrWhiteSpace(Config.Password))
+            {
+                dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
+            }
 
             await RunCoreAsync();
         }
@@ -148,7 +152,7 @@ namespace ConsoleRunner
 
         private void OnDisconnected(object sender, RasConnectionEventArgs e)
         {
-            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");            
+            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
             SetNotConnected();
         }
 
