@@ -11,10 +11,10 @@ namespace ConsoleRunner.Model
         [DataMember(Name = "phoneBookPath", IsRequired = false, Order = 2)]
         public string PhoneBookPath { get; set; }
 
-        [DataMember(Name = "username", IsRequired = true, Order = 3)]
+        [DataMember(Name = "username", IsRequired = false, Order = 3)]
         public string Username { get; set; }
 
-        [DataMember(Name = "password", IsRequired = true, Order = 4)]
+        [DataMember(Name = "password", IsRequired = false, Order = 4)]
         public string Password { get; set; }
     }
 }
