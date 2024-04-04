@@ -1,5 +1,4 @@
 ﻿using ConsoleRunner.Diagnostics;
-using DotRas.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRunner;
