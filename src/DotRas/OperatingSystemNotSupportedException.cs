@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -33,14 +32,6 @@ namespace DotRas
         /// <param name="innerException">The exception which was the cause of this exception.</param>
         public OperatingSystemNotSupportedException(string message, Exception innerException) 
             : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperatingSystemNotSupportedException"/> class.
-        /// </summary>
-        protected OperatingSystemNotSupportedException(SerializationInfo info, StreamingContext context) 
-            : base(info, context)
         {
         }
     }

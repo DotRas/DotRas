@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -52,12 +51,6 @@ namespace DotRas
         /// <param name="innerException">An exception which is the cause of this exception.</param>
         public IPSecException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        /// <inheritdoc />
-        protected IPSecException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

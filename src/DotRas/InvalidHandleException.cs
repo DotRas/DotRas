@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -32,12 +31,6 @@ namespace DotRas
         /// <param name="innerException">An exception which is the cause of this exception.</param>
         public InvalidHandleException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        /// <inheritdoc />
-        protected InvalidHandleException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

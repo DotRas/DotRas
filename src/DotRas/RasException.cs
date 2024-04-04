@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -44,12 +43,6 @@ namespace DotRas
         public RasException(int error, string message)
             : base(error, message)
         {
-        }
-
-        /// <inheritdoc />
-        protected RasException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+        }        
     }
 }
