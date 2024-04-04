@@ -11,7 +11,7 @@ namespace DotRas;
 /// <remarks>A <see cref="Luid"/> is guaranteed to be unique only on the system on which it was generated. Also, the uniqueness of a <see cref="Luid"/> is guaranteed only until the system is restarted.</remarks>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Luid : IEquatable<Luid>, IFormattable
+public readonly struct Luid : IEquatable<Luid>, IFormattable
 {
     #region Fields and Properties
 
