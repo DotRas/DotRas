@@ -2,53 +2,52 @@
 using DotRas.Diagnostics.Events;
 using Microsoft.Extensions.Logging;
 
-namespace ConsoleRunner.Infrastructure.Diagnostics
+namespace ConsoleRunner.Diagnostics;
+
+class DotRasLoggingAdapter : DotRas.Diagnostics.ILogger
 {
-    class DotRasLoggingAdapter : DotRas.Diagnostics.ILogger
+    private readonly IEventFormatterAdapter adapter;
+    private readonly Microsoft.Extensions.Logging.ILogger logger;
+
+    public DotRasLoggingAdapter(ILoggerFactory loggerFactory)
     {
-        private readonly IEventFormatterAdapter adapter;
-        private readonly Microsoft.Extensions.Logging.ILogger logger;
+        logger = loggerFactory.CreateLogger("DotRas");
+        adapter = new EventFormatterAdapter(new ConventionBasedEventFormatterFactory());
+    }
 
-        public DotRasLoggingAdapter(ILoggerFactory loggerFactory)
+    public void Log(EventLevel eventLevel, TraceEvent eventData)
+    {
+        if (eventData == null)
         {
-            logger = loggerFactory.CreateLogger("DotRas");
-            adapter = new EventFormatterAdapter(new ConventionBasedEventFormatterFactory());
+            return;
         }
 
-        public void Log(EventLevel eventLevel, TraceEvent eventData)
+        logger.Log(ConvertToLogLevel(eventLevel), FormatEventData(eventData));
+    }
+
+    private string FormatEventData(TraceEvent eventData)
+    {
+        return adapter.Format(eventData);
+    }
+
+    private static LogLevel ConvertToLogLevel(EventLevel level)
+    {
+        switch (level)
         {
-            if (eventData == null)
-            {
-                return;
-            }
+            case EventLevel.Critical:
+                return LogLevel.Critical;
 
-            logger.Log(ConvertToLogLevel(eventLevel), FormatEventData(eventData));
-        }
+            case EventLevel.Error:
+                return LogLevel.Error;
 
-        private string FormatEventData(TraceEvent eventData)
-        {
-            return adapter.Format(eventData);
-        }
+            case EventLevel.Warning:
+                return LogLevel.Warning;
 
-        private static LogLevel ConvertToLogLevel(EventLevel level)
-        {
-            switch (level)
-            {
-                case EventLevel.Critical:
-                    return LogLevel.Critical;
+            case EventLevel.Information:
+                return LogLevel.Information;
 
-                case EventLevel.Error:
-                    return LogLevel.Error;
-
-                case EventLevel.Warning:
-                    return LogLevel.Warning;
-
-                case EventLevel.Information:
-                    return LogLevel.Information;
-
-                default:
-                    return LogLevel.Debug;
-            }
+            default:
+                return LogLevel.Debug;
         }
     }
 }

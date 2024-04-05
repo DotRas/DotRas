@@ -8,6 +8,9 @@
             "program": "${workspaceFolder}/src/ConsoleRunner/bin/Debug/net8.0-windows/ConsoleRunner.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
+            "env": {
+              "ENV": "Development"
+            },
             "stopAtEntry": false,
             "console": "internalConsole"
         }

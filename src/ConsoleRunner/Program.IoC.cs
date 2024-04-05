@@ -1,32 +1,40 @@
 ﻿using System;
-using ConsoleRunner.Infrastructure.Diagnostics;
+using ConsoleRunner.Configuration;
+using ConsoleRunner.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
+using DotRas.Diagnostics;
 
-namespace ConsoleRunner
+namespace ConsoleRunner;
+
+partial class Program
 {
-    partial class Program
+    private static IServiceProvider applicationServices;
+    private static IConfiguration configuration;
+
+    private static void ConfigureIoC()
     {
-        private static IServiceProvider applicationServices;
-        private static IConfiguration configuration;
+        configuration = new ConfigurationBuilder()
+            .AddJsonFile("appSettings.json")
+            .AddJsonFile($"appSettings.{Environment.GetEnvironmentVariable("ENV")}.json", true)
+            .Build();
 
-        private static void ConfigureIoC()
-        {
-            configuration = new ConfigurationBuilder()
-                .AddJsonFile("appSettings.json")
-                .Build();
+        var services = new ServiceCollection();
+        services.AddTransient<DotRasLoggingAdapter>();
+        services.AddSingleton(configuration);
+        services.AddOptions<ApplicationOptions>().Bind(configuration.GetSection("App"));
 
-            var services = new ServiceCollection();
-            services.AddTransient<DotRasLoggingAdapter>();
-            services.AddSingleton(configuration);
+        services.AddLogging(builder => builder
+            .AddConfiguration(configuration.GetSection("Logging"))
+            .AddSimpleConsole());
 
-            services.AddLogging(builder => builder
-                .AddConfiguration(configuration.GetSection("Logging"))
-                .AddSimpleConsole());
+        applicationServices = services.BuildServiceProvider();
+    }
 
-            applicationServices = services.BuildServiceProvider();
-        }
+    private static void ConfigureDiagnostics()
+    {
+        LoggerLocator.SetLocator(applicationServices.GetRequiredService<DotRasLoggingAdapter>);
     }
 }

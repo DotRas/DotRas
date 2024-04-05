@@ -7,7 +7,6 @@
     "settings": {
         "files.exclude": {
             "**/.vs": true,
-            "**/.vscode": true,
             "**/.git": true
         }
     }

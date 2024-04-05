@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Include="appSettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+    <None Include="appSettings.Development.json" Condition=" '$(Configuration)' == 'Debug' " CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

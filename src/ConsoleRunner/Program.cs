@@ -3,192 +3,196 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsoleRunner.Configuration;
 using ConsoleRunner.Exceptions;
 using DotRas;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
-namespace ConsoleRunner
+namespace ConsoleRunner;
+
+partial class Program : IDisposable
 {
-    partial class Program : IDisposable
+    private readonly RasDialer dialer = new RasDialer();
+    private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
+
+    private RasConnection connection;
+    public bool IsConnected { get; private set; }
+
+    public Program()
     {
-        private readonly RasDialer dialer = new RasDialer();
-        private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
+        dialer.StateChanged += OnStateChanged;
+        watcher.Connected += OnConnected;
+        watcher.Disconnected += OnDisconnected;
+    }
 
-        private RasConnection connection;
-        public bool IsConnected { get; private set; }
+    ~Program()
+    {
+        Dispose(false);
+    }
 
-        public Program()
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            dialer.StateChanged += OnStateChanged;
-            watcher.Connected += OnConnected;
-            watcher.Disconnected += OnDisconnected;
+            dialer.StateChanged -= OnStateChanged;
+            dialer.Dispose();
+
+            watcher.Connected -= OnConnected;
+            watcher.Disconnected -= OnDisconnected;
+            watcher.Dispose();
+        }
+    }
+
+    public async Task RunAsync()
+    {
+        var config = applicationServices.GetRequiredService<IOptions<ApplicationOptions>>().Value;
+
+        dialer.EntryName = config.EntryName;
+        dialer.PhoneBookPath = config.PhoneBookPath;
+
+        if (!string.IsNullOrWhiteSpace(config.Username) && !string.IsNullOrWhiteSpace(config.Password))
+        {
+            dialer.Credentials = new NetworkCredential(config.Username, config.Password);
         }
 
-        ~Program()
+        await RunCoreAsync();
+    }
+
+    private async Task RunCoreAsync()
+    {
+        watcher.Start();
+
+        while (ShouldContinueExecution())
         {
-            Dispose(false);
-        }
+            using var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token);
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dialer.StateChanged -= OnStateChanged;
-                dialer.Dispose();
-
-                watcher.Connected -= OnConnected;
-                watcher.Disconnected -= OnDisconnected;
-                watcher.Dispose();
-            }
-        }
-
-        public async Task RunAsync()
-        {
-            dialer.EntryName = Config.EntryName;
-            dialer.PhoneBookPath = Config.PhoneBookPath;
-
-            if (!string.IsNullOrWhiteSpace(Config.Username) && !string.IsNullOrWhiteSpace(Config.Password))
-            {
-                dialer.Credentials = new NetworkCredential(Config.Username, Config.Password);
-            }
-
-            await RunCoreAsync();
-        }
-
-        private async Task RunCoreAsync()
-        {
-            watcher.Start();
-
-            while (ShouldContinueExecution())
-            {
-                using var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token);
-
-                try
-                {
-                    await RunOnceAsync(tcs.Token);
-                }
-                finally
-                {
-                    await WaitForALittleWhileAsync(tcs.Token, false);
-                }
-            }
-
-            watcher.Stop();
-        }
-
-        protected async Task RunOnceAsync(CancellationToken runningToken)
-        {
             try
             {
-                await ConnectAsync(runningToken);
-
-                await WaitForALittleWhileAsync(runningToken, true);
-
-                await DisconnectAsync(runningToken);
+                await RunOnceAsync(tcs.Token);
             }
-            catch (Exception ex)
+            finally
             {
-                Console.WriteLine(ex);
+                await WaitForALittleWhileAsync(tcs.Token, false);
             }
         }
 
-        private async Task WaitForALittleWhileAsync(CancellationToken cancellationToken, bool allowThrowCancellationException)
+        watcher.Stop();
+    }
+
+    protected async Task RunOnceAsync(CancellationToken runningToken)
+    {
+        try
         {
-            try
+            await ConnectAsync(runningToken);
+
+            await WaitForALittleWhileAsync(runningToken, true);
+
+            await DisconnectAsync(runningToken);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task WaitForALittleWhileAsync(CancellationToken cancellationToken, bool allowThrowCancellationException)
+    {
+        try
+        {
+            await Task.Delay(5000, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // Swallow if cancellation has occurred.
+            if (allowThrowCancellationException)
             {
-                await Task.Delay(5000, cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                // Swallow if cancellation has occurred.
-                if (allowThrowCancellationException)
-                {
-                    throw;
-                }
+                throw;
             }
         }
+    }
 
-        private async Task ConnectAsync(CancellationToken cancellationToken)
+    private async Task ConnectAsync(CancellationToken cancellationToken)
+    {
+        if (IsConnected)
         {
-            if (IsConnected)
-            {
-                return;
-            }
-
-            connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == dialer.EntryName);
-            if (connection != null)
-            {
-                Console.WriteLine($"Already connected: {dialer.EntryName}");
-                SetConnected();
-            }
-            else
-            {
-                Console.WriteLine("Starting connection...");
-                connection = await dialer.ConnectAsync(cancellationToken);
-            }
+            return;
         }
 
-        private void OnConnected(object sender, RasConnectionEventArgs e)
+        connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == dialer.EntryName);
+        if (connection != null)
         {
-            Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
+            Console.WriteLine($"Already connected: {dialer.EntryName}");
             SetConnected();
         }
-
-        private async Task DisconnectAsync(CancellationToken cancellationToken)
+        else
         {
-            if (!IsConnected)
-            {
-                return;
-            }
+            Console.WriteLine("Starting connection...");
+            connection = await dialer.ConnectAsync(cancellationToken);
+        }
+    }
 
-            Console.WriteLine("Starting disconnect...");
-            await connection.DisconnectAsync(cancellationToken);
+    private void OnConnected(object sender, RasConnectionEventArgs e)
+    {
+        Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
+        SetConnected();
+    }
+
+    private async Task DisconnectAsync(CancellationToken cancellationToken)
+    {
+        if (!IsConnected)
+        {
+            return;
         }
 
-        private void OnDisconnected(object sender, RasConnectionEventArgs e)
-        {
-            Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
-            SetNotConnected();
-        }
+        Console.WriteLine("Starting disconnect...");
+        await connection.DisconnectAsync(cancellationToken);
+    }
 
-        private void SetConnected()
-        {
-            IsConnected = true;
-        }
+    private void OnDisconnected(object sender, RasConnectionEventArgs e)
+    {
+        Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
+        SetNotConnected();
+    }
 
-        private void SetNotConnected()
-        {
-            IsConnected = false;
-        }
+    private void SetConnected()
+    {
+        IsConnected = true;
+    }
 
-        private bool ShouldContinueExecution()
-        {
-            return !CancellationSource.IsCancellationRequested;
-        }
+    private void SetNotConnected()
+    {
+        IsConnected = false;
+    }
 
-        private void OnStateChanged(object sender, StateChangedEventArgs e)
-        {
-            Console.WriteLine($"  State: {e.State}");
-            RandomlyThrowException();
-        }
+    private bool ShouldContinueExecution()
+    {
+        return !CancellationSource.IsCancellationRequested;
+    }
 
-        private void RandomlyThrowException()
-        {
-            if (ShouldThrowRandomException())
-            {
-                throw new RandomException();
-            }
-        }
+    private void OnStateChanged(object sender, StateChangedEventArgs e)
+    {
+        Console.WriteLine($"  State: {e.State}");
+        RandomlyThrowException();
+    }
 
-        private bool ShouldThrowRandomException()
+    private void RandomlyThrowException()
+    {
+        if (ShouldThrowRandomException())
         {
-            var rand = new Random();
-            return rand.Next(1, 100) >= 98;
+            throw new RandomException();
         }
+    }
+
+    private bool ShouldThrowRandomException()
+    {
+        var rand = new Random();
+        return rand.Next(1, 100) >= 98;
     }
 }
