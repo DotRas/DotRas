@@ -1,11 +1,10 @@
-﻿using System;
-using ConsoleRunner.Configuration;
+﻿using ConsoleRunner.Configuration;
 using ConsoleRunner.Diagnostics;
+using DotRas.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
-using DotRas.Diagnostics;
 
 namespace ConsoleRunner;
 
@@ -13,6 +12,7 @@ partial class Program
 {
     private static IServiceProvider applicationServices;
     private static IConfiguration configuration;
+    private static Microsoft.Extensions.Logging.ILogger logger;
 
     private static void ConfigureIoC()
     {
@@ -28,7 +28,12 @@ partial class Program
 
         services.AddLogging(builder => builder
             .AddConfiguration(configuration.GetSection("Logging"))
-            .AddSimpleConsole());
+            .AddSimpleConsole(opts =>
+            {
+                opts.SingleLine = true;
+                opts.IncludeScopes = true;
+                opts.UseUtcTimestamp = true;
+            }));
 
         applicationServices = services.BuildServiceProvider();
     }
@@ -36,5 +41,6 @@ partial class Program
     private static void ConfigureDiagnostics()
     {
         LoggerLocator.SetLocator(applicationServices.GetRequiredService<DotRasLoggingAdapter>);
+        logger = applicationServices.GetRequiredService<ILoggerFactory>().CreateLogger("App");
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
 
 namespace ConsoleRunner;
 
@@ -25,7 +23,7 @@ partial class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            logger.LogError(ex, "An unexpected error occurred, see exception for more details.");
         }
         finally {
             CancellationSource.Dispose();

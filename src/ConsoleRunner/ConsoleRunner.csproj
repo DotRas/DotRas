@@ -4,6 +4,7 @@
 	  <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- Exclude the project from analysis -->
     <SonarQubeExclude>true</SonarQubeExclude>

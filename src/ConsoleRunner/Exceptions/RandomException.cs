@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ConsoleRunner.Exceptions;
+﻿namespace ConsoleRunner.Exceptions;
 
 /// <summary>
 /// An exception which occurs randomly.

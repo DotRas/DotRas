@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using ConsoleRunner.Configuration;
 using ConsoleRunner.Exceptions;
 using DotRas;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ConsoleRunner;
@@ -98,7 +95,7 @@ partial class Program : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            logger.LogError(ex, "An error occurred while attempting to connect, see exception for more details.");
         }
     }
 
@@ -128,19 +125,19 @@ partial class Program : IDisposable
         connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == dialer.EntryName);
         if (connection != null)
         {
-            Console.WriteLine($"Already connected: {dialer.EntryName}");
+            logger.LogInformation($"Already connected: {dialer.EntryName}");
             SetConnected();
         }
         else
         {
-            Console.WriteLine("Starting connection...");
+            logger.LogInformation("Starting connection...");
             connection = await dialer.ConnectAsync(cancellationToken);
         }
     }
 
     private void OnConnected(object sender, RasConnectionEventArgs e)
     {
-        Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
+        logger.LogInformation($"Connected: {e.ConnectionInformation.EntryName}");
         SetConnected();
     }
 
@@ -151,13 +148,13 @@ partial class Program : IDisposable
             return;
         }
 
-        Console.WriteLine("Starting disconnect...");
+        logger.LogInformation("Starting disconnect...");
         await connection.DisconnectAsync(cancellationToken);
     }
 
     private void OnDisconnected(object sender, RasConnectionEventArgs e)
     {
-        Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
+        logger.LogInformation($"Disconnected: {e.ConnectionInformation.EntryName}");
         SetNotConnected();
     }
 
@@ -178,7 +175,7 @@ partial class Program : IDisposable
 
     private void OnStateChanged(object sender, StateChangedEventArgs e)
     {
-        Console.WriteLine($"  State: {e.State}");
+        logger.LogInformation($"  State: {e.State}");
         RandomlyThrowException();
     }
 
