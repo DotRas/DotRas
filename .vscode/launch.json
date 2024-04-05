@@ -5,7 +5,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/ConsoleRunner/bin/Debug/net6.0-windows/ConsoleRunner.exe",
+            "program": "${workspaceFolder}/src/ConsoleRunner/bin/Debug/net8.0-windows/ConsoleRunner.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
