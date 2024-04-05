@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net481;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+
+    <!--
+      The language version needs to be aligned with the lowest framework version being targeted by the project.
+      For more information:
+
+      https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version
+    -->
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
