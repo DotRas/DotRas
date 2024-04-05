@@ -1,4 +1,10 @@
-﻿[*.cs]
+﻿root = true
+
+[*]
+indent_style = space
+indent_size = 2
+
+[*.cs]
 # Indentation and spacing
 indent_size = 4
 indent_style = space
@@ -10,3 +16,14 @@ dotnet_sort_system_directives_first = true
 
 # S4457: Parameter validation in "async"/"await" methods should be wrapped
 dotnet_diagnostic.S4457.severity = suggestion
+
+# IDE0005: Ensure all unused using statements are removed
+dotnet_diagnostic.IDE0005.severity = error
+
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
