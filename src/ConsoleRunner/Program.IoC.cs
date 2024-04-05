@@ -1,18 +1,25 @@
-﻿using System.Reflection;
-using Autofac;
+﻿using System;
+using ConsoleRunner.Infrastructure.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ConsoleRunner
 {
     partial class Program
     {
-        private static IContainer container;
+        private static IServiceProvider applicationServices;
 
         private static void ConfigureIoC()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules(Assembly.GetExecutingAssembly());
+            var services = new ServiceCollection();
+            services.AddTransient<DotRasLoggingAdapter>();
 
-            container = builder.Build();
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
+
+            applicationServices = services.BuildServiceProvider();
         }
     }
 }

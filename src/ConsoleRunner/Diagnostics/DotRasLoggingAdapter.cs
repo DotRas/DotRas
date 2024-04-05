@@ -1,17 +1,17 @@
 ﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace ConsoleRunner.Infrastructure.Diagnostics
 {
     class DotRasLoggingAdapter : DotRas.Diagnostics.ILogger
     {
         private readonly IEventFormatterAdapter adapter;
-        private readonly NLog.ILogger logger;
+        private readonly Microsoft.Extensions.Logging.ILogger logger;
 
-        public DotRasLoggingAdapter()
+        public DotRasLoggingAdapter(ILoggerFactory loggerFactory)
         {
-            logger = LogManager.GetLogger("App");
+            logger = loggerFactory.CreateLogger("DotRas");
             adapter = new EventFormatterAdapter(new ConventionBasedEventFormatterFactory());
         }
 
@@ -35,16 +35,16 @@ namespace ConsoleRunner.Infrastructure.Diagnostics
             switch (level)
             {
                 case EventLevel.Critical:
-                    return LogLevel.Fatal;
+                    return LogLevel.Critical;
 
                 case EventLevel.Error:
                     return LogLevel.Error;
 
                 case EventLevel.Warning:
-                    return LogLevel.Warn;
+                    return LogLevel.Warning;
 
                 case EventLevel.Information:
-                    return LogLevel.Info;
+                    return LogLevel.Information;
 
                 default:
                     return LogLevel.Debug;

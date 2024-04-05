@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
+using ConsoleRunner.Infrastructure.Diagnostics;
+using DotRas.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Configuration = ConsoleRunner.Model.Configuration;
 
 namespace ConsoleRunner
@@ -11,6 +14,8 @@ namespace ConsoleRunner
 
         private static void ConfigureApplication()
         {
+            LoggerLocator.SetLocator(applicationServices.GetService<DotRasLoggingAdapter>);
+
             var dcs = new DataContractSerializer(typeof(Configuration));
             using (var fs = File.OpenRead($@"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\Config.xml"))
             {
