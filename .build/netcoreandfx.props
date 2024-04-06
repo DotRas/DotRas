@@ -15,7 +15,7 @@
   <PropertyGroup>
     <!-- 
       Defines the default host identifier when none has been provided. 
-      Possible values are: win7, win8, win10 
+      Possible values are: win10 
     -->
     <HostIdentifier Condition=" '$(HostIdentifier)' == ''">win10</HostIdentifier>
   </PropertyGroup>
