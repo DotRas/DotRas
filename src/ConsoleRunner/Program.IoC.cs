@@ -10,24 +10,35 @@ namespace ConsoleRunner;
 
 partial class Program
 {
-    private static IServiceProvider applicationServices;
-    private static IConfiguration configuration;
-    private static Microsoft.Extensions.Logging.ILogger logger;
+    /// <summary>
+    /// Gets the application services.
+    /// </summary>
+    private static IServiceProvider ApplicationServices { get; set; }
+
+    /// <summary>
+    /// Gets the application configuration.
+    /// </summary>
+    private static IConfiguration Configuration { get; set; }
+
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
+    private static ILogger<Program> Logger { get; set; }
 
     private static void ConfigureIoC()
     {
-        configuration = new ConfigurationBuilder()
+        Configuration = new ConfigurationBuilder()
             .AddJsonFile("appSettings.json")
             .AddJsonFile($"appSettings.{Environment.GetEnvironmentVariable("ENV")}.json", true)
             .Build();
 
         var services = new ServiceCollection();
         services.AddTransient<DotRasLoggingAdapter>();
-        services.AddSingleton(configuration);
-        services.AddOptions<ApplicationOptions>().Bind(configuration.GetSection("App"));
+        services.AddSingleton(Configuration);
+        services.AddOptions<ApplicationOptions>().Bind(Configuration.GetSection("App"));
 
         services.AddLogging(builder => builder
-            .AddConfiguration(configuration.GetSection("Logging"))
+            .AddConfiguration(Configuration.GetSection("Logging"))
             .AddSimpleConsole(opts =>
             {
                 opts.SingleLine = true;
@@ -35,12 +46,12 @@ partial class Program
                 opts.UseUtcTimestamp = true;
             }));
 
-        applicationServices = services.BuildServiceProvider();
+        ApplicationServices = services.BuildServiceProvider();
     }
 
     private static void ConfigureDiagnostics()
     {
-        LoggerLocator.SetLocator(applicationServices.GetRequiredService<DotRasLoggingAdapter>);
-        logger = applicationServices.GetRequiredService<ILoggerFactory>().CreateLogger("App");
+        LoggerLocator.SetLocator(ApplicationServices.GetRequiredService<DotRasLoggingAdapter>);
+        Logger = ApplicationServices.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
     }
 }

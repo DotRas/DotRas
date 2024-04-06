@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ConsoleRunner;
+﻿namespace ConsoleRunner;
 
 partial class Program
 {
-    private static readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
+    private static CancellationTokenSource CancellationSource { get; } = new CancellationTokenSource();
 
     public static async Task Main()
     {
@@ -23,7 +21,7 @@ partial class Program
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An unexpected error occurred, see exception for more details.");
+            await Console.Error.WriteLineAsync($"An unexpected error occurred. See exception for more details:\r\n{ex}");
         }
         finally {
             CancellationSource.Dispose();

@@ -10,17 +10,17 @@ namespace ConsoleRunner;
 
 partial class Program : IDisposable
 {
-    private readonly RasDialer dialer = new RasDialer();
-    private readonly RasConnectionWatcher watcher = new RasConnectionWatcher();
+    private RasDialer Dialer { get; } = new RasDialer();
+    private RasConnectionWatcher Watcher { get; } = new RasConnectionWatcher();
 
     private RasConnection connection;
     public bool IsConnected { get; private set; }
 
     public Program()
     {
-        dialer.StateChanged += OnStateChanged;
-        watcher.Connected += OnConnected;
-        watcher.Disconnected += OnDisconnected;
+        Dialer.StateChanged += OnStateChanged;
+        Watcher.Connected += OnConnected;
+        Watcher.Disconnected += OnDisconnected;
     }
 
     ~Program()
@@ -38,25 +38,25 @@ partial class Program : IDisposable
     {
         if (disposing)
         {
-            dialer.StateChanged -= OnStateChanged;
-            dialer.Dispose();
+            Dialer.StateChanged -= OnStateChanged;
+            Dialer.Dispose();
 
-            watcher.Connected -= OnConnected;
-            watcher.Disconnected -= OnDisconnected;
-            watcher.Dispose();
+            Watcher.Connected -= OnConnected;
+            Watcher.Disconnected -= OnDisconnected;
+            Watcher.Dispose();
         }
     }
 
     public async Task RunAsync()
     {
-        var config = applicationServices.GetRequiredService<IOptions<ApplicationOptions>>().Value;
+        var config = ApplicationServices.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
-        dialer.EntryName = config.EntryName;
-        dialer.PhoneBookPath = config.PhoneBookPath;
+        Dialer.EntryName = config.EntryName;
+        Dialer.PhoneBookPath = config.PhoneBookPath;
 
         if (!string.IsNullOrWhiteSpace(config.Username) && !string.IsNullOrWhiteSpace(config.Password))
         {
-            dialer.Credentials = new NetworkCredential(config.Username, config.Password);
+            Dialer.Credentials = new NetworkCredential(config.Username, config.Password);
         }
 
         await RunCoreAsync();
@@ -64,7 +64,7 @@ partial class Program : IDisposable
 
     private async Task RunCoreAsync()
     {
-        watcher.Start();
+        Watcher.Start();
 
         while (ShouldContinueExecution())
         {
@@ -76,11 +76,11 @@ partial class Program : IDisposable
             }
             finally
             {
-                await WaitForALittleWhileAsync(tcs.Token, false);
+                await WaitForALittleWhileAsync(false, tcs.Token);
             }
         }
 
-        watcher.Stop();
+        Watcher.Stop();
     }
 
     protected async Task RunOnceAsync(CancellationToken runningToken)
@@ -89,17 +89,17 @@ partial class Program : IDisposable
         {
             await ConnectAsync(runningToken);
 
-            await WaitForALittleWhileAsync(runningToken, true);
+            await WaitForALittleWhileAsync(true, runningToken);
 
             await DisconnectAsync(runningToken);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while attempting to connect, see exception for more details.");
+            Logger.LogError(ex, "An error occurred while attempting to connect, see exception for more details.");
         }
     }
 
-    private async Task WaitForALittleWhileAsync(CancellationToken cancellationToken, bool allowThrowCancellationException)
+    private async static Task WaitForALittleWhileAsync(bool allowThrowCancellationException, CancellationToken cancellationToken)
     {
         try
         {
@@ -122,22 +122,22 @@ partial class Program : IDisposable
             return;
         }
 
-        connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == dialer.EntryName);
+        connection = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == Dialer.EntryName);
         if (connection != null)
         {
-            logger.LogInformation($"Already connected: {dialer.EntryName}");
+            Logger.LogInformation("Already connected: {EntryName}", Dialer.EntryName);
             SetConnected();
         }
         else
         {
-            logger.LogInformation("Starting connection...");
-            connection = await dialer.ConnectAsync(cancellationToken);
+            Logger.LogInformation("Starting connection...");
+            connection = await Dialer.ConnectAsync(cancellationToken);
         }
     }
 
     private void OnConnected(object sender, RasConnectionEventArgs e)
     {
-        logger.LogInformation($"Connected: {e.ConnectionInformation.EntryName}");
+        Logger.LogInformation("Connected: {EntryName}", e.ConnectionInformation.EntryName);
         SetConnected();
     }
 
@@ -148,13 +148,13 @@ partial class Program : IDisposable
             return;
         }
 
-        logger.LogInformation("Starting disconnect...");
+        Logger.LogInformation("Starting disconnect...");
         await connection.DisconnectAsync(cancellationToken);
     }
 
     private void OnDisconnected(object sender, RasConnectionEventArgs e)
     {
-        logger.LogInformation($"Disconnected: {e.ConnectionInformation.EntryName}");
+        Logger.LogInformation("Disconnected: {EntryName}", e.ConnectionInformation.EntryName);
         SetNotConnected();
     }
 
@@ -168,18 +168,18 @@ partial class Program : IDisposable
         IsConnected = false;
     }
 
-    private bool ShouldContinueExecution()
+    private static bool ShouldContinueExecution()
     {
         return !CancellationSource.IsCancellationRequested;
     }
 
     private void OnStateChanged(object sender, StateChangedEventArgs e)
     {
-        logger.LogInformation($"  State: {e.State}");
+        Logger.LogInformation("  State: {State}", e.State);
         RandomlyThrowException();
     }
 
-    private void RandomlyThrowException()
+    private static void RandomlyThrowException()
     {
         if (ShouldThrowRandomException())
         {
@@ -187,7 +187,7 @@ partial class Program : IDisposable
         }
     }
 
-    private bool ShouldThrowRandomException()
+    private static bool ShouldThrowRandomException()
     {
         var rand = new Random();
         return rand.Next(1, 100) >= 98;
