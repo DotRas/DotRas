@@ -16,14 +16,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Decrypt SNK file
       run: ./.github/scripts/decrypt_snk.bat
       env:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
-    - uses: benjlevesque/short-sha@v1.2
+    - uses: benjlevesque/short-sha@v3
       id: short-sha
       
     - name: Run build
@@ -38,7 +38,7 @@ jobs:
         HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: nuget-packages
         path: |
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: nuget-packages
     
