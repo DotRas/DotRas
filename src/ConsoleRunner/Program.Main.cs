@@ -1,46 +1,41 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ConsoleRunner;
 
-namespace ConsoleRunner
+partial class Program
 {
-    partial class Program
+    private static CancellationTokenSource CancellationSource { get; } = new CancellationTokenSource();
+
+    public static async Task Main()
     {
-        private static readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
+        Console.WriteLine("Press CTRL+C at any time to to cancel the application...");
+        Console.WriteLine();
 
-        public static async Task Main()
+        AttachCancellationSourceToCancelKeyPress();
+
+        try
         {
-            Console.WriteLine("Press CTRL+C at any time to to cancel the application...");
-            Console.WriteLine();
+            ConfigureIoC();
+            ConfigureDiagnostics();
 
-            AttachCancellationSourceToCancelKeyPress();
-
-            try
-            {
-                ConfigureIoC();
-                ConfigureApplication();
-
-                using var program = new Program();
-                await program.RunAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            finally {
-                CancellationSource.Dispose();
-            }
+            using var program = new Program();
+            await program.RunAsync();
         }
-
-        private static void AttachCancellationSourceToCancelKeyPress()
+        catch (Exception ex)
         {
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                Console.WriteLine("Terminating the application...");
-
-                CancellationSource.Cancel();
-                e.Cancel = true;
-            };
+            await Console.Error.WriteLineAsync($"An unexpected error occurred. See exception for more details:\r\n{ex}");
         }
+        finally {
+            CancellationSource.Dispose();
+        }
+    }
+
+    private static void AttachCancellationSourceToCancelKeyPress()
+    {
+        Console.CancelKeyPress += (sender, e) =>
+        {
+            Console.WriteLine("Terminating the application...");
+
+            CancellationSource.Cancel();
+            e.Cancel = true;
+        };
     }
 }

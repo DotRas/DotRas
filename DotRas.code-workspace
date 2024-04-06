@@ -8,10 +8,7 @@
         "files.exclude": {
             "**/.vs": true,
             "**/.vscode": true,
-            "**/.build": true,
-            "**/.git": true,
-            "**/bin": true,
-            "**/obj": true
+            "**/.git": true
         }
     }
 }
