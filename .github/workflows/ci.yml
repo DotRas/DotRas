@@ -23,7 +23,7 @@ jobs:
       env:
         snk_passphrase: ${{ secrets.SNK_PASSPHRASE }}
 
-    - uses: benjlevesque/short-sha@v3
+    - uses: benjlevesque/short-sha@v3.0
       id: short-sha
       
     - name: Run build
