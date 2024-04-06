@@ -1,62 +1,57 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using DotRas;
 
-namespace DialConnectionAsynchronously
+namespace DialConnectionAsynchronously;
+
+class Program
 {
-    class Program
+    private readonly RasDialer dialer;
+
+    static async Task Main()
     {
-        private readonly RasDialer dialer;
-
-        static async Task Main()
+        try
         {
-            try
-            {
-                await new Program()
-                    .RunAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
-            Console.WriteLine("Press any key to terminate...");
-            Console.ReadKey(true);
+            await new Program().RunAsync();
+        }
+        catch (Exception ex)
+        {
+            await Console.Error.WriteLineAsync(ex.ToString());
         }
 
-        public Program()
-        {
-            dialer = new RasDialer();
-            dialer.StateChanged += OnDialerStateChanged;
-        }
+        await Console.Out.WriteLineAsync("Press any key to terminate...");
+        Console.ReadKey(true);
+    }
 
-        private void OnDialerStateChanged(object sender, StateChangedEventArgs e)
-        {
-            Console.WriteLine($"State: {e.State}");
-        }
+    public Program()
+    {
+        dialer = new RasDialer();
+        dialer.StateChanged += OnDialerStateChanged;
+    }
 
-        private async Task RunAsync()
-        {
-            // This should contain the name 
-            dialer.EntryName = "Your Entry";
+    private void OnDialerStateChanged(object sender, StateChangedEventArgs e)
+    {
+        Console.WriteLine($"State: {e.State}");
+    }
 
-            // If your account requires credentials that have not been persisted, they can be passed here.
-            dialer.Credentials = new NetworkCredential("Username", "Password");
+    private async Task RunAsync()
+    {
+        // This should contain the name 
+        dialer.EntryName = "Your Entry";
 
-            // This specifies the default location for Windows phone books.
-            dialer.PhoneBookPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
+        // If your account requires credentials that have not been persisted, they can be passed here.
+        dialer.Credentials = new NetworkCredential("Username", "Password");
 
-            Console.WriteLine("Connecting...");
+        // This specifies the default location for Windows phone books.
+        dialer.PhoneBookPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
 
-            // Dials the connection synchronously. This will still raise events, and it will also allow for timeouts
-            // if the cancellation token is passed into the api via the overload.
-            var connection = await dialer.ConnectAsync();
+        await Console.Out.WriteLineAsync("Connecting...");
 
-            Console.WriteLine($"Connected: [{connection.EntryName}] @ {connection.Handle}");
-        }
+        // Dials the connection synchronously. This will still raise events, and it will also allow for timeouts
+        // if the cancellation token is passed into the api via the overload.
+        var connection = await dialer.ConnectAsync();
+
+        await Console.Out.WriteLineAsync($"Connected: [{connection.EntryName}] @ {connection.Handle}");
     }
 }

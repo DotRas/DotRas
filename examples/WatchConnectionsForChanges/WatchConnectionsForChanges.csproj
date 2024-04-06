@@ -5,8 +5,4 @@
     <AssemblyName>WatchConnectionsForChanges</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DotRas\DotRas.csproj" />
-  </ItemGroup>
-
 </Project>
