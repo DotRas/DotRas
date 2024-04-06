@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../.build/netcoreandfx.props" />
+  <Import Project="../../.build/example.props" />
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <AssemblyName>DialConnectionAndWatchForDisconnect</AssemblyName>
-
-    <!-- Exclude the project from analysis -->
-    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>
