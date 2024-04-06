@@ -19,7 +19,7 @@
         <PackageId>DotRas.for.Win10</PackageId>
         <Title>DotRas for Windows 10</Title>
       </PropertyGroup>
-    </When>    
+    </When>
   </Choose>
 
   <PropertyGroup>
