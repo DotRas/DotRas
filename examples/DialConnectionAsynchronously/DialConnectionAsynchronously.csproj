@@ -1,16 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../.build/netcoreandfx.props" />
+  <Import Project="../../.build/example.props" />
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <AssemblyName>DialConnectionAsynchronously</AssemblyName>
-
-    <!-- Exclude the project from analysis -->
-    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DotRas\DotRas.csproj" />
-  </ItemGroup>
 
 </Project>
