@@ -1,21 +1,17 @@
-﻿using System.Net;
-using DotRas;
+﻿using DotRas;
+using System.Net;
 
 namespace DialConnectionAndWatchForDisconnect;
 
-class Program
-{
+internal class Program {
     private readonly RasDialer dialer;
     private readonly RasConnectionWatcher watcher;
 
-    static async Task Main()
-    {
-        try
-        {
+    private static async Task Main() {
+        try {
             await new Program().RunAsync();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             await Console.Error.WriteLineAsync(ex.ToString());
         }
 
@@ -23,16 +19,14 @@ class Program
         Console.ReadKey(true);
     }
 
-    public Program()
-    {
+    public Program() {
         dialer = new RasDialer();
 
         watcher = new RasConnectionWatcher();
         watcher.Disconnected += OnConnectionDisconnected;
     }
 
-    private async Task RunAsync()
-    {
+    private async Task RunAsync() {
         // This should contain the name.
         dialer.EntryName = "Your Entry";
 
@@ -40,10 +34,8 @@ class Program
         dialer.Credentials = new NetworkCredential("Username", "Password");
 
         // This specifies the default location for Windows phone books.
-        dialer.PhoneBookPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
-        
+        dialer.PhoneBookPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
+
         // Dials the connection synchronously. This will still raise events, and it will also allow for timeouts
         // if the cancellation token is passed into the api via the overload.
         var connection = await dialer.ConnectAsync();
@@ -62,8 +54,5 @@ class Program
         watcher.Stop();
     }
 
-    private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
-    {
-        Console.WriteLine($"Disconnected: [{e.ConnectionInformation.EntryName}] @ {e.ConnectionInformation.Handle}");
-    }
+    private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e) => Console.WriteLine($"Disconnected: [{e.ConnectionInformation.EntryName}] @ {e.ConnectionInformation.Handle}");
 }

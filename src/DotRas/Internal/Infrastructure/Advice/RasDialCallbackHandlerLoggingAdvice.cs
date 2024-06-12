@@ -1,44 +1,31 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Internal.Abstractions.Services;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace DotRas.Internal.Infrastructure.Advice
-{
-    internal class RasDialCallbackHandlerLoggingAdvice : LoggingAdvice<IRasDialCallbackHandler>, IRasDialCallbackHandler
-    {
+namespace DotRas.Internal.Infrastructure.Advice {
+    internal class RasDialCallbackHandlerLoggingAdvice : LoggingAdvice<IRasDialCallbackHandler>, IRasDialCallbackHandler {
         public RasDialCallbackHandlerLoggingAdvice(IRasDialCallbackHandler attachedObject, IEventLoggingPolicy eventLoggingPolicy)
-            : base(attachedObject, eventLoggingPolicy)
-        {
-        }
+            : base(attachedObject, eventLoggingPolicy) { }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 AttachedObject.Dispose();
             }
 
             base.Dispose(disposing);
         }
 
-        public void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken)
-        {
+        public void Initialize(TaskCompletionSource<RasConnection> completionSource, Action<StateChangedEventArgs> onStateChangedCallback, Action onCompletedCallback, CancellationToken cancellationToken) =>
             AttachedObject.Initialize(completionSource, onStateChangedCallback, onCompletedCallback, cancellationToken);
-        }
 
-        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError)
-        {
+        public bool OnCallback(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError) {
             var occurredOn = DateTime.Now;
             var result = AttachedObject.OnCallback(dwCallbackId, dwSubEntry, hrasconn, message, rascs, dwError, dwExtendedError);
 
-            var callbackEvent = new RasDialCallbackCompletedTraceEvent
-            {
-                OccurredOn = occurredOn,
-                Result = result
-            };
+            var callbackEvent = new RasDialCallbackCompletedTraceEvent { OccurredOn = occurredOn, Result = result };
 
             callbackEvent.Args.Add(nameof(dwCallbackId), dwCallbackId);
             callbackEvent.Args.Add(nameof(dwSubEntry), dwSubEntry);
@@ -52,9 +39,6 @@ namespace DotRas.Internal.Infrastructure.Advice
             return result;
         }
 
-        public void SetHandle(IntPtr handle)
-        {
-            AttachedObject.SetHandle(handle);
-        }
+        public void SetHandle(IntPtr handle) => AttachedObject.SetHandle(handle);
     }
 }

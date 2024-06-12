@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace DotRas.Diagnostics.Tracing
-{
-    internal class EventLevelConverter : IEventLevelConverter
-    {
-        public TraceEventType Convert(EventLevel input)
-        {
-            return input switch
-            {
+namespace DotRas.Diagnostics.Tracing {
+    internal class EventLevelConverter : IEventLevelConverter {
+        public TraceEventType Convert(EventLevel input) =>
+            input switch {
                 EventLevel.Critical => TraceEventType.Critical,
                 EventLevel.Error => TraceEventType.Error,
                 EventLevel.Information => TraceEventType.Information,
@@ -16,6 +12,5 @@ namespace DotRas.Diagnostics.Tracing
                 EventLevel.Verbose => TraceEventType.Verbose,
                 _ => throw new NotSupportedException($"The value '{input}' is not supported.")
             };
-        }
     }
 }

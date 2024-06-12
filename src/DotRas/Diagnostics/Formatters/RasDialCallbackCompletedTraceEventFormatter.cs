@@ -1,19 +1,15 @@
-﻿using System;
+﻿using DotRas.Diagnostics.Events;
+using System;
 using System.Text;
-using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Formatters
-{
+namespace DotRas.Diagnostics.Formatters {
     /// <summary>
     /// Provides a formatter for a <see cref="RasDialCallbackCompletedTraceEvent"/> event.
     /// </summary>
-    public class RasDialCallbackCompletedTraceEventFormatter : IEventFormatter<RasDialCallbackCompletedTraceEvent>
-    {
+    public class RasDialCallbackCompletedTraceEventFormatter : IEventFormatter<RasDialCallbackCompletedTraceEvent> {
         /// <inheritdoc />
-        public string Format(RasDialCallbackCompletedTraceEvent eventData)
-        {
-            if (eventData == null)
-            {
+        public string Format(RasDialCallbackCompletedTraceEvent eventData) {
+            if (eventData == null) {
                 throw new ArgumentNullException(nameof(eventData));
             }
 
@@ -23,11 +19,9 @@ namespace DotRas.Diagnostics.Formatters
             sb.AppendLine().Append($"\tOccurred On: {eventData.OccurredOn}");
             sb.AppendLine().Append($"\tResult: {eventData.Result}");
 
-            if (eventData.Args.Count > 0)
-            {
+            if (eventData.Args.Count > 0) {
                 sb.AppendLine().Append("\tArguments:");
-                foreach (var arg in eventData.Args)
-                {
+                foreach (var arg in eventData.Args) {
                     sb.AppendLine().Append($"\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
                 }
             }

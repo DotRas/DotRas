@@ -1,12 +1,10 @@
 ﻿using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics
-{
+namespace DotRas.Diagnostics {
     /// <summary>
     /// Identifies a mechanism which can log events that occur.
     /// </summary>
-    public interface ILogger
-    {
+    public interface ILogger {
         /// <summary>
         /// Logs the event.
         /// </summary>

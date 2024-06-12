@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotRas.Diagnostics.Events
-{
+namespace DotRas.Diagnostics.Events {
     /// <summary>
     /// Describes a call trace event.
     /// </summary>
     [Serializable]
-    public abstract class CallTraceEvent : TraceEvent
-    {
+    public abstract class CallTraceEvent : TraceEvent {
         /// <summary>
         /// Gets a dictionary of arguments and their associated values.
         /// </summary>

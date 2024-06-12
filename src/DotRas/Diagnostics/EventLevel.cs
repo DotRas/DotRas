@@ -1,10 +1,8 @@
-﻿namespace DotRas.Diagnostics
-{
+﻿namespace DotRas.Diagnostics {
     /// <summary>
     /// Defines the levels of events.
     /// </summary>
-    public enum EventLevel
-    {
+    public enum EventLevel {
         /// <summary>
         /// A critical event has occurred.
         /// </summary>

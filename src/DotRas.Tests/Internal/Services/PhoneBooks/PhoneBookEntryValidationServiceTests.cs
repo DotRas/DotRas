@@ -1,24 +1,18 @@
-﻿using System;
-using DotRas.Internal.Interop;
+﻿using DotRas.Internal.Interop;
 using DotRas.Internal.Services.PhoneBooks;
 using Moq;
 using NUnit.Framework;
+using System;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Services.PhoneBooks
-{
+namespace DotRas.Tests.Internal.Services.PhoneBooks {
     [TestFixture]
-    public class PhoneBookEntryValidationServiceTests
-    {
+    public class PhoneBookEntryValidationServiceTests {
         [Test]
-        public void ThrowsAnExceptionWhenApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new PhoneBookEntryNameValidationService(null));
-        }
+        public void ThrowsAnExceptionWhenApiIsNull() => Assert.Throws<ArgumentNullException>(() => new PhoneBookEntryNameValidationService(null));
 
         [Test]
-        public void ThrowsAnExceptionWhenTheEntryNameIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheEntryNameIsNull() {
             var api = new Mock<IRasApi32>();
 
             var target = new PhoneBookEntryNameValidationService(api.Object);
@@ -26,8 +20,7 @@ namespace DotRas.Tests.Internal.Services.PhoneBooks
         }
 
         [Test]
-        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull()
-        {
+        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull() {
             var api = new Mock<IRasApi32>();
 
             var target = new PhoneBookEntryNameValidationService(api.Object);
@@ -35,27 +28,25 @@ namespace DotRas.Tests.Internal.Services.PhoneBooks
         }
 
         [Test]
-        public void ReturnsTrueWhenTheEntryExistsAsExpected()
-        {
+        public void ReturnsTrueWhenTheEntryExistsAsExpected() {
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasValidateEntryName("PATH", "ENTRY")).Returns(ERROR_ALREADY_EXISTS);
 
             var target = new PhoneBookEntryNameValidationService(api.Object);
             var result = target.VerifyEntryExists("ENTRY", "PATH");
 
-            Assert.True(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
-        public void ReturnsFalseWhenTheEntryDoesNotExistAsExpected()
-        {
+        public void ReturnsFalseWhenTheEntryDoesNotExistAsExpected() {
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasValidateEntryName("PATH", "ENTRY")).Returns(SUCCESS);
 
             var target = new PhoneBookEntryNameValidationService(api.Object);
             var result = target.VerifyEntryExists("ENTRY", "PATH");
 
-            Assert.False(result);
+            Assert.That(result, Is.False);
         }
     }
 }

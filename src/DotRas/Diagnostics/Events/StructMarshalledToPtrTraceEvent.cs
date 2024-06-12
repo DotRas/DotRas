@@ -1,16 +1,14 @@
-﻿using System;
+﻿using DotRas.Diagnostics.Formatters;
+using System;
 using System.Collections.Generic;
-using DotRas.Diagnostics.Formatters;
 
-namespace DotRas.Diagnostics.Events
-{
+namespace DotRas.Diagnostics.Events {
     /// <summary>
     /// Describes a structure which has been marshalled to a pointer.
     /// </summary>
     [Serializable]
     [EventFormatter(typeof(StructMarshalledToPtrTraceEventFormatter))]
-    public class StructMarshalledToPtrTraceEvent : CallCompletedTraceEvent
-    {
+    public class StructMarshalledToPtrTraceEvent : CallCompletedTraceEvent {
         /// <summary>
         /// Gets or sets a dictionary of fields and their associated values.
         /// </summary>

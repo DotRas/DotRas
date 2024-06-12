@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading;
 
-namespace DotRas.Internal.Abstractions.Primitives
-{
-    internal interface IValueWaiter<T> : IDisposable
-    {
+namespace DotRas.Internal.Abstractions.Primitives {
+    internal interface IValueWaiter<T> : IDisposable {
         T Value { get; }
         bool IsSet { get; }
 

@@ -1,37 +1,30 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using DotRas.Internal;
+﻿using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasConnectionTests
-    {
+    public class RasConnectionTests {
         private Mock<IServiceProvider> services;
 
         [SetUp]
-        public void Setup()
-        {
+        public void Setup() {
             services = new Mock<IServiceProvider>();
             ServiceLocator.SetLocator(() => services.Object);
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            ServiceLocator.Reset();
-        }
+        public void TearDown() => ServiceLocator.Reset();
 
         [Test]
-        public void EqualsTheHashCodeOfTheHandle()
-        {
+        public void EqualsTheHashCodeOfTheHandle() {
             var handle = new IntPtr(1);
 
             var target = new Mock<RasConnection>();
@@ -40,22 +33,20 @@ namespace DotRas.Tests
 
             var actual = target.Object.GetHashCode();
 
-            Assert.AreEqual(handle.GetHashCode(), actual);
+            Assert.That(actual, Is.EqualTo(handle.GetHashCode()));
         }
 
         [Test]
-        public void DoesNotEqualNullWhenUsingEqualsWithObject()
-        {
+        public void DoesNotEqualNullWhenUsingEqualsWithObject() {
             object other = null;
             var target = new Mock<RasConnection>();
             target.Setup(o => o.Equals(other)).CallBase();
 
-            Assert.False(target.Object.Equals((object)null));
+            Assert.That(target.Object, Is.Not.EqualTo((object)null));
         }
 
         [Test]
-        public void EqualsTheOtherConnection()
-        {
+        public void EqualsTheOtherConnection() {
             var target = new Mock<RasConnection>();
             target.Setup(o => o.Handle).Returns(new IntPtr(1));
 
@@ -64,15 +55,14 @@ namespace DotRas.Tests
 
             target.Setup(o => o.Equals(other.Object)).CallBase();
 
-            Assert.True(target.Object == other.Object);
+            Assert.That(target.Object.Equals(other.Object));
         }
 
         [Test]
-        public void EqualsTheOtherConnectionWhenOtherIsAnObject()
-        {
+        public void EqualsTheOtherConnectionWhenOtherIsAnObject() {
             var target = new Mock<RasConnection>();
             target.Setup(o => o.Handle).Returns(new IntPtr(1));
-            
+
             var other = new Mock<RasConnection>();
             other.Setup(o => o.Handle).Returns(new IntPtr(1));
 
@@ -81,74 +71,67 @@ namespace DotRas.Tests
             object otherTarget = other.Object;
             target.Setup(o => o.Equals(otherTarget)).CallBase();
 
-            Assert.True(target.Object.Equals(otherTarget));
+            Assert.That(target.Object.Equals(otherTarget));
         }
 
         [Test]
-        public void DoesNotEqualTheOtherConnection()
-        {
+        public void DoesNotEqualTheOtherConnection() {
             var target = new Mock<RasConnection>();
             target.Setup(o => o.Handle).Returns(new IntPtr(1));
 
             var other = new Mock<RasConnection>();
             other.Setup(o => o.Handle).Returns(new IntPtr(2));
 
-            Assert.True(target.Object != other.Object);
+            Assert.That(target.Object.Equals(other.Object), Is.False);
         }
 
         [Test]
-        public void DoesEqualWhenBothAreNull()
-        {
+        public void DoesEqualWhenBothAreNull() {
             RasConnection targetA = null;
             RasConnection targetB = null;
 
-            Assert.True(targetA == targetB);
+            Assert.That(targetA, Is.EqualTo(targetB));
         }
 
         [Test]
-        public void DoesNotEqualWhenOneIsExpectedToBeNull()
-        {
+        public void DoesNotEqualWhenOneIsExpectedToBeNull() {
             var target = new Mock<RasConnection>();
 
-            Assert.False(target.Object == null);
+            Assert.That(target.Object, Is.Not.EqualTo(null));
         }
 
         [Test]
-        public void DoesNotEqualWhenOtherIsExpectedToBeNullUsingEquals()
-        {
+        public void DoesNotEqualWhenOtherIsExpectedToBeNullUsingEquals() {
             var target = new Mock<RasConnection>();
 
             RasConnection other = null;
             target.Setup(o => o.Equals(other)).CallBase();
 
-            Assert.False(target.Object.Equals(null));
+            Assert.That(target.Object, Is.Not.EqualTo(null));
         }
 
         [Test]
-        public void DoesNotEqualWhenOneIsExpectedToBeNullWhenUsingYodaSyntax()
-        {
+        public void DoesNotEqualWhenOneIsExpectedToBeNullWhenUsingYodaSyntax() {
             var target = new Mock<RasConnection>();
 
-            Assert.False(null == target.Object);
+            Assert.That(target.Object, Is.Not.EqualTo(null));
         }
 
         [Test]
-        public void EnumeratesTheConnectionCorrectly()
-        {
+        public void EnumeratesTheConnectionCorrectly() {
             var enumConnections = new Mock<IRasEnumConnections>();
-            enumConnections.Setup(o => o.EnumerateConnections()).Returns(new RasConnection[0]);
+            _ = enumConnections.Setup(o => o.EnumerateConnections()).Returns(Array.Empty<RasConnection>());
 
             services.Setup(o => o.GetService(typeof(IRasEnumConnections))).Returns(enumConnections.Object);
             var result = RasConnection.EnumerateConnections();
-            
-            Assert.IsNotNull(result);
+
+            Assert.That(result, Is.Not.Null);
             services.Verify(o => o.GetService(typeof(IRasEnumConnections)), Times.Once);
             enumConnections.Verify(o => o.EnumerateConnections(), Times.Once);
         }
 
         [Test]
-        public void WillReturnTheCorrectConnectionWhenUsingLinq()
-        {
+        public void WillReturnTheCorrectConnectionWhenUsingLinq() {
             var connection1 = new Mock<RasConnection>();
             connection1.Setup(o => o.EntryName).Returns("Test1");
 
@@ -162,13 +145,12 @@ namespace DotRas.Tests
 
             var result = RasConnection.EnumerateConnections().SingleOrDefault(o => o.EntryName == "Test2");
 
-            Assert.IsNotNull(result);
-            Assert.AreSame(connection2.Object, result);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.SameAs(connection2.Object));
         }
 
         [Test]
-        public void ReturnTheHandle()
-        {
+        public void ReturnTheHandle() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -179,12 +161,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(handle, target.Handle);
+            Assert.That(target.Handle, Is.EqualTo(handle));
         }
 
         [Test]
-        public void ReturnTheDevice()
-        {
+        public void ReturnTheDevice() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -195,12 +176,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(device, target.Device);
+            Assert.That(target.Device, Is.EqualTo(device));
         }
 
         [Test]
-        public void ReturnTheEntryName()
-        {
+        public void ReturnTheEntryName() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -211,12 +191,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(entryName, target.EntryName);
+            Assert.That(target.EntryName, Is.EqualTo(entryName));
         }
 
         [Test]
-        public void ReturnThePhoneBook()
-        {
+        public void ReturnThePhoneBook() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -227,12 +206,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(phoneBook, target.PhoneBookPath);
-        }        
+            Assert.That(target.PhoneBookPath, Is.EqualTo(phoneBook));
+        }
 
         [Test]
-        public void ReturnTheEntryId()
-        {
+        public void ReturnTheEntryId() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -243,12 +221,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(entryId, target.EntryId);
+            Assert.That(target.EntryId, Is.EqualTo(entryId));
         }
 
         [Test]
-        public void ReturnTheOptions()
-        {
+        public void ReturnTheOptions() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -259,12 +236,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(options, target.Options);
+            Assert.That(target.Options, Is.EqualTo(options));
         }
 
         [Test]
-        public void ReturnTheSessionId()
-        {
+        public void ReturnTheSessionId() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -275,12 +251,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(sessionId, target.SessionId);
+            Assert.That(target.SessionId, Is.EqualTo(sessionId));
         }
 
         [Test]
-        public void ReturnTheCorrelationId()
-        {
+        public void ReturnTheCorrelationId() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -291,12 +266,11 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
-            Assert.AreEqual(correlationId, target.CorrelationId);
+            Assert.That(target.CorrelationId, Is.EqualTo(correlationId));
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenHandleIsNull()
-        {
+        public void ConstructorThrowsExceptionWhenHandleIsNull() {
             var device = new TestDevice("Test");
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -309,8 +283,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenDeviceIsNull()
-        {
+        public void ConstructorThrowsExceptionWhenDeviceIsNull() {
             var handle = new IntPtr(1);
             var entryName = "Test";
             var phoneBook = @"C:\Test.pbk";
@@ -323,8 +296,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenEntryNameIsNull()
-        {
+        public void ConstructorThrowsExceptionWhenEntryNameIsNull() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
@@ -337,8 +309,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenEntryNameIsEmpty()
-        {
+        public void ConstructorThrowsExceptionWhenEntryNameIsEmpty() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
@@ -351,8 +322,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenEntryNameIsWhitespace()
-        {
+        public void ConstructorThrowsExceptionWhenEntryNameIsWhitespace() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var phoneBook = @"C:\Test.pbk";
@@ -365,8 +335,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenPhoneBookIsNull()
-        {
+        public void ConstructorThrowsExceptionWhenPhoneBookIsNull() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -379,8 +348,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenPhoneBookIsEmpty()
-        {
+        public void ConstructorThrowsExceptionWhenPhoneBookIsEmpty() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -393,8 +361,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ConstructorThrowsExceptionWhenPhoneBookIsWhitespace()
-        {
+        public void ConstructorThrowsExceptionWhenPhoneBookIsWhitespace() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -407,8 +374,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void RetrievesTheStatusAsExpected()
-        {
+        public void RetrievesTheStatusAsExpected() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -428,13 +394,12 @@ namespace DotRas.Tests
 
             var result = target.GetStatus();
 
-            Assert.AreEqual(status.Object, result);
+            Assert.That(result, Is.EqualTo(status.Object));
             rasGetConnectStatus.Verify();
         }
 
         [Test]
-        public void RetrievesTheStatisticsAsExpected()
-        {
+        public void RetrievesTheStatisticsAsExpected() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -443,7 +408,7 @@ namespace DotRas.Tests
             var options = new RasConnectionOptions(Ras.RASCF.AllUsers);
             var sessionId = new Luid(1, 1);
             var correlationId = Guid.NewGuid();
-            
+
             var rasConnectionStatistics = new Mock<RasConnectionStatistics>();
 
             var rasGetConnectionStatistics = new Mock<IRasGetConnectionStatistics>();
@@ -455,13 +420,12 @@ namespace DotRas.Tests
 
             var result = target.GetStatistics();
 
-            Assert.AreEqual(rasConnectionStatistics.Object, result);
+            Assert.That(result, Is.EqualTo(rasConnectionStatistics.Object));
             rasGetConnectionStatistics.Verify();
         }
 
         [Test]
-        public void DisconnectWithoutToken()
-        {
+        public void DisconnectWithoutToken() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -481,8 +445,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectAsyncWithoutToken()
-        {
+        public async Task DisconnectAsyncWithoutToken() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -502,8 +465,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectAsyncTheConnectionAsExpected()
-        {
+        public async Task DisconnectAsyncTheConnectionAsExpected() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -525,8 +487,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectTheConnectionAsExpected()
-        {
+        public void DisconnectTheConnectionAsExpected() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -548,8 +509,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ClearsTheConnectionStatisticsAsExpected()
-        {
+        public void ClearsTheConnectionStatisticsAsExpected() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -560,8 +520,7 @@ namespace DotRas.Tests
             var correlationId = Guid.NewGuid();
 
             var rasClearConnectionStatistics = new Mock<IRasClearConnectionStatistics>();
-            services.Setup(o => o.GetService(typeof(IRasClearConnectionStatistics)))
-                .Returns(rasClearConnectionStatistics.Object);
+            services.Setup(o => o.GetService(typeof(IRasClearConnectionStatistics))).Returns(rasClearConnectionStatistics.Object);
 
             var target = new RasConnection(handle, device, entryName, phoneBook, entryId, options, sessionId, correlationId, services.Object);
             target.ClearStatistics();
@@ -570,8 +529,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectShouldCloseAllReferencesByDefault()
-        {
+        public void DisconnectShouldCloseAllReferencesByDefault() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -591,8 +549,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectAsyncShouldCloseAllReferencesByDefault()
-        {
+        public async Task DisconnectAsyncShouldCloseAllReferencesByDefault() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -612,8 +569,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public async Task DisconnectAsyncShouldOptionallyCloseAllReferences()
-        {
+        public async Task DisconnectAsyncShouldOptionallyCloseAllReferences() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -633,8 +589,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisconnectShouldOptionallyCloseAllReferences()
-        {
+        public void DisconnectShouldOptionallyCloseAllReferences() {
             var handle = new IntPtr(1);
             var device = new TestDevice("Test");
             var entryName = "Test";
@@ -652,6 +607,5 @@ namespace DotRas.Tests
 
             rasHangUp.Verify(o => o.HangUpAsync(target, false, CancellationToken.None), Times.Once);
         }
-
     }
 }

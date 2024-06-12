@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotRas.Diagnostics.Events
-{
+namespace DotRas.Diagnostics.Events {
     /// <summary>
     /// Describes a callback based trace event.
     /// </summary>
     [Serializable]
-    public abstract class CallbackTraceEvent : TraceEvent
-    {
+    public abstract class CallbackTraceEvent : TraceEvent {
         /// <summary>
         /// Gets or sets when the event occurred.
         /// </summary>

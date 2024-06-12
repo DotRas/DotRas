@@ -1,32 +1,23 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Policies;
+﻿using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Services.Connections
-{
+namespace DotRas.Tests.Internal.Services.Connections {
     [TestFixture]
-    public class RasClearConnectionStatisticsServiceTests
-    {
+    public class RasClearConnectionStatisticsServiceTests {
         [Test]
-        public void ThrowsAnExceptionWhenApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasClearConnectionStatisticsService(null, new Mock<IExceptionPolicy>().Object));
-        }
+        public void ThrowsAnExceptionWhenApiIsNull() => Assert.Throws<ArgumentNullException>(() => new RasClearConnectionStatisticsService(null, new Mock<IExceptionPolicy>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenExceptionPolicyIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasClearConnectionStatisticsService(new Mock<IRasApi32>().Object, null));
-        }
+        public void ThrowsAnExceptionWhenExceptionPolicyIsNull() => Assert.Throws<ArgumentNullException>(() => new RasClearConnectionStatisticsService(new Mock<IRasApi32>().Object, null));
 
         [Test]
-        public void ThrowsAnExceptionWhenConnectionIsNull()
-        {
+        public void ThrowsAnExceptionWhenConnectionIsNull() {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
@@ -35,8 +26,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ClearsTheStatisticsAsExpected()
-        {
+        public void ClearsTheStatisticsAsExpected() {
             var handle = new IntPtr(1);
 
             var api = new Mock<IRasApi32>();
@@ -54,8 +44,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheApiResultIsNonZero()
-        {
+        public void ThrowsAnExceptionWhenTheApiResultIsNonZero() {
             var handle = new IntPtr(1);
 
             var api = new Mock<IRasApi32>();

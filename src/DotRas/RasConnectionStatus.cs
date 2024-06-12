@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Net;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Represents the current status of a remote access connection.
     /// </summary>
-    public class RasConnectionStatus
-    {
+    public class RasConnectionStatus {
         /// <summary>
         /// Gets the state of the connection.
         /// </summary>
@@ -53,8 +51,7 @@ namespace DotRas
         /// <param name="localEndpoint">Optional. The local client endpoint information of a virtual private network (VPN) tunnel.</param>
         /// <param name="remoteEndpoint">Optional. The remote client endpoint information of a virtual private network (VPN) tunnel.</param>
         /// <param name="connectionSubState">The state of an Internet Key Exchange version2 (IKEv2) virtual private network (VPN) tunnel.</param>
-        public RasConnectionStatus(RasConnectionState connectionState, int? errorCode, RasDevice device, string phoneNumber, IPAddress localEndpoint, IPAddress remoteEndpoint, RasConnectionSubState connectionSubState)
-        {
+        public RasConnectionStatus(RasConnectionState connectionState, int? errorCode, RasDevice device, string phoneNumber, IPAddress localEndpoint, IPAddress remoteEndpoint, RasConnectionSubState connectionSubState) {
             ConnectionState = connectionState;
             ErrorCode = errorCode;
             Device = device ?? throw new ArgumentNullException(nameof(device));
@@ -67,8 +64,6 @@ namespace DotRas
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnectionState"/> class.
         /// </summary>
-        protected RasConnectionStatus()
-        {
-        }
+        protected RasConnectionStatus() { }
     }
 }

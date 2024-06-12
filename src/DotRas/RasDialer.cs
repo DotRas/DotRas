@@ -1,18 +1,16 @@
-﻿using System;
+﻿using DotRas.Internal;
+using DotRas.Internal.Abstractions.Services;
+using System;
 using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using DotRas.Internal;
-using DotRas.Internal.Abstractions.Services;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Provides a mechanism to establish a connection to a remote network.
     /// </summary>
-    public class RasDialer : RasComponentBase
-    {
+    public class RasDialer : RasComponentBase {
         #region Fields and Properties
 
         private readonly IRasDial api;
@@ -60,13 +58,10 @@ namespace DotRas
         /// <summary>
         /// Initializes a new instance of the <see cref="RasDialer"/> class.
         /// </summary>
-        public RasDialer() 
-            : this(ServiceLocator.Default.GetRequiredService<IRasDial>())
-        {
-        }
+        public RasDialer()
+            : this(ServiceLocator.Default.GetRequiredService<IRasDial>()) { }
 
-        internal RasDialer(IRasDial api)
-        {
+        internal RasDialer(IRasDial api) {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
@@ -80,10 +75,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public RasConnection Connect()
-        {
-            return Connect(CancellationToken.None);
-        }
+        public RasConnection Connect() => Connect(CancellationToken.None);
 
         /// <summary>
         /// Connects to the remote network.
@@ -96,10 +88,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public RasConnection Connect(CancellationToken cancellationToken)
-        {
-            return ConnectAsync(cancellationToken).GetResultSynchronously();
-        }
+        public RasConnection Connect(CancellationToken cancellationToken) => ConnectAsync(cancellationToken).GetResultSynchronously();
 
         /// <summary>
         /// Connects to the remote network asynchronously.
@@ -111,10 +100,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public Task<RasConnection> ConnectAsync()
-        {
-            return ConnectAsync(CancellationToken.None);
-        }
+        public Task<RasConnection> ConnectAsync() => ConnectAsync(CancellationToken.None);
 
         /// <summary>
         /// Connects to the remote network asynchronously.
@@ -127,47 +113,41 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="RasException">Thrown when an error occurs while dialing the connection.</exception>
         /// <exception cref="Win32Exception">Thrown when an error occurs while dialing the connection.</exception>
-        public Task<RasConnection> ConnectAsync(CancellationToken cancellationToken)
-        {
+        public Task<RasConnection> ConnectAsync(CancellationToken cancellationToken) {
             GuardMustNotBeDisposed();
 
-            return api.DialAsync(new RasDialContext
-            {
-                PhoneBookPath = PhoneBookPath,
-                EntryName = EntryName,
-                Credentials = Credentials,
-                CancellationToken = cancellationToken,
-                Options = Options,
-                OnStateChangedCallback = RaiseStateChangedEvent
-            });
+            return api.DialAsync(
+                new RasDialContext {
+                    PhoneBookPath = PhoneBookPath,
+                    EntryName = EntryName,
+                    Credentials = Credentials,
+                    CancellationToken = cancellationToken,
+                    Options = Options,
+                    OnStateChangedCallback = RaiseStateChangedEvent
+                }
+            );
         }
 
         /// <summary>
         /// Raises the <see cref="StateChanged"/> event.
         /// </summary>
         /// <param name="e">An <see cref="StateChangedEventArgs"/> containing event data.</param>
-        protected void RaiseStateChangedEvent(StateChangedEventArgs e)
-        {
-            if (e == null)
-            {
+        protected void RaiseStateChangedEvent(StateChangedEventArgs e) {
+            if (e == null) {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            try
-            {
+            try {
                 RaiseEvent(StateChanged, e);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 RaiseErrorEvent(new ErrorEventArgs(ex));
             }
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 api.Dispose();
             }
 

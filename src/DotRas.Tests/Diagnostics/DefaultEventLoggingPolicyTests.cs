@@ -1,33 +1,26 @@
-﻿using System;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using Moq;
 using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests.Diagnostics
-{
+namespace DotRas.Tests.Diagnostics {
     [TestFixture]
-    public class DefaultEventLoggingPolicyTests
-    {
+    public class DefaultEventLoggingPolicyTests {
         [Test]
-        public void ThrowsAnExceptionWhenTheLogIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
+        public void ThrowsAnExceptionWhenTheLogIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => {
                 _ = new DefaultEventLoggingPolicy(null);
             });
-        }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheEventDataIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheEventDataIsNull() {
             var target = new DefaultEventLoggingPolicy(new Mock<ILogger>().Object);
             Assert.Throws<ArgumentNullException>(() => target.LogEvent(EventLevel.Error, null));
         }
 
         [Test]
-        public void LogsTheEventInformation()
-        {
+        public void LogsTheEventInformation() {
             var log = new Mock<ILogger>();
 
             var target = new DefaultEventLoggingPolicy(log.Object);
@@ -37,8 +30,7 @@ namespace DotRas.Tests.Diagnostics
         }
 
         [Test]
-        public void SwallowExceptionsWhenLoggingEvents()
-        {
+        public void SwallowExceptionsWhenLoggingEvents() {
             var log = new Mock<ILogger>();
             log.Setup(o => o.Log(EventLevel.Error, It.IsAny<TraceEvent>())).Throws<Exception>().Verifiable();
 

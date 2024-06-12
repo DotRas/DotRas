@@ -5,4 +5,12 @@
     <AssemblyName>DialConnectionAndWatchForDisconnect</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CSharpier.Core" Version="0.28.2" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.28.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

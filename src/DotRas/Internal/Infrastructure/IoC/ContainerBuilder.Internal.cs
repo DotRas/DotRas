@@ -1,5 +1,4 @@
-﻿using System;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -13,13 +12,11 @@ using DotRas.Internal.Services.Dialing;
 using DotRas.Internal.Services.ErrorHandling;
 using DotRas.Internal.Services.PhoneBooks;
 using DotRas.Internal.Services.Security;
+using System;
 
-namespace DotRas.Internal.Infrastructure.IoC
-{
-    static partial class ContainerBuilder
-    {
-        private static void RegisterInternal(Container container)
-        {
+namespace DotRas.Internal.Infrastructure.IoC {
+    internal static partial class ContainerBuilder {
+        private static void RegisterInternal(Container container) {
             RegisterPolicies(container);
             RegisterThreading(container);
 
@@ -27,10 +24,7 @@ namespace DotRas.Internal.Infrastructure.IoC
             container.Register<IRasEnumConnections>(typeof(RasEnumConnectionsService));
             container.Register<IIPAddressConverter>(typeof(IPAddressConversionService));
 
-            container.Register<IMarshaller>(() =>
-                new MarshallerLoggingAdvice(
-                    new MarshallingService(),
-                    container.GetRequiredService<IEventLoggingPolicy>()));
+            container.Register<IMarshaller>(() => new MarshallerLoggingAdvice(new MarshallingService(), container.GetRequiredService<IEventLoggingPolicy>()));
 
             container.Register<IPhoneBookEntryValidator>(typeof(PhoneBookEntryNameValidationService));
             container.Register<IRasClearConnectionStatistics>(typeof(RasClearConnectionStatisticsService));
@@ -40,13 +34,16 @@ namespace DotRas.Internal.Infrastructure.IoC
             container.Register<IRasGetConnectionStatistics>(typeof(RasGetConnectionStatisticsService));
             container.Register<IRasGetEapUserData>(typeof(RasGetEapUserDataService));
 
-            container.Register<IRasGetConnectStatus>(() =>
-                new RasGetConnectStatusService(
-                    container.GetRequiredService<IRasApi32>(),
-                    container.GetRequiredService<IStructFactory>(),
-                    container.GetRequiredService<IIPAddressConverter>(),
-                    container.GetRequiredService<RasGetConnectStatusExceptionPolicy>(),
-                    container.GetRequiredService<IDeviceTypeFactory>()));
+            container.Register<IRasGetConnectStatus>(
+                () =>
+                    new RasGetConnectStatusService(
+                        container.GetRequiredService<IRasApi32>(),
+                        container.GetRequiredService<IStructFactory>(),
+                        container.GetRequiredService<IIPAddressConverter>(),
+                        container.GetRequiredService<RasGetConnectStatusExceptionPolicy>(),
+                        container.GetRequiredService<IDeviceTypeFactory>()
+                    )
+            );
 
             container.Register<IRasGetErrorString>(typeof(RasGetErrorStringService));
             container.Register<IRasGetCredentials>(typeof(RasGetCredentialsService));
@@ -54,14 +51,13 @@ namespace DotRas.Internal.Infrastructure.IoC
             container.Register<IRasDialParamsBuilder>(typeof(RasDialParamsBuilder));
             container.Register<IRasDial>(typeof(RasDialService));
 
-            container.Register<IRasDialCallbackHandler>(() =>
-                new RasDialCallbackHandlerLoggingAdvice(
-                    new DefaultRasDialCallbackHandler(
-                        container.GetRequiredService<IRasHangUp>(),
-                        container.GetRequiredService<IRasEnumConnections>(),
-                        container.GetRequiredService<RasDialCallbackExceptionPolicy>(),
-                        container.GetRequiredService<IValueWaiter<IntPtr>>()),
-                    container.GetRequiredService<IEventLoggingPolicy>()));
+            container.Register<IRasDialCallbackHandler>(
+                () =>
+                    new RasDialCallbackHandlerLoggingAdvice(
+                        new DefaultRasDialCallbackHandler(container.GetRequiredService<IRasHangUp>(), container.GetRequiredService<IRasEnumConnections>(), container.GetRequiredService<RasDialCallbackExceptionPolicy>(), container.GetRequiredService<IValueWaiter<IntPtr>>()),
+                        container.GetRequiredService<IEventLoggingPolicy>()
+                    )
+            );
 
             container.Register<IRasEnumDevices>(typeof(RasEnumDevicesService));
 

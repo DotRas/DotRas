@@ -1,12 +1,10 @@
 ﻿using System;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Provides event details for state changes while establishing a connection.
     /// </summary>
-    public class StateChangedEventArgs : EventArgs
-    {
+    public class StateChangedEventArgs : EventArgs {
         /// <summary>
         /// Gets the state of the connection.
         /// </summary>
@@ -16,8 +14,7 @@ namespace DotRas
         /// Initializes a new instance of the <see cref="StateChangedEventArgs"/> class.
         /// </summary>
         /// <param name="state">The state of the connection.</param>
-        public StateChangedEventArgs(RasConnectionState state)
-        {
+        public StateChangedEventArgs(RasConnectionState state) {
             State = state;
         }
     }

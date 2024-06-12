@@ -1,20 +1,16 @@
-﻿using System.Net;
-using DotRas;
+﻿using DotRas;
+using System.Net;
 
 namespace DialConnection;
 
-class Program
-{
+internal class Program {
     private readonly RasDialer dialer;
 
-    static async Task Main()
-    {
-        try
-        {
+    private static async Task Main() {
+        try {
             await new Program().RunAsync();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             await Console.Error.WriteLineAsync(ex.ToString());
         }
 
@@ -22,29 +18,22 @@ class Program
         Console.ReadKey(true);
     }
 
-    public Program()
-    {
+    public Program() {
         dialer = new RasDialer();
         dialer.StateChanged += OnDialerStateChanged;
     }
 
-    private void OnDialerStateChanged(object sender, StateChangedEventArgs e)
-    {
-        Console.WriteLine($"State: {e.State}");
-    }
+    private void OnDialerStateChanged(object sender, StateChangedEventArgs e) => Console.WriteLine($"State: {e.State}");
 
-    private async Task RunAsync()
-    {
-        // This should contain the name 
+    private async Task RunAsync() {
+        // This should contain the name
         dialer.EntryName = "Your Entry";
 
         // If your account requires credentials that have not been persisted, they can be passed here.
         dialer.Credentials = new NetworkCredential("Username", "Password");
 
         // This specifies the default location for Windows phone books.
-        dialer.PhoneBookPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
+        dialer.PhoneBookPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Network\Connections\Pbk\rasphone.pbk");
 
         Console.WriteLine("Connecting...");
 

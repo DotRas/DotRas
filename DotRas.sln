@@ -5,29 +5,32 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02AEBC80-02B7-488A-9CAA-31EEB5C589AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRas", "src\DotRas\DotRas.csproj", "{37D8F838-190B-49A8-8BDF-67D89D89A8C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas", "src\DotRas\DotRas.csproj", "{37D8F838-190B-49A8-8BDF-67D89D89A8C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRas.Tests", "src\DotRas.Tests\DotRas.Tests.csproj", "{558AE700-7D98-42A9-8520-B0D541A905D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRas.Tests", "src\DotRas.Tests\DotRas.Tests.csproj", "{558AE700-7D98-42A9-8520-B0D541A905D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{488408BA-CA9D-4126-A5FC-13893BE18E1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnection", "examples\DialConnection\DialConnection.csproj", "{5906F85F-85CF-4047-AB62-49396AA5CB1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnection", "examples\DialConnection\DialConnection.csproj", "{5906F85F-85CF-4047-AB62-49396AA5CB1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnectionAndWatchForDisconnect", "examples\DialConnectionAndWatchForDisconnect\DialConnectionAndWatchForDisconnect.csproj", "{C8BC9322-8FE6-4C4E-BA3E-C6D242BDAB31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAndWatchForDisconnect", "examples\DialConnectionAndWatchForDisconnect\DialConnectionAndWatchForDisconnect.csproj", "{C8BC9322-8FE6-4C4E-BA3E-C6D242BDAB31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialConnectionAsynchronously", "examples\DialConnectionAsynchronously\DialConnectionAsynchronously.csproj", "{B492DC66-E472-4D3E-A4E6-5E0B2F58066B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialConnectionAsynchronously", "examples\DialConnectionAsynchronously\DialConnectionAsynchronously.csproj", "{B492DC66-E472-4D3E-A4E6-5E0B2F58066B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchConnectionsForChanges", "examples\WatchConnectionsForChanges\WatchConnectionsForChanges.csproj", "{67D1673C-AFAE-4C93-8961-8E8C70070523}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WatchConnectionsForChanges", "examples\WatchConnectionsForChanges\WatchConnectionsForChanges.csproj", "{67D1673C-AFAE-4C93-8961-8E8C70070523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRunner", "src\ConsoleRunner\ConsoleRunner.csproj", "{84EAD125-3666-41ED-BF0F-3579B1E86981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleRunner", "src\ConsoleRunner\ConsoleRunner.csproj", "{84EAD125-3666-41ED-BF0F-3579B1E86981}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{67EEDB3B-BDC0-4B96-AFFE-E290E646CCCD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		nuget.config = nuget.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{37D8F838-190B-49A8-8BDF-67D89D89A8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -59,6 +62,9 @@ Global
 		{84EAD125-3666-41ED-BF0F-3579B1E86981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84EAD125-3666-41ED-BF0F-3579B1E86981}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{37D8F838-190B-49A8-8BDF-67D89D89A8C1} = {02AEBC80-02B7-488A-9CAA-31EEB5C589AE}
 		{558AE700-7D98-42A9-8520-B0D541A905D1} = {02AEBC80-02B7-488A-9CAA-31EEB5C589AE}
@@ -67,5 +73,8 @@ Global
 		{B492DC66-E472-4D3E-A4E6-5E0B2F58066B} = {488408BA-CA9D-4126-A5FC-13893BE18E1E}
 		{67D1673C-AFAE-4C93-8961-8E8C70070523} = {488408BA-CA9D-4126-A5FC-13893BE18E1E}
 		{84EAD125-3666-41ED-BF0F-3579B1E86981} = {02AEBC80-02B7-488A-9CAA-31EEB5C589AE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A229EF35-5351-4ADB-94C9-AB4897B9E3C2}
 	EndGlobalSection
 EndGlobal

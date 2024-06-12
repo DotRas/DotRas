@@ -1,42 +1,35 @@
-﻿using System;
-using DotRas.Tests.Stubs;
+﻿using DotRas.Tests.Stubs;
 using NUnit.Framework;
+using System;
 
-#pragma warning disable S3966 // This is intentional to dispose multiple times to check the behavior.
-
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class DisposableObjectTests
-    {
+    public class DisposableObjectTests {
         [Test]
-        public void DoesNotThrowAnExceptionWhenNotDisposed()
-        {
+        public void DoesNotThrowAnExceptionWhenNotDisposed() {
             var target = new StubDisposableObject();
             Assert.DoesNotThrow(() => target.GuardMustNotBeDisposed());
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenDisposed()
-        {
+        public void ThrowsAnExceptionWhenDisposed() {
             var target = new StubDisposableObject();
             target.Dispose();
 
             var ex = Assert.Throws<ObjectDisposedException>(() => target.GuardMustNotBeDisposed());
-            Assert.AreEqual(typeof(StubDisposableObject).FullName, ex.ObjectName);
+            Assert.That(ex.ObjectName, Is.EqualTo(typeof(StubDisposableObject).FullName));
         }
 
         [Test]
-        public void DoesNotDisposeTheObjectMoreThanOnce()
-        {
+        public void DoesNotDisposeTheObjectMoreThanOnce() {
             var target = new StubDisposableObject();
             target.Dispose();
 
-            Assert.AreEqual(1, target.Counter);
+            Assert.That(target.Counter, Is.EqualTo(1));
 
             target.Dispose();
 
-            Assert.AreEqual(1, target.Counter);
+            Assert.That(target.Counter, Is.EqualTo(1));
         }
     }
 }

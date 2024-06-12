@@ -1,52 +1,40 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Factories;
+﻿using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Security;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
 using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Tests.Internal.Services.Security
-{
+namespace DotRas.Tests.Internal.Services.Security {
     [TestFixture]
-    public class RasGetCredentialsServiceTests
-    {
-        private delegate void RasGetCredentialsCallback(
-            string lpszPhoneBook,
-            string lpszEntryName,
-            ref RASCREDENTIALS lpCredentials);
+    public class RasGetCredentialsServiceTests {
+        private delegate void RasGetCredentialsCallback(string lpszPhoneBook, string lpszEntryName, ref RASCREDENTIALS lpCredentials);
 
         [Test]
-        public void ThrowsAnExceptionWhenTheApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object));
-        }
+        public void ThrowsAnExceptionWhenTheApiIsNull() => Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(null, new Mock<IStructFactory>().Object, new Mock<IExceptionPolicy>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenTheStructFactoryIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object));
-        }
+        public void ThrowsAnExceptionWhenTheStructFactoryIsNull() => Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenTheExceptionPolicyIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
-        }
+        public void ThrowsAnExceptionWhenTheExceptionPolicyIsNull() => Assert.Throws<ArgumentNullException>(() => new RasGetCredentialsService(new Mock<IRasApi32>().Object, new Mock<IStructFactory>().Object, null));
 
         [Test]
-        public void ReturnsTheNetworkCredentialAsExpected()
-        {
+        public void ReturnsTheNetworkCredentialAsExpected() {
             var api = new Mock<IRasApi32>();
-            api.Setup(o => o.RasGetCredentials("PATH", "ENTRY", ref It.Ref<RASCREDENTIALS>.IsAny)).Callback(new RasGetCredentialsCallback(
-                (string o1, string o2, ref RASCREDENTIALS o3) =>
-                {
-                    o3.szUserName = "USER";
-                    o3.szPassword = "PASSWORD";
-                    o3.szDomain = "DOMAIN";
-                }));
+            api.Setup(o => o.RasGetCredentials("PATH", "ENTRY", ref It.Ref<RASCREDENTIALS>.IsAny))
+                .Callback(
+                    new RasGetCredentialsCallback(
+                        (string o1, string o2, ref RASCREDENTIALS o3) => {
+                            o3.szUserName = "USER";
+                            o3.szPassword = "PASSWORD";
+                            o3.szDomain = "DOMAIN";
+                        }
+                    )
+                );
 
             var structFactory = new Mock<IStructFactory>();
             structFactory.Setup(o => o.Create<RASCREDENTIALS>()).Returns(new RASCREDENTIALS());
@@ -56,14 +44,15 @@ namespace DotRas.Tests.Internal.Services.Security
             var target = new RasGetCredentialsService(api.Object, structFactory.Object, exceptionPolicy.Object);
             var result = target.GetNetworkCredential("ENTRY", "PATH");
 
-            Assert.AreEqual("USER", result.UserName);
-            Assert.AreEqual("PASSWORD", result.Password);
-            Assert.AreEqual("DOMAIN", result.Domain);
+            Assert.Multiple(() => {
+                Assert.That(result.UserName, Is.EqualTo("USER"));
+                Assert.That(result.Password, Is.EqualTo("PASSWORD"));
+                Assert.That(result.Domain, Is.EqualTo("DOMAIN"));
+            });
         }
 
         [Test]
-        public void ThrowsAnExceptionForANonZeroResultCode()
-        {
+        public void ThrowsAnExceptionForANonZeroResultCode() {
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasGetCredentials("PATH", "ENTRY", ref It.Ref<RASCREDENTIALS>.IsAny)).Returns(-1);
 
@@ -78,8 +67,7 @@ namespace DotRas.Tests.Internal.Services.Security
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheEntryNameIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheEntryNameIsNull() {
             var api = new Mock<IRasApi32>();
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -89,8 +77,7 @@ namespace DotRas.Tests.Internal.Services.Security
         }
 
         [Test]
-        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull()
-        {
+        public void DoesNotThrowAnExceptionWhenThePhoneBookPathIsNull() {
             var api = new Mock<IRasApi32>();
             var structFactory = new Mock<IStructFactory>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();

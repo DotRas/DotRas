@@ -1,30 +1,23 @@
-﻿using System;
-using DotRas.Diagnostics.Events;
+﻿using DotRas.Diagnostics.Events;
+using System;
 
-namespace DotRas.Diagnostics
-{
-    internal class DefaultEventLoggingPolicy : IEventLoggingPolicy
-    {
+namespace DotRas.Diagnostics {
+    internal class DefaultEventLoggingPolicy : IEventLoggingPolicy {
         private readonly ILogger logger;
 
-        public DefaultEventLoggingPolicy(ILogger logger)
-        {
+        public DefaultEventLoggingPolicy(ILogger logger) {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void LogEvent(EventLevel eventLevel, TraceEvent eventData)
-        {
-            if (eventData == null)
-            {
+        public void LogEvent(EventLevel eventLevel, TraceEvent eventData) {
+            if (eventData == null) {
                 throw new ArgumentNullException(nameof(eventData));
             }
 
-            try
-            {
+            try {
                 logger.Log(eventLevel, eventData);
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // Swallow any exceptions which occur while attempting to log the event.
             }
         }

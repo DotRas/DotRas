@@ -1,12 +1,10 @@
 ﻿using System;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Represents connection statistics for a remote access connection.
     /// </summary>
-    public class RasConnectionStatistics
-    {
+    public class RasConnectionStatistics {
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnectionStatistics"/> class.
         /// </summary>
@@ -24,8 +22,22 @@ namespace DotRas
         /// <param name="compressionRatioOut">The compression ratio for data transmitted on this connection or link.</param>
         /// <param name="linkSpeed">The speed of the link, in bits per second.</param>
         /// <param name="connectionDuration">The length of time that the connection has been connected.</param>
-        public RasConnectionStatistics(long bytesTransmitted, long bytesReceived, long framesTransmitted, long framesReceived, long crcErrors, long timeoutErrors, long alignmentErrors, long hardwareOverrunErrors, long framingErrors, long bufferOverrunErrors, long compressionRatioIn, long compressionRatioOut, long linkSpeed, TimeSpan connectionDuration)
-        {
+        public RasConnectionStatistics(
+            long bytesTransmitted,
+            long bytesReceived,
+            long framesTransmitted,
+            long framesReceived,
+            long crcErrors,
+            long timeoutErrors,
+            long alignmentErrors,
+            long hardwareOverrunErrors,
+            long framingErrors,
+            long bufferOverrunErrors,
+            long compressionRatioIn,
+            long compressionRatioOut,
+            long linkSpeed,
+            TimeSpan connectionDuration
+        ) {
             BytesTransmitted = bytesTransmitted;
             BytesReceived = bytesReceived;
             FramesTransmitted = framesTransmitted;
@@ -45,9 +57,7 @@ namespace DotRas
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnectionStatistics"/> class.
         /// </summary>
-        protected RasConnectionStatistics()
-        {
-        }
+        protected RasConnectionStatistics() { }
 
         /// <summary>
         /// Gets the number of bytes transmitted.

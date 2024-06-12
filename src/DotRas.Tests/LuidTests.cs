@@ -1,32 +1,25 @@
-﻿using System;
+﻿using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
-using DotRas.Internal;
 using Moq;
 using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class LuidTests
-    {
+    public class LuidTests {
         private Mock<IServiceProvider> container;
 
         [SetUp]
-        public void Setup()
-        {
+        public void Setup() {
             container = new Mock<IServiceProvider>();
             ServiceLocator.SetLocator(() => container.Object);
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            ServiceLocator.Reset();
-        }
+        public void TearDown() => ServiceLocator.Reset();
 
         [Test]
-        public void AllocatesTheLuidAsExpected()
-        {
+        public void AllocatesTheLuidAsExpected() {
             var expected = new Luid(1, 1);
 
             var allocateLocallyUniqueId = new Mock<IAllocateLocallyUniqueId>();
@@ -36,99 +29,89 @@ namespace DotRas.Tests
 
             var actual = Luid.NewLuid();
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
-        public void EmptyEqualsItselfAsExpected()
-        {
-            Assert.AreEqual(Luid.Empty, Luid.Empty);
+        public void EmptyEqualsItselfAsExpected() {
+            var _luid = Luid.Empty;
+            Assert.That(_luid, Is.EqualTo(expected: Luid.Empty));
         }
 
         [Test]
-        public void ReturnsFalseWhenTwoValuesAreNotEqual()
-        {
+        public void ReturnsFalseWhenTwoValuesAreNotEqual() {
             var target1 = new Luid(0, 0);
             var target2 = new Luid(1, 1);
 
-            Assert.False(target1 == target2);
+            Assert.That(target1, Is.Not.EqualTo(target2));
         }
 
         [Test]
-        public void ReturnsFalseWhenTwoValuesAreNotEqualWithYodaSyntax()
-        {
+        public void ReturnsFalseWhenTwoValuesAreNotEqualWithYodaSyntax() {
             var target1 = new Luid(0, 0);
             var target2 = new Luid(1, 1);
 
-            Assert.False(target2 == target1);
+            Assert.That(target2, Is.Not.EqualTo(target1));
         }
 
         [Test]
-        public void ReturnsTrueWhenTwoValuesAreNotEqual()
-        {
+        public void ReturnsTrueWhenTwoValuesAreNotEqual() {
             var target1 = new Luid(0, 0);
             var target2 = new Luid(1, 1);
 
-            Assert.True(target1 != target2);
+            Assert.That(target1, Is.Not.EqualTo(target2));
         }
 
         [Test]
-        public void ReturnsTrueWhenTwoValuesAreNotEqualWithYodaSyntax()
-        {
+        public void ReturnsTrueWhenTwoValuesAreNotEqualWithYodaSyntax() {
             var target1 = new Luid(0, 0);
             var target2 = new Luid(1, 1);
 
-            Assert.True(target2 != target1);
+            Assert.That(target2, Is.Not.EqualTo(target1));
         }
 
         [Test]
-        public void ReturnsFalseWhenTheObjectIsNull()
-        {
+        public void ReturnsFalseWhenTheObjectIsNull() {
             var target = new Luid(0, 0);
             var result = target.Equals(null);
 
-            Assert.False(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
-        public void ReturnsTrueWhenTheValuesAreEqualWhenTargetIsBoxed()
-        {
+        public void ReturnsTrueWhenTheValuesAreEqualWhenTargetIsBoxed() {
             var target1 = new Luid(1, 1);
             object target2 = new Luid(1, 1);
 
             var result = target1.Equals(target2);
-            Assert.True(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
-        public void ReturnsFalseWhenTheValuesAreNotEqualWhenTargetIsBoxed()
-        {
+        public void ReturnsFalseWhenTheValuesAreNotEqualWhenTargetIsBoxed() {
             var target1 = new Luid(1, 1);
             object target2 = new Luid(2, 2);
 
             var result = target1.Equals(target2);
-            Assert.False(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
-        public void ReturnsTheStringAsExpected()
-        {
+        public void ReturnsTheStringAsExpected() {
             var target = new Luid(1, 2);
-            Assert.AreEqual("8589934593", target.ToString());
+            Assert.That(target.ToString(), Is.EqualTo("8589934593"));
         }
 
         [Test]
-        public void ReturnsTheInt64AsExpected()
-        {
+        public void ReturnsTheInt64AsExpected() {
             var target = new Luid(1, 2);
-            Assert.AreEqual(8589934593, target.ToInt64());
+            Assert.That(target.ToInt64(), Is.EqualTo(8589934593));
         }
 
         [Test]
-        public void ReturnsTheHashCodeAsExpected()
-        {
+        public void ReturnsTheHashCodeAsExpected() {
             var target = new Luid(1, 2);
-            Assert.AreEqual(3, target.GetHashCode());
+            Assert.That(target.GetHashCode(), Is.EqualTo(3));
         }
     }
 }

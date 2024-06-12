@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace DotRas.Internal.Abstractions.Services
-{
-    internal interface IMarshaller
-    {
+namespace DotRas.Internal.Abstractions.Services {
+    internal interface IMarshaller {
         int SizeOf<T>();
 
         IntPtr AllocHGlobal(int size);

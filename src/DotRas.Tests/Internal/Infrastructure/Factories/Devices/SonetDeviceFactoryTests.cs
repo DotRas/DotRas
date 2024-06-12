@@ -2,19 +2,18 @@
 using DotRas.Internal.Infrastructure.Factories.Devices;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices
-{
+namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices {
     [TestFixture]
-    public class SonetDeviceFactoryTests
-    {
+    public class SonetDeviceFactoryTests {
         [Test]
-        public void ReturnADeviceInstance()
-        {
+        public void ReturnADeviceInstance() {
             var target = new SonetDeviceFactory();
             var result = target.Create("Test");
 
-            Assert.AreEqual("Test", result.Name);
-            Assert.IsAssignableFrom<Sonet>(result);
+            Assert.Multiple(() => {
+                Assert.That(result.Name, Is.EqualTo("Test"));
+                Assert.That(result, Is.AssignableFrom<Sonet>());
+            });
         }
     }
 }

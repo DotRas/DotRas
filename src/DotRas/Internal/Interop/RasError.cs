@@ -1,7 +1,5 @@
-﻿namespace DotRas.Internal.Interop
-{
-    internal static class RasError
-    {
+﻿namespace DotRas.Internal.Interop {
+    internal static class RasError {
         public const int RASBASE = 600;
 
         public const int ERROR_BUFFER_TOO_SMALL = RASBASE + 3;

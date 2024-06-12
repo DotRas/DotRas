@@ -1,20 +1,16 @@
-﻿using System.Threading;
-using DotRas.Internal.Abstractions.Primitives;
+﻿using DotRas.Internal.Abstractions.Primitives;
+using System.Threading;
 
-namespace DotRas.Internal.Infrastructure.Primitives
-{
-    internal class ValueWaiter<T> : DisposableObject, IValueWaiter<T>
-    {
+namespace DotRas.Internal.Infrastructure.Primitives {
+    internal class ValueWaiter<T> : DisposableObject, IValueWaiter<T> {
         private readonly object syncRoot = new object();
         private readonly ManualResetEventSlim waitHandle = new ManualResetEventSlim();
 
         public T Value { get; private set; }
         public bool IsSet { get; private set; }
 
-        public void Reset()
-        {
-            lock (syncRoot)
-            {
+        public void Reset() {
+            lock (syncRoot) {
                 Value = default;
                 IsSet = false;
             }
@@ -22,26 +18,19 @@ namespace DotRas.Internal.Infrastructure.Primitives
             waitHandle.Reset();
         }
 
-        public void WaitForValue(CancellationToken cancellationToken)
-        {
-            waitHandle.Wait(cancellationToken);
-        }
+        public void WaitForValue(CancellationToken cancellationToken) => waitHandle.Wait(cancellationToken);
 
-        public void Set(T value)
-        {
-            lock (syncRoot)
-            {
+        public void Set(T value) {
+            lock (syncRoot) {
                 Value = value;
                 IsSet = true;
             }
 
-            waitHandle.Set();        
+            waitHandle.Set();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 waitHandle.Dispose();
             }
 

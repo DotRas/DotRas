@@ -1,13 +1,11 @@
 ﻿using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Defines the states for Internet Key Exchange version 2 (IKEv2) virtual private network (VPN) tunnel connections.
     /// </summary>
     /// <remarks>These states are not available to other tunneling protocols.</remarks>
-    public enum RasConnectionSubState
-    {
+    public enum RasConnectionSubState {
         /// <summary>
         /// The connection state does not have a sub-state.
         /// </summary>

@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace DotRas.Internal.Interop
-{
-    internal static class Ras
-    {
+namespace DotRas.Internal.Interop {
+    internal static class Ras {
         public const int RASCS_PAUSED = 0x1000;
         public const int RASCS_DONE = 0x2000;
         public const int RASCSS_DONE = 0x2000;
@@ -39,16 +37,14 @@ namespace DotRas.Internal.Interop
         public const string RASDT_Parallel = "PARALLEL";
         public const string RASDT_PPPoE = "PPPoE";
 
-        public enum RASTUNNELENDPOINTTYPE
-        {
+        public enum RASTUNNELENDPOINTTYPE {
             Unknown,
             IPv4,
             IPv6
         }
 
         [Flags]
-        public enum RASCF
-        {
+        public enum RASCF {
             AllUsers = 0x1,
             GlobalCreds = 0x2,
             OwnerKnown = 0x4,
@@ -56,8 +52,7 @@ namespace DotRas.Internal.Interop
         }
 
         [Flags]
-        public enum RASCN
-        {
+        public enum RASCN {
             Connection = 0x1,
             Disconnection = 0x2,
             //BandwidthAdded = 0x4,
@@ -68,9 +63,9 @@ namespace DotRas.Internal.Interop
         }
 
         [Flags]
-        public enum RDEOPT
-        {
+        public enum RDEOPT {
             None = 0x0,
+
             //UsePrefixSuffix = 0x1,
             PausedStates = 0x2,
             //IgnoreModemSpeaker = 0x4,
@@ -87,18 +82,16 @@ namespace DotRas.Internal.Interop
             //UseCustomScripting = 0x2000
         }
 
-        public enum NotifierType
-        {
+        public enum NotifierType {
             RasDialFunc2 = 2
         }
 
         [Flags]
-        public enum RASCM
-        {
+        public enum RASCM {
             None = 0x0,
             UserName = 0x1,
             Password = 0x2,
             Domain = 0x4
-        }        
+        }
     }
 }

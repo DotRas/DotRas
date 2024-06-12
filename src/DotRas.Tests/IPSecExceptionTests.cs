@@ -1,59 +1,54 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class IPSecExceptionTests
-    {
+    public class IPSecExceptionTests {
         [Test]
-        public void InitializeWithDefaultConstructor()
-        {
-            Assert.DoesNotThrow(() => _ = new IPSecException());
-        }
+        public void InitializeWithDefaultConstructor() => Assert.DoesNotThrow(() => _ = new IPSecException());
 
         [Test]
-        public void InitializeWithCustomMessage()
-        {
+        public void InitializeWithCustomMessage() {
             var message = "This is a test message!";
 
             var target = new IPSecException(message);
 
-            Assert.AreEqual(message, target.Message);
+            Assert.That(target.Message, Is.EqualTo(message));
         }
 
         [Test]
-        public void InitializeWithOnlyErrorCode()
-        {
+        public void InitializeWithOnlyErrorCode() {
             var errorCode = 13000;
 
             var target = new IPSecException(errorCode);
 
-            Assert.AreEqual(errorCode, target.NativeErrorCode);
+            Assert.That(target.NativeErrorCode, Is.EqualTo(errorCode));
         }
 
         [Test]
-        public void InitializeWithErrorCodeAndCustomMessage()
-        {
+        public void InitializeWithErrorCodeAndCustomMessage() {
             var errorCode = 13000;
             var message = "This is a test message!";
 
             var target = new IPSecException(errorCode, message);
 
-            Assert.AreEqual(errorCode, target.NativeErrorCode);
-            Assert.AreEqual(message, target.Message);
+            Assert.Multiple(() => {
+                Assert.That(target.NativeErrorCode, Is.EqualTo(errorCode));
+                Assert.That(target.Message, Is.EqualTo(message));
+            });
         }
 
         [Test]
-        public void InitializeWithCustomMessageAndInnerException()
-        {
+        public void InitializeWithCustomMessageAndInnerException() {
             var innerEx = new Exception("This is a test exception!");
             var message = "This is a test message!";
 
             var target = new IPSecException(message, innerEx);
 
-            Assert.AreEqual(message, target.Message);
-            Assert.AreEqual(innerEx, target.InnerException);
+            Assert.Multiple(() => {
+                Assert.That(target.Message, Is.EqualTo(message));
+                Assert.That(target.InnerException, Is.EqualTo(innerEx));
+            });
         }
     }
 }

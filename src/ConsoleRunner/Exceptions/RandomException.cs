@@ -4,19 +4,13 @@
 /// An exception which occurs randomly.
 /// </summary>
 [Serializable]
-class RandomException : Exception
-{
+internal class RandomException : Exception {
     public RandomException()
-        : this("A random exception occcured.")
-    {
-    }
+        : this("A random exception occcured.") { }
 
-    public RandomException(string message) : base(message)
-    {
-    }
+    public RandomException(string message)
+        : base(message) { }
 
-    public RandomException(string message, Exception innerException) 
-        : base(message, innerException)
-    {
-    }
+    public RandomException(string message, Exception innerException)
+        : base(message, innerException) { }
 }

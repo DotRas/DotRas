@@ -3,10 +3,8 @@ using System.Net;
 using System.Threading;
 using static DotRas.Internal.Interop.NativeMethods;
 
-namespace DotRas.Internal.Abstractions.Services
-{
-    internal class RasDialContext
-    {
+namespace DotRas.Internal.Abstractions.Services {
+    internal class RasDialContext {
         public string PhoneBookPath { get; set; }
         public string EntryName { get; set; }
         public NetworkCredential Credentials { get; set; }

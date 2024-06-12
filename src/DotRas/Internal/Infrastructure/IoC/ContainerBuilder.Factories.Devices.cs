@@ -1,11 +1,8 @@
 ﻿using DotRas.Internal.Infrastructure.Factories.Devices;
 
-namespace DotRas.Internal.Infrastructure.IoC
-{
-    static partial class ContainerBuilder
-    {
-        private static void RegisterDeviceFactories(Container container)
-        {
+namespace DotRas.Internal.Infrastructure.IoC {
+    internal static partial class ContainerBuilder {
+        private static void RegisterDeviceFactories(Container container) {
             container.RegisterType(typeof(AtmDeviceFactory));
             container.RegisterType(typeof(FrameRelayDeviceFactory));
             container.RegisterType(typeof(GenericDeviceFactory));

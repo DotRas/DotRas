@@ -1,20 +1,16 @@
-﻿using System;
-using System.ComponentModel;
-using DotRas.Tests.Stubs;
+﻿using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.ComponentModel;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasComponentBaseTests
-    {
+    public class RasComponentBaseTests {
         [Test]
-        public void SwallowsErrorsWhichOccurWhileHandlingErrors()
-        {
+        public void SwallowsErrorsWhichOccurWhileHandlingErrors() {
             var target = new StubRasComponent();
-            target.Error += (sender, e) =>
-            {
+            target.Error += (sender, e) => {
                 throw new TestException();
             };
 
@@ -22,15 +18,11 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void RaisesTheEventUsingTheSynchronizingObjectWhenRequired()
-        {
+        public void RaisesTheEventUsingTheSynchronizingObjectWhenRequired() {
             var synchronizingObject = new Mock<ISynchronizeInvoke>();
             synchronizingObject.Setup(o => o.InvokeRequired).Returns(true);
 
-            var target = new StubRasComponent
-            {
-                SynchronizingObject = synchronizingObject.Object
-            };
+            var target = new StubRasComponent { SynchronizingObject = synchronizingObject.Object };
 
             target.SomethingOccurred += (sender, e) => { };
             target.RaiseSomethingOccurredEvent(EventArgs.Empty);
@@ -39,15 +31,11 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void RaisesTheEventWithoutUsingTheSynchronizingObjectWhenNotRequired()
-        {
+        public void RaisesTheEventWithoutUsingTheSynchronizingObjectWhenNotRequired() {
             var synchronizingObject = new Mock<ISynchronizeInvoke>();
             synchronizingObject.Setup(o => o.InvokeRequired).Returns(false);
 
-            var target = new StubRasComponent
-            {
-                SynchronizingObject = synchronizingObject.Object
-            };
+            var target = new StubRasComponent { SynchronizingObject = synchronizingObject.Object };
 
             target.SomethingOccurred += (sender, e) => { };
             target.RaiseSomethingOccurredEvent(EventArgs.Empty);

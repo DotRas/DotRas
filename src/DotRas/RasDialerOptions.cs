@@ -1,12 +1,10 @@
 ﻿using System.Windows.Forms;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Provides options available to a <see cref="RasDialer"/> for use while dialing a connection.
     /// </summary>
-    public class RasDialerOptions
-    {
+    public class RasDialerOptions {
         /// <summary>
         /// Gets or sets the parent window.
         /// </summary>

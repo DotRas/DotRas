@@ -1,27 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Internal.Interop;
+using System;
+using System.Diagnostics;
 using static DotRas.Internal.Interop.ExternDll;
 
-namespace DotRas.Internal.Infrastructure.Advice
-{
-    internal class Kernel32LoggingAdvice : LoggingAdvice<IKernel32>, IKernel32
-    {
-        public Kernel32LoggingAdvice(IKernel32 attachedObject, IEventLoggingPolicy eventLoggingPolicy) 
-            : base(attachedObject, eventLoggingPolicy)
-        {
-        }
+namespace DotRas.Internal.Infrastructure.Advice {
+    internal class Kernel32LoggingAdvice : LoggingAdvice<IKernel32>, IKernel32 {
+        public Kernel32LoggingAdvice(IKernel32 attachedObject, IEventLoggingPolicy eventLoggingPolicy)
+            : base(attachedObject, eventLoggingPolicy) { }
 
-        public int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId, ref IntPtr lpBuffer, int nSize, IntPtr arguments)
-        {
+        public int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId, ref IntPtr lpBuffer, int nSize, IntPtr arguments) {
             var stopwatch = Stopwatch.StartNew();
             var result = AttachedObject.FormatMessage(dwFlags, lpSource, dwMessageId, dwLanguageId, ref lpBuffer, nSize, arguments);
             stopwatch.Stop();
 
-            var callEvent = new PInvokeInt32CallCompletedTraceEvent
-            {
+            var callEvent = new PInvokeInt32CallCompletedTraceEvent {
                 DllName = Kernel32Dll,
                 Duration = stopwatch.Elapsed,
                 MethodName = nameof(FormatMessage),

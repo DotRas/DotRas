@@ -1,43 +1,36 @@
-﻿using System;
-using System.ComponentModel;
-using DotRas.Internal.Abstractions.Services;
+﻿using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Policies;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.ComponentModel;
 using static DotRas.Internal.Interop.EapHostError;
 
-namespace DotRas.Tests.Internal.Policies
-{
+namespace DotRas.Tests.Internal.Policies {
     [TestFixture]
-    public class RasDialCallbackExceptionPolicyTests
-    {
+    public class RasDialCallbackExceptionPolicyTests {
         [Test]
-        public void ThrowsAnExceptionWhenGetErrorStringIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasDialCallbackExceptionPolicy(null));
-        }
+        public void ThrowsAnExceptionWhenGetErrorStringIsNull() => Assert.Throws<ArgumentNullException>(() => new RasDialCallbackExceptionPolicy(null));
 
         [Test]
-        public void ShouldReturnTheMessageFromEapAsExpected()
-        {
+        public void ShouldReturnTheMessageFromEapAsExpected() {
             var rasGetErrorString = new Mock<IRasGetErrorString>();
-            
+
             var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(EAP_E_USER_NAME_PASSWORD_REJECTED) as EapException;
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Authenticator rejected user credentials for authentication.", result.Message);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Message, Is.EqualTo("Authenticator rejected user credentials for authentication."));
         }
 
         [Test]
-        public void PassesTheErrorOnWhenNotKnown()
-        {
+        public void PassesTheErrorOnWhenNotKnown() {
             var rasGetErrorString = new Mock<IRasGetErrorString>();
 
             var target = new RasDialCallbackExceptionPolicy(rasGetErrorString.Object);
             var result = target.Create(-1);
 
-            Assert.IsInstanceOf<Win32Exception>(result);
+            Assert.That(result, Is.InstanceOf<Win32Exception>());
         }
     }
 }

@@ -1,0 +1,16 @@
+{
+  "App": {
+    "EntryName": "DotRas Deafault Phonebook",
+    "PhoneBookPath": "%AppData%\\Microsoft\\Network\\Connections\\Pbk\\rasphone.pbk",
+    "Username": "USERNAME",
+    "Password": "PASSWORD"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+      "DotRas": "Information"
+    }
+  }
+}

@@ -1,17 +1,15 @@
-﻿using System;
+﻿using DotRas.Internal;
+using DotRas.Internal.Abstractions.Services;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using DotRas.Internal;
-using DotRas.Internal.Abstractions.Services;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Represents a remote access connection.
     /// </summary>
-    public class RasConnection : IRasConnection, IEquatable<RasConnection>
-    {
+    public class RasConnection : IRasConnection, IEquatable<RasConnection> {
         #region Fields and Properties
 
         /// <summary>
@@ -66,18 +64,14 @@ namespace DotRas
 
         #endregion
 
-        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IServiceProvider services)
-        {
-            if (handle == IntPtr.Zero)
-            {
+        internal RasConnection(IntPtr handle, RasDevice device, string entryName, string phoneBookPath, Guid entryId, RasConnectionOptions options, Luid sessionId, Guid correlationId, IServiceProvider services) {
+            if (handle == IntPtr.Zero) {
                 throw new ArgumentNullException(nameof(handle));
             }
-            else if (string.IsNullOrWhiteSpace(entryName))
-            {
+            else if (string.IsNullOrWhiteSpace(entryName)) {
                 throw new ArgumentNullException(nameof(entryName));
             }
-            else if (string.IsNullOrWhiteSpace(phoneBookPath))
-            {
+            else if (string.IsNullOrWhiteSpace(phoneBookPath)) {
                 throw new ArgumentNullException(nameof(phoneBookPath));
             }
 
@@ -95,59 +89,38 @@ namespace DotRas
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnection"/> class.
         /// </summary>
-        protected RasConnection()
-        {
-        }
+        protected RasConnection() { }
 
         /// <summary>
         /// Enumerates the connections.
         /// </summary>
         /// <returns>An enumerable used to iterate through the connections.</returns>
-        public static IEnumerable<RasConnection> EnumerateConnections()
-        {
-            return ServiceLocator.Default.GetRequiredService<IRasEnumConnections>()
-                .EnumerateConnections();
-        }
+        public static IEnumerable<RasConnection> EnumerateConnections() => ServiceLocator.Default.GetRequiredService<IRasEnumConnections>().EnumerateConnections();
 
         /// <summary>
         /// Clears the accumulated statistics for the connection.
         /// </summary>
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
-        public virtual void ClearStatistics()
-        {
-            Services.GetRequiredService<IRasClearConnectionStatistics>()
-                .ClearConnectionStatistics(this);
-        }
+        public virtual void ClearStatistics() => Services.GetRequiredService<IRasClearConnectionStatistics>().ClearConnectionStatistics(this);
 
         /// <summary>
         /// Retrieves accumulated statistics for the connection.
         /// </summary>
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
-        public virtual RasConnectionStatistics GetStatistics()
-        {
-            return Services.GetRequiredService<IRasGetConnectionStatistics>()
-                .GetConnectionStatistics(this);
-        }
+        public virtual RasConnectionStatistics GetStatistics() => Services.GetRequiredService<IRasGetConnectionStatistics>().GetConnectionStatistics(this);
 
         /// <summary>
         /// Retrieves the connection status.
         /// </summary>
         /// <exception cref="RasException">Thrown if the connection has been terminated.</exception>
-        public virtual RasConnectionStatus GetStatus()
-        {
-            return Services.GetRequiredService<IRasGetConnectStatus>()
-                .GetConnectionStatus(this);
-        }
+        public virtual RasConnectionStatus GetStatus() => Services.GetRequiredService<IRasGetConnectStatus>().GetConnectionStatus(this);
 
         /// <summary>
         /// Disconnects the remote access connection.
         /// </summary>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-        public virtual void Disconnect()
-        {
-            Disconnect(CancellationToken.None);
-        }
+        public virtual void Disconnect() => Disconnect(CancellationToken.None);
 
         /// <summary>
         /// Disconnects the remote access connection.
@@ -155,10 +128,7 @@ namespace DotRas
         /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-        public virtual void Disconnect(CancellationToken cancellationToken)
-        {
-            Disconnect(cancellationToken, DefaultCloseAllReferences);
-        }
+        public virtual void Disconnect(CancellationToken cancellationToken) => Disconnect(cancellationToken, DefaultCloseAllReferences);
 
         /// <summary>
         /// Disconnects the remote access connection.
@@ -167,10 +137,7 @@ namespace DotRas
         /// <param name="closeAllReferences">true to close all referenced connections to the handle, otherwise false to only close this reference.</param>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
-        public virtual void Disconnect(CancellationToken cancellationToken, bool closeAllReferences)
-        {
-            DisconnectAsync(cancellationToken, closeAllReferences).GetResultSynchronously();
-        }
+        public virtual void Disconnect(CancellationToken cancellationToken, bool closeAllReferences) => DisconnectAsync(cancellationToken, closeAllReferences).GetResultSynchronously();
 
         /// <summary>
         /// Disconnects the remote access connection.
@@ -178,10 +145,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         /// <returns>The task to await.</returns>
-        public virtual Task DisconnectAsync()
-        {
-            return DisconnectAsync(CancellationToken.None);
-        }
+        public virtual Task DisconnectAsync() => DisconnectAsync(CancellationToken.None);
 
         /// <summary>
         /// Disconnects the remote access connection.
@@ -190,10 +154,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         /// <returns>The task to await.</returns>
-        public virtual Task DisconnectAsync(CancellationToken cancellationToken)
-        {
-            return DisconnectAsync(cancellationToken, DefaultCloseAllReferences);
-        }
+        public virtual Task DisconnectAsync(CancellationToken cancellationToken) => DisconnectAsync(cancellationToken, DefaultCloseAllReferences);
 
         /// <summary>
         /// Disconnects the remote access connection.
@@ -203,11 +164,7 @@ namespace DotRas
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
         /// <exception cref="TaskCanceledException">The task has been cancelled.</exception>
         /// <returns>The task to await.</returns>
-        public virtual Task DisconnectAsync(CancellationToken cancellationToken, bool closeAllReferences)
-        {
-            return Services.GetRequiredService<IRasHangUp>()
-                .HangUpAsync(this, closeAllReferences, cancellationToken);
-        }
+        public virtual Task DisconnectAsync(CancellationToken cancellationToken, bool closeAllReferences) => Services.GetRequiredService<IRasHangUp>().HangUpAsync(this, closeAllReferences, cancellationToken);
 
         /// <summary>
         /// Evaluates the equality of two instances.
@@ -215,19 +172,13 @@ namespace DotRas
         /// <param name="objA">The first instance.</param>
         /// <param name="objB">The second instance.</param>
         /// <returns>A value indicating whether the two objects are not equal.</returns>
-        public static bool operator ==(RasConnection objA, RasConnection objB)
-        {
-#pragma warning disable IDE0041 // Use 'is null' check
-            if (ReferenceEquals(objA, null) && ReferenceEquals(objB, null))
-            {
+        public static bool operator ==(RasConnection objA, RasConnection objB) {
+            if (ReferenceEquals(objA, null) && ReferenceEquals(objB, null)) {
                 return true;
             }
-            else if (ReferenceEquals(objA, null) || ReferenceEquals(objB, null))
-            {
-                return false;   
+            else if (objA is null || objB is null) {
+                return false;
             }
-#pragma warning restore IDE0041 // Use 'is null' check
-
             return objA.Equals(objB);
         }
 
@@ -238,38 +189,22 @@ namespace DotRas
         /// <param name="objB">The second instance.</param>
         /// <returns>A value indicating whether the two objects are not equal.</returns>
 
-        public static bool operator !=(RasConnection objA, RasConnection objB)
-        {
+        public static bool operator !=(RasConnection objA, RasConnection objB) {
             return !(objA == objB);
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             var other = obj as RasConnection;
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Equals(other);
+            return other == null ? false : Equals(other);
         }
 
         /// <inheritdoc />
-        public virtual bool Equals(RasConnection other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Handle == other.Handle;
+        public virtual bool Equals(RasConnection other) {
+            return other == null ? false : Handle == other.Handle;
         }
 
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return Handle.GetHashCode();
-        }
+        public override int GetHashCode() => Handle.GetHashCode();
     }
 }

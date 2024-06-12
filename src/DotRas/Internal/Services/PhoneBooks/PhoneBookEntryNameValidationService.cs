@@ -1,23 +1,18 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Services;
+﻿using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
+using System;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Internal.Services.PhoneBooks
-{
-    internal class PhoneBookEntryNameValidationService : IPhoneBookEntryValidator
-    {
+namespace DotRas.Internal.Services.PhoneBooks {
+    internal class PhoneBookEntryNameValidationService : IPhoneBookEntryValidator {
         private readonly IRasApi32 api;
 
-        public PhoneBookEntryNameValidationService(IRasApi32 api)
-        {
+        public PhoneBookEntryNameValidationService(IRasApi32 api) {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
-        public bool VerifyEntryExists(string entryName, string phoneBookPath)
-        {
-            if (string.IsNullOrWhiteSpace(entryName))
-            {
+        public bool VerifyEntryExists(string entryName, string phoneBookPath) {
+            if (string.IsNullOrWhiteSpace(entryName)) {
                 throw new ArgumentNullException(nameof(entryName));
             }
 

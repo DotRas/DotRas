@@ -1,35 +1,26 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using DotRas.Internal.Abstractions.Policies;
+﻿using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Interop;
 using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using static DotRas.Internal.Interop.RasError;
 using static DotRas.Internal.Interop.WinError;
 
-namespace DotRas.Tests.Internal.Services.Connections
-{
+namespace DotRas.Tests.Internal.Services.Connections {
     [TestFixture]
-    public class RasHangUpTests
-    {
+    public class RasHangUpTests {
         [Test]
-        public void ThrowAnExceptionWhenTheApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasHangUpService(null, new Mock<IExceptionPolicy>().Object));
-        }
+        public void ThrowAnExceptionWhenTheApiIsNull() => Assert.Throws<ArgumentNullException>(() => new RasHangUpService(null, new Mock<IExceptionPolicy>().Object));
 
         [Test]
-        public void ThrowAnExceptionWhenTheExceptionPolicyIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasHangUpService(new Mock<IRasApi32>().Object, null));
-        }
+        public void ThrowAnExceptionWhenTheExceptionPolicyIsNull() => Assert.Throws<ArgumentNullException>(() => new RasHangUpService(new Mock<IRasApi32>().Object, null));
 
         [Test]
-        public void ThrowsAnExceptionWhenTheConnectionIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheConnectionIsNull() {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
@@ -38,8 +29,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsZero()
-        {
+        public void ThrowsAnExceptionWhenTheHandleIsZero() {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
@@ -48,9 +38,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        [Timeout(10000)]
-        public async Task HangsUpTheConnectionAsExpected()
-        {
+        public async Task HangsUpTheConnectionAsExpected() {
             var handle = new IntPtr(1);
 
             var connection = new Mock<IRasConnection>();
@@ -68,9 +56,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        [Timeout(10000)]
-        public void HangsUpTheConnectionFromPtrAsExpected()
-        {
+        public void HangsUpTheConnectionFromPtrAsExpected() {
             var handle = new IntPtr(1);
 
             var api = new Mock<IRasApi32>();
@@ -85,27 +71,18 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        [Timeout(10000)]
-        public void CallsHangUpUntilAllConnectionsHaveBeenClosed()
-        {
+        public void CallsHangUpUntilAllConnectionsHaveBeenClosed() {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
             var handle = new IntPtr(1);
 
             var counter = 0;
-            api.Setup(o => o.RasHangUp(handle)).Returns(() =>
-            {
-                counter++;
-                if (counter < 3)
-                {
-                    return SUCCESS;
-                }
-                else
-                {
-                    return ERROR_NO_CONNECTION;
-                }
-            });
+            api.Setup(o => o.RasHangUp(handle))
+                .Returns(() => {
+                    counter++;
+                    return counter < 3 ? SUCCESS : ERROR_NO_CONNECTION;
+                });
 
             var target = new RasHangUpService(api.Object, exceptionPolicy.Object);
             target.UnsafeHangUp(handle, true, CancellationToken.None);
@@ -114,8 +91,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenCancellationIsRequested()
-        {
+        public void ThrowsAnExceptionWhenCancellationIsRequested() {
             var api = new Mock<IRasApi32>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
@@ -132,9 +108,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        [Timeout(10000)]
-        public void ThrowsAnExceptionWhenHangUpReturnsAnInvalidResultCode()
-        {
+        public void ThrowsAnExceptionWhenHangUpReturnsAnInvalidResultCode() {
             var api = new Mock<IRasApi32>();
 
             var exceptionPolicy = new Mock<IExceptionPolicy>();

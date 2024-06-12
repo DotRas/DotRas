@@ -1,14 +1,12 @@
-﻿using System;
-using DotRas.Internal;
+﻿using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
+using System;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Listens to the remote access service (RAS) change notifications and raises events when connections change.
     /// </summary>
-    public class RasConnectionWatcher : RasComponentBase
-    {
+    public class RasConnectionWatcher : RasComponentBase {
         #region Fields and Properties
 
         private readonly IRasConnectionNotification api;
@@ -24,19 +22,15 @@ namespace DotRas
         /// Gets or sets the connection to watch for changes.
         /// </summary>
         /// <exception cref="ObjectDisposedException">The connection has been changed after the <see cref="Dispose"/> method has been called.</exception>
-        public IRasConnection Connection
-        {
+        public IRasConnection Connection {
             get => connection;
-            set
-            {
-                if (connection == null && value == null || Equals(connection, value))
-                {
+            set {
+                if ((connection == null && value == null) || Equals(connection, value)) {
                     return;
                 }
 
                 connection = value;
-                if (IsActive)
-                {
+                if (IsActive) {
                     Restart();
                 }
             }
@@ -57,20 +51,17 @@ namespace DotRas
         public event EventHandler<RasConnectionEventArgs> Disconnected;
 
         #endregion
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RasConnectionWatcher"/> class.
-        /// </summary>
-        public RasConnectionWatcher()
-            : this(ServiceLocator.Default.GetRequiredService<IRasConnectionNotification>())
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RasConnectionWatcher"/> class.
         /// </summary>
-        internal RasConnectionWatcher(IRasConnectionNotification api)
-        {
+        public RasConnectionWatcher()
+            : this(ServiceLocator.Default.GetRequiredService<IRasConnectionNotification>()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasConnectionWatcher"/> class.
+        /// </summary>
+        internal RasConnectionWatcher(IRasConnectionNotification api) {
             this.api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
@@ -78,50 +69,44 @@ namespace DotRas
         /// Starts watching for connection changes.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after the <see cref="Dispose"/> method has been called.</exception>
-        public void Start()
-        {
+        public void Start() {
             GuardMustNotBeDisposed();
 
-            if (IsActive)
-            {
+            if (IsActive) {
                 return;
             }
 
-            api.Subscribe(new RasNotificationContext
-            {
-                Connection = connection,
-                OnConnectedCallback = RaiseConnectedEvent,
-                OnDisconnectedCallback = RaiseDisconnectedEvent
-            });
+            api.Subscribe(
+                new RasNotificationContext {
+                    Connection = connection,
+                    OnConnectedCallback = RaiseConnectedEvent,
+                    OnDisconnectedCallback = RaiseDisconnectedEvent
+                }
+            );
         }
 
         /// <summary>
         /// Stops watching for connection changes.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the object is used after the <see cref="Dispose"/> method has been called.</exception>
-        public void Stop()
-        {
+        public void Stop() {
             GuardMustNotBeDisposed();
 
-            if (!IsActive)
-            {
+            if (!IsActive) {
                 return;
             }
 
             api.Reset();
         }
 
-        private void Restart()
-        {
+        private void Restart() {
             Stop();
             Start();
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 api.Dispose();
             }
 
@@ -132,19 +117,15 @@ namespace DotRas
         /// Raises the <see cref="Connected"/> event.
         /// </summary>
         /// <param name="e">An <see cref="RasConnectionEventArgs"/> containing event data.</param>
-        protected void RaiseConnectedEvent(RasConnectionEventArgs e)
-        {
-            if (e == null)
-            {
+        protected void RaiseConnectedEvent(RasConnectionEventArgs e) {
+            if (e == null) {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            try
-            {
+            try {
                 RaiseEvent(Connected, e);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 RaiseErrorEvent(new ErrorEventArgs(ex));
             }
         }
@@ -153,19 +134,15 @@ namespace DotRas
         /// Raises the <see cref="Disconnected"/> event.
         /// </summary>
         /// <param name="e">An <see cref="RasConnectionEventArgs"/> containing event data.</param>
-        protected void RaiseDisconnectedEvent(RasConnectionEventArgs e)
-        {
-            if (e == null)
-            {
+        protected void RaiseDisconnectedEvent(RasConnectionEventArgs e) {
+            if (e == null) {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            try
-            {
+            try {
                 RaiseEvent(Disconnected, e);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 RaiseErrorEvent(new ErrorEventArgs(ex));
             }
         }

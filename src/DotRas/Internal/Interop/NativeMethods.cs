@@ -4,26 +4,25 @@ using static DotRas.Internal.Interop.Lmcons;
 using static DotRas.Internal.Interop.Ras;
 using static DotRas.Internal.Interop.StdLib;
 
-#pragma warning disable S101 // Types should be named in PascalCase
-
-namespace DotRas.Internal.Interop
-{
-    internal static class NativeMethods
-    {
+namespace DotRas.Internal.Interop {
+    internal static class NativeMethods {
         public static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
-        public struct RASCONN
-        {
+        public struct RASCONN {
             [SizeOf]
             public int dwSize;
             public IntPtr hrasconn;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxEntryName + 1)]
             public string szEntryName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
             public string szDeviceType;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceName + 1)]
             public string szDeviceName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
             public string szPhonebook;
             public int dwSubEntry;
@@ -34,51 +33,55 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
-        public struct RASCONNSTATUS
-        {
+        public struct RASCONNSTATUS {
             [SizeOf]
             public int dwSize;
             public RasConnectionState rasconnstate;
             public int dwError;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
             public string szDeviceType;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceName + 1)]
             public string szDeviceName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxPhoneNumber + 1)]
             public string szPhoneNumber;
             public RASTUNNELENDPOINT localEndpoint;
             public RASTUNNELENDPOINT remoteEndpoint;
             public RasConnectionSubState rasconnsubstate;
         }
-        
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
-        public struct RASCREDENTIALS
-        {
+        public struct RASCREDENTIALS {
             [SizeOf]
             public int dwSize;
             public RASCM dwMask;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = UNLEN + 1)]
             public string szUserName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PWLEN + 1)]
             public string szPassword;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = DNLEN + 1)]
             public string szDomain;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
-        public struct RASDEVINFO
-        {
+        public struct RASDEVINFO {
             [SizeOf]
             public int dwSize;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceType + 1)]
             public string szDeviceType;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxDeviceName + 1)]
             public string szDeviceName;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct RASDIALEXTENSIONS
-        {
+        public struct RASDIALEXTENSIONS {
             [SizeOf]
             public int dwSize;
             public RDEOPT dwfOptions;
@@ -91,36 +94,40 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct RASEAPINFO
-        {
+        public struct RASEAPINFO {
             [SizeOf]
             public int dwSizeofEapInfo;
             public IntPtr pbEapInfo;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct RASDEVSPECIFICINFO
-        {
+        public struct RASDEVSPECIFICINFO {
             [SizeOf]
             public int dwSize;
             public IntPtr pbDevSpecificInfo;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
-        public struct RASDIALPARAMS
-        {
+        public struct RASDIALPARAMS {
             [SizeOf]
             public int dwSize;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxEntryName + 1)]
             public string szEntryName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxPhoneNumber + 1)]
             public string szPhoneNumber;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = RAS_MaxCallbackNumber + 1)]
             public string szCallbackNumber;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = UNLEN + 1)]
             public string szUserName;
-            [MaskedValue] [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PWLEN + 1)]
+
+            [MaskedValue]
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PWLEN + 1)]
             public string szPassword;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = DNLEN + 1)]
             public string szDomain;
             public int dwSubEntry;
@@ -129,8 +136,7 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RAS_STATS
-        {
+        public struct RAS_STATS {
             [SizeOf]
             public int dwSize;
             public uint dwBytesXmited;
@@ -150,20 +156,13 @@ namespace DotRas.Internal.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RASTUNNELENDPOINT
-        {
+        public struct RASTUNNELENDPOINT {
             public RASTUNNELENDPOINTTYPE type;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             public byte[] addr;
         }
 
-        public delegate bool RasDialFunc2(
-            IntPtr dwCallbackId,
-            int dwSubEntry,
-            IntPtr hrasconn,
-            uint message,
-            RasConnectionState rascs,
-            int dwError,
-            int dwExtendedError);
+        public delegate bool RasDialFunc2(IntPtr dwCallbackId, int dwSubEntry, IntPtr hrasconn, uint message, RasConnectionState rascs, int dwError, int dwExtendedError);
     }
 }

@@ -1,7 +1,6 @@
 namespace ConsoleRunner.Configuration;
 
-class ApplicationOptions
-{
+internal class ApplicationOptions {
     public string EntryName { get; set; }
     public string PhoneBookPath { get; set; }
     public string Username { get; set; }

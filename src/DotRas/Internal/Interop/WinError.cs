@@ -1,7 +1,5 @@
-﻿namespace DotRas.Internal.Interop
-{
-    internal static class WinError
-    {
+﻿namespace DotRas.Internal.Interop {
+    internal static class WinError {
         public const int SUCCESS = 0;
 
         public const int ERROR_INVALID_HANDLE = 6;

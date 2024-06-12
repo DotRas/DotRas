@@ -1,30 +1,29 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasConnectionStatisticsTests
-    {
+    public class RasConnectionStatisticsTests {
         [Test]
-        public void InitializesTheClassAsExpected()
-        {
+        public void InitializesTheClassAsExpected() {
             var target = new RasConnectionStatistics(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, TimeSpan.FromMilliseconds(14));
 
-            Assert.AreEqual(1, target.BytesTransmitted);
-            Assert.AreEqual(2, target.BytesReceived);
-            Assert.AreEqual(3, target.FramesTransmitted);
-            Assert.AreEqual(4, target.FramesReceived);
-            Assert.AreEqual(5, target.CrcErrors);
-            Assert.AreEqual(6, target.TimeoutErrors);
-            Assert.AreEqual(7, target.AlignmentErrors);
-            Assert.AreEqual(8, target.HardwareOverrunErrors);
-            Assert.AreEqual(9, target.FramingErrors);
-            Assert.AreEqual(10, target.BufferOverrunErrors);
-            Assert.AreEqual(11, target.CompressionRatioIn);
-            Assert.AreEqual(12, target.CompressionRatioOut);
-            Assert.AreEqual(13, target.LinkSpeed);
-            Assert.AreEqual(14, target.ConnectionDuration.TotalMilliseconds);
+            Assert.Multiple(() => {
+                Assert.That(target.BytesTransmitted, Is.EqualTo(1));
+                Assert.That(target.BytesReceived, Is.EqualTo(2));
+                Assert.That(target.FramesTransmitted, Is.EqualTo(3));
+                Assert.That(target.FramesReceived, Is.EqualTo(4));
+                Assert.That(target.CrcErrors, Is.EqualTo(5));
+                Assert.That(target.TimeoutErrors, Is.EqualTo(6));
+                Assert.That(target.AlignmentErrors, Is.EqualTo(7));
+                Assert.That(target.HardwareOverrunErrors, Is.EqualTo(8));
+                Assert.That(target.FramingErrors, Is.EqualTo(9));
+                Assert.That(target.BufferOverrunErrors, Is.EqualTo(10));
+                Assert.That(target.CompressionRatioIn, Is.EqualTo(11));
+                Assert.That(target.CompressionRatioOut, Is.EqualTo(12));
+                Assert.That(target.LinkSpeed, Is.EqualTo(13));
+                Assert.That(target.ConnectionDuration.TotalMilliseconds, Is.EqualTo(14));
+            });
         }
     }
 }

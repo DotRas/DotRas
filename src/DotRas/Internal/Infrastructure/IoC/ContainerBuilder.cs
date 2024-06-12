@@ -1,11 +1,8 @@
 ﻿using System;
 
-namespace DotRas.Internal.Infrastructure.IoC
-{
-    internal static partial class ContainerBuilder
-    {
-        public static Container Build()
-        {
+namespace DotRas.Internal.Infrastructure.IoC {
+    internal static partial class ContainerBuilder {
+        public static Container Build() {
             var container = new Container();
 
             container.Register<IServiceProvider>(() => container);

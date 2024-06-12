@@ -1,5 +1,4 @@
-﻿namespace DotRas.Devices
-{
+﻿namespace DotRas.Devices {
     /// <summary>
     /// Represents a generic device.
     /// </summary>
@@ -12,8 +11,6 @@
         /// </summary>
         /// <param name="name">The name of the device.</param>
         public Generic(string name)
-            : base(name)
-        {
-        }
+            : base(name) { }
     }
 }

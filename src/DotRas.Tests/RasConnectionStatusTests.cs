@@ -1,23 +1,17 @@
-﻿using System.Net;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
+using System.Net;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasConnectionStatusTests
-    {
+    public class RasConnectionStatusTests {
         private Mock<RasDevice> device;
 
         [SetUp]
-        public void Setup()
-        {
-            device = new Mock<RasDevice>();
-        }
+        public void Setup() => device = new Mock<RasDevice>();
 
         [Test]
-        public void DoesNotThrowAnErrorWithNullLocalEndPoint()
-        {
+        public void DoesNotThrowAnErrorWithNullLocalEndPoint() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             IPAddress localEndpoint = null;
@@ -25,12 +19,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.Null(target.LocalEndPoint);
+            Assert.That(target.LocalEndPoint, Is.Null);
         }
 
         [Test]
-        public void DoesNotThrowAnErrorWithNullRemoteEndPoint()
-        {
+        public void DoesNotThrowAnErrorWithNullRemoteEndPoint() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -38,12 +31,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.Null(target.RemoteEndPoint);
+            Assert.That(target.RemoteEndPoint, Is.Null);
         }
 
         [Test]
-        public void ReturnsTheConnectionStateAsExpected()
-        {
+        public void ReturnsTheConnectionStateAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -51,12 +43,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(connectionState, target.ConnectionState);
+            Assert.That(target.ConnectionState, Is.EqualTo(connectionState));
         }
 
         [Test]
-        public void ReturnsTheDeviceAsExpected()
-        {
+        public void ReturnsTheDeviceAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -64,12 +55,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(device.Object, target.Device);
+            Assert.That(target.Device, Is.EqualTo(device.Object));
         }
 
         [Test]
-        public void ReturnsThePhoneNumberAsExpected()
-        {
+        public void ReturnsThePhoneNumberAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -77,12 +67,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(phoneNumber, target.PhoneNumber);
+            Assert.That(target.PhoneNumber, Is.EqualTo(phoneNumber));
         }
 
         [Test]
-        public void ReturnsTheLocalEndPointAsExpected()
-        {
+        public void ReturnsTheLocalEndPointAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -90,12 +79,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(localEndpoint, target.LocalEndPoint);
+            Assert.That(target.LocalEndPoint, Is.EqualTo(localEndpoint));
         }
 
         [Test]
-        public void ReturnsTheRemoteEndPointAsExpected()
-        {
+        public void ReturnsTheRemoteEndPointAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -103,12 +91,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(remoteEndpoint, target.RemoteEndPoint);
+            Assert.That(target.RemoteEndPoint, Is.EqualTo(remoteEndpoint));
         }
 
         [Test]
-        public void ReturnsTheConnectionSubStateAsExpected()
-        {
+        public void ReturnsTheConnectionSubStateAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -116,12 +103,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(connectionSubState, target.ConnectionSubState);
+            Assert.That(target.ConnectionSubState, Is.EqualTo(connectionSubState));
         }
 
         [Test]
-        public void ReturnsNullErrorCodeAsExpected()
-        {
+        public void ReturnsNullErrorCodeAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -129,12 +115,11 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, null, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.Null(target.ErrorCode);
+            Assert.That(target.ErrorCode, Is.Null);
         }
 
         [Test]
-        public void ReturnsErrorCodeWithValueAsExpected()
-        {
+        public void ReturnsErrorCodeWithValueAsExpected() {
             var connectionState = RasConnectionState.Connected;
             var phoneNumber = "12345";
             var localEndpoint = IPAddress.Loopback;
@@ -142,8 +127,7 @@ namespace DotRas.Tests
             var connectionSubState = RasConnectionSubState.None;
 
             var target = new RasConnectionStatus(connectionState, 1, device.Object, phoneNumber, localEndpoint, remoteEndpoint, connectionSubState);
-            Assert.AreEqual(1, target.ErrorCode);
+            Assert.That(target.ErrorCode, Is.EqualTo(1));
         }
-
     }
 }

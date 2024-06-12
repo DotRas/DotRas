@@ -1,79 +1,62 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Services;
+﻿using DotRas.Internal.Abstractions.Services;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasConnectionWatcherTests
-    {
+    public class RasConnectionWatcherTests {
         [Test]
-        public void DoesNotThrowAnExceptionWhenCreatingTheObject()
-        {
-            Assert.DoesNotThrow(() => new RasConnectionWatcher());
-        }
-        
-        [Test]
-        public void ThrowsAnExceptionWhenTheApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionWatcher(null));
-        }
+        public void DoesNotThrowAnExceptionWhenCreatingTheObject() => Assert.DoesNotThrow(() => new RasConnectionWatcher());
 
         [Test]
-        public void RaisesTheErrorEventWhenAnErrorOccursDuringConnectedEvent()
-        {
+        public void ThrowsAnExceptionWhenTheApiIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionWatcher(null));
+
+        [Test]
+        public void RaisesTheErrorEventWhenAnErrorOccursDuringConnectedEvent() {
             var called = false;
 
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new TestableRasConnectionWatcher(api.Object);
-            target.Connected += (sender, e) =>
-            {
+            target.Connected += (sender, e) => {
                 throw new TestException();
             };
 
-            target.Error += (sender, e) =>
-            {
-                Assert.IsInstanceOf<TestException>(e.GetException());
+            target.Error += (sender, e) => {
+                Assert.That(e.GetException(), Is.InstanceOf<TestException>());
                 called = true;
             };
 
-            target.RaiseConnectedEvent(new RasConnectionEventArgs(
-                new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
+            target.RaiseConnectedEvent(new RasConnectionEventArgs(new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
 
-            Assert.True(called, "The event was not called as expected.");
+            Assert.That(called, Is.True, "The event was not called as expected.");
         }
 
         [Test]
-        public void RaisesTheErrorEventWhenAnErrorOccursDuringDisconnectedEvent()
-        {
+        public void RaisesTheErrorEventWhenAnErrorOccursDuringDisconnectedEvent() {
             var called = false;
 
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new TestableRasConnectionWatcher(api.Object);
-            target.Disconnected += (sender, e) =>
-            {
+            target.Disconnected += (sender, e) => {
                 throw new TestException();
             };
 
-            target.Error += (sender, e) =>
-            {
-                Assert.IsInstanceOf<TestException>(e.GetException());
+            target.Error += (sender, e) => {
+                Assert.That(e.GetException(), Is.InstanceOf<TestException>());
                 called = true;
             };
 
-            target.RaiseDisconnectedEvent(new RasConnectionEventArgs(
-                new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
+            target.RaiseDisconnectedEvent(new RasConnectionEventArgs(new RasConnectionInformation(IntPtr.Zero, "", "", Guid.Empty, Guid.Empty)));
 
-            Assert.True(called, "The event was not called as expected.");
+            Assert.That(called, Is.True, "The event was not called as expected.");
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenConnectionChangedAfterDisposed()
-        {
+        public void ThrowsAnExceptionWhenConnectionChangedAfterDisposed() {
             var api = new Mock<IRasConnectionNotification>();
             api.Setup(o => o.IsActive).Returns(true);
 
@@ -86,28 +69,25 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ReturnsTrueWhenIsActive()
-        {
+        public void ReturnsTrueWhenIsActive() {
             var api = new Mock<IRasConnectionNotification>();
             api.Setup(o => o.IsActive).Returns(true);
 
             var target = new RasConnectionWatcher(api.Object);
-            Assert.True(target.IsActive);
+            Assert.That(target.IsActive, Is.True);
         }
 
         [Test]
-        public void ReturnsFalseWhenIsNotActive()
-        {
+        public void ReturnsFalseWhenIsNotActive() {
             var api = new Mock<IRasConnectionNotification>();
             api.Setup(o => o.IsActive).Returns(false);
 
             var target = new RasConnectionWatcher(api.Object);
-            Assert.False(target.IsActive);
+            Assert.That(target.IsActive, Is.False);
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenStartAfterDispose()
-        {
+        public void ThrowsAnExceptionWhenStartAfterDispose() {
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new RasConnectionWatcher(api.Object);
@@ -117,8 +97,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenStopAfterDispose()
-        {
+        public void ThrowsAnExceptionWhenStopAfterDispose() {
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new RasConnectionWatcher(api.Object);
@@ -128,15 +107,16 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void StartWillSubscribeWithoutAConnection()
-        {
+        public void StartWillSubscribeWithoutAConnection() {
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
-            {
-                Assert.IsNull(c.Connection);
-                Assert.IsNotNull(c.OnConnectedCallback);
-                Assert.IsNotNull(c.OnDisconnectedCallback);
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(c => {
+                    Assert.Multiple(() => {
+                        Assert.That(c.Connection, Is.Null);
+                        Assert.That(c.OnConnectedCallback, Is.Not.Null);
+                        Assert.That(c.OnDisconnectedCallback, Is.Not.Null);
+                    });
+                });
 
             var target = new RasConnectionWatcher(api.Object);
             target.Start();
@@ -145,78 +125,62 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void OnConnectedCallbackMustRaiseTheConnectedEvent()
-        {
+        public void OnConnectedCallbackMustRaiseTheConnectedEvent() {
             var executed = false;
 
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
-            {
-                Assert.Throws<ArgumentNullException>(() => c.OnConnectedCallback(null));
-                c.OnConnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(
-                    new IntPtr(1),
-                    "Test",
-                    "",
-                    Guid.NewGuid(),
-                    Guid.NewGuid())));
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(c => {
+                    Assert.Throws<ArgumentNullException>(() => c.OnConnectedCallback(null));
+                    c.OnConnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(new IntPtr(1), "Test", "", Guid.NewGuid(), Guid.NewGuid())));
+                });
 
             var target = new RasConnectionWatcher(api.Object);
-            target.Connected += (sender, e) =>
-            {
+            target.Connected += (sender, e) => {
                 executed = true;
             };
 
             target.Start();
 
-            Assert.True(executed);
+            Assert.That(executed, Is.True);
         }
 
         [Test]
-        public void OnDisconnectedCallbackMustRaiseTheDisconnectedEvent()
-        {
+        public void OnDisconnectedCallbackMustRaiseTheDisconnectedEvent() {
             var executed = false;
 
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
-            {
-                Assert.Throws<ArgumentNullException>(() => c.OnDisconnectedCallback(null));
-                c.OnDisconnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(
-                    new IntPtr(1),
-                    "Test",
-                    "",
-                    Guid.NewGuid(),
-                    Guid.NewGuid())));
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(c => {
+                    Assert.Throws<ArgumentNullException>(() => c.OnDisconnectedCallback(null));
+                    c.OnDisconnectedCallback(new RasConnectionEventArgs(new RasConnectionInformation(new IntPtr(1), "Test", "", Guid.NewGuid(), Guid.NewGuid())));
+                });
 
             var target = new RasConnectionWatcher(api.Object);
-            target.Disconnected += (sender, e) =>
-            {
+            target.Disconnected += (sender, e) => {
                 executed = true;
             };
 
             target.Start();
 
-            Assert.True(executed);
-        }        
+            Assert.That(executed, Is.True);
+        }
 
         [Test]
-        public void WatchConnectionWillSubscribeWithConnection()
-        {
+        public void WatchConnectionWillSubscribeWithConnection() {
             var connection = new Mock<RasConnection>();
 
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(c =>
-            {
-                Assert.AreEqual(connection.Object, c.Connection);
-                Assert.IsNotNull(c.OnConnectedCallback);
-                Assert.IsNotNull(c.OnDisconnectedCallback);
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(c => {
+                    Assert.Multiple(() => {
+                        Assert.That(c.Connection, Is.EqualTo(connection.Object));
+                        Assert.That(c.OnConnectedCallback, Is.Not.Null);
+                        Assert.That(c.OnDisconnectedCallback, Is.Not.Null);
+                    });
+                });
 
-            var target = new RasConnectionWatcher(api.Object)
-            {
-                Connection = connection.Object
-            };
+            var target = new RasConnectionWatcher(api.Object) { Connection = connection.Object };
 
             target.Start();
 
@@ -224,8 +188,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DisposeWillDisposeTheApi()
-        {
+        public void DisposeWillDisposeTheApi() {
             var api = new Mock<IRasConnectionNotification>();
 
             var target = new RasConnectionWatcher(api.Object);
@@ -235,8 +198,7 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void StopWillResetTheApi()
-        {
+        public void StopWillResetTheApi() {
             var api = new Mock<IRasConnectionNotification>();
             api.Setup(o => o.IsActive).Returns(true);
 
@@ -247,82 +209,77 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void RestartsTheWatcherWhenChangedWhileActive()
-        {
+        public void RestartsTheWatcherWhenChangedWhileActive() {
             var connection = new Mock<RasConnection>();
 
             var api = new Mock<IRasConnectionNotification>();
-            api.SetupSequence(o => o.IsActive)
-                .Returns(false)
-                .Returns(true)
-                .Returns(true)
-                .Returns(false);
+            api.SetupSequence(o => o.IsActive).Returns(false).Returns(true).Returns(true).Returns(false);
 
             var target = new RasConnectionWatcher(api.Object);
             target.Start();
 
             target.Connection = connection.Object;
-            
+
             api.Verify(o => o.Subscribe(It.IsAny<RasNotificationContext>()), Times.Exactly(2));
             api.Verify(o => o.Reset(), Times.Once);
         }
 
         [Test]
-        public void RaisesTheErrorEventWhenAnErrorOccursWithinConnectedEvent()
-        {
+        public void RaisesTheErrorEventWhenAnErrorOccursWithinConnectedEvent() {
             Action<RasConnectionEventArgs> onConnectedCallback = null;
             bool executed = false;
 
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(context =>
-            {
-                onConnectedCallback = context.OnConnectedCallback;
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(context => {
+                    onConnectedCallback = context.OnConnectedCallback;
+                });
 
             var target = new RasConnectionWatcher(api.Object);
-            target.Connected += (sender, e) => { throw new TestException(); };
-            target.Error += (sender, e) =>
-            {
+            target.Connected += (sender, e) => {
+                throw new TestException();
+            };
+            target.Error += (sender, e) => {
                 executed = true;
             };
 
             target.Start();
 
-            Assert.IsNotNull(onConnectedCallback);
+            Assert.That(onConnectedCallback, Is.Not.Null);
 
             var eventData = new Mock<RasConnectionEventArgs>();
             onConnectedCallback(eventData.Object);
 
-            Assert.True(executed, "The error event was not executed as expected.");
+            Assert.That(executed, Is.True, "The error event was not executed as expected.");
         }
 
         [Test]
-        public void RaisesTheErrorEventWhenAnErrorOccursWithinDisconnectedEvent()
-        {
+        public void RaisesTheErrorEventWhenAnErrorOccursWithinDisconnectedEvent() {
             Action<RasConnectionEventArgs> onDisconnectedCallback = null;
             bool executed = false;
 
             var api = new Mock<IRasConnectionNotification>();
-            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>())).Callback<RasNotificationContext>(context =>
-            {
-                onDisconnectedCallback = context.OnDisconnectedCallback;
-            });
+            api.Setup(o => o.Subscribe(It.IsAny<RasNotificationContext>()))
+                .Callback<RasNotificationContext>(context => {
+                    onDisconnectedCallback = context.OnDisconnectedCallback;
+                });
 
             var target = new RasConnectionWatcher(api.Object);
-            target.Disconnected += (sender, e) => { throw new TestException(); };
-            target.Error += (sender, e) =>
-            {
+            target.Disconnected += (sender, e) => {
+                throw new TestException();
+            };
+            target.Error += (sender, e) => {
                 executed = true;
             };
 
             target.Start();
 
-            Assert.IsNotNull(onDisconnectedCallback);
+            Assert.That(onDisconnectedCallback, Is.Not.Null);
 
             var eventData = new Mock<RasConnectionEventArgs>();
             onDisconnectedCallback(eventData.Object);
 
-            Assert.True(executed, "The error event was not executed as expected.");
+            Assert.That(executed, Is.True, "The error event was not executed as expected.");
         }
     }
 }

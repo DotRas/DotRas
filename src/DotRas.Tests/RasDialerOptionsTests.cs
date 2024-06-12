@@ -1,19 +1,13 @@
 ﻿using NUnit.Framework;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasDialerOptionsTests
-    {        
+    public class RasDialerOptionsTests {
         [Test]
-        public void ReturnsInterfaceIndexAsExpected()
-        {
-            var target = new RasDialerOptions
-            {
-                InterfaceIndex = 1
-            };
+        public void ReturnsInterfaceIndexAsExpected() {
+            var target = new RasDialerOptions { InterfaceIndex = 1 };
 
-            Assert.AreEqual(1, target.InterfaceIndex);
+            Assert.That(target.InterfaceIndex, Is.EqualTo(1));
         }
     }
 }

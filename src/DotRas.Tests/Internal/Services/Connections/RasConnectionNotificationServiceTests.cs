@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using DotRas.Internal.Abstractions.Factories;
+﻿using DotRas.Internal.Abstractions.Factories;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
@@ -9,41 +7,28 @@ using DotRas.Internal.Services.Connections;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading;
 using static DotRas.Internal.Interop.NativeMethods;
 using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas.Tests.Internal.Services.Connections
-{
+namespace DotRas.Tests.Internal.Services.Connections {
     [TestFixture]
-    public class RasConnectionNotificationServiceTests
-    {
+    public class RasConnectionNotificationServiceTests {
         [Test]
-        public void ThrowsAnExceptionWhenApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(null, new Mock<IRasConnectionNotificationCallbackHandler>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRegisteredCallbackFactory>().Object));
-        }
+        public void ThrowsAnExceptionWhenApiIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(null, new Mock<IRasConnectionNotificationCallbackHandler>().Object, new Mock<IExceptionPolicy>().Object, new Mock<IRegisteredCallbackFactory>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenCallbackHandlerIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IRegisteredCallbackFactory>().Object));
-        }
+        public void ThrowsAnExceptionWhenCallbackHandlerIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, null, new Mock<IExceptionPolicy>().Object, new Mock<IRegisteredCallbackFactory>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenExceptionPolicyIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, new Mock<IRasConnectionNotificationCallbackHandler>().Object, null, new Mock<IRegisteredCallbackFactory>().Object));
-        }
+        public void ThrowsAnExceptionWhenExceptionPolicyIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, new Mock<IRasConnectionNotificationCallbackHandler>().Object, null, new Mock<IRegisteredCallbackFactory>().Object));
 
         [Test]
-        public void ThrowsAnExceptionWhenCallbackFactoryIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, new Mock<IRasConnectionNotificationCallbackHandler>().Object, new Mock<IExceptionPolicy>().Object, null));
-        }
+        public void ThrowsAnExceptionWhenCallbackFactoryIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationService(new Mock<IRasApi32>().Object, new Mock<IRasConnectionNotificationCallbackHandler>().Object, new Mock<IExceptionPolicy>().Object, null));
 
         [Test]
-        public void ThrowsAnExceptionWhenSubscribeAfterDispose()
-        {
+        public void ThrowsAnExceptionWhenSubscribeAfterDispose() {
             var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -56,8 +41,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenResetAfterDispose()
-        {
+        public void ThrowsAnExceptionWhenResetAfterDispose() {
             var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -70,8 +54,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenContextIsNull()
-        {
+        public void ThrowsAnExceptionWhenContextIsNull() {
             var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -82,23 +65,21 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ReturnsInactiveAfterCreation()
-        {
+        public void ReturnsInactiveAfterCreation() {
             var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
             var callbackFactory = new Mock<IRegisteredCallbackFactory>();
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            Assert.False(target.IsActive);
+            Assert.That(target.IsActive, Is.False);
         }
 
         [Test]
-        public void ShouldRegisterForAndResetConnectedEventsWhenNoHandleIsProvided()
-        {
+        public void ShouldRegisterForAndResetConnectedEventsWhenNoHandleIsProvided() {
             var registeredCallback = new Mock<IRegisteredCallback>();
 
-            var api = new Mock<IRasApi32>();            
+            var api = new Mock<IRasApi32>();
             var callbackHandler = new Mock<IRasConnectionNotificationCallbackHandler>();
             var exceptionPolicy = new Mock<IExceptionPolicy>();
 
@@ -106,28 +87,28 @@ namespace DotRas.Tests.Internal.Services.Connections
             callbackFactory.Setup(o => o.Create(It.IsAny<WaitOrTimerCallback>(), It.IsAny<object>())).Returns(registeredCallback.Object);
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            target.Subscribe(new RasNotificationContext
-            {
-                Connection = null,
-                OnConnectedCallback = e => { },
-                OnDisconnectedCallback = e => { }
-            });
+            target.Subscribe(
+                new RasNotificationContext {
+                    Connection = null,
+                    OnConnectedCallback = e => { },
+                    OnDisconnectedCallback = e => { }
+                }
+            );
 
             callbackHandler.Verify(o => o.Initialize(), Times.Once);
             api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Connection), Times.Once);
             api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Disconnection), Times.Once);
 
-            Assert.True(target.IsActive);
+            Assert.That(target.IsActive, Is.True);
 
             target.Reset();
 
             registeredCallback.Verify(o => o.Dispose(), Times.Exactly(2));
-            Assert.False(target.IsActive);
+            Assert.That(target.IsActive, Is.False);
         }
 
         [Test]
-        public void ShouldRegisterAndResetForDisconnectedEventsWhenHandleIsProvided()
-        {
+        public void ShouldRegisterAndResetForDisconnectedEventsWhenHandleIsProvided() {
             var handle = new IntPtr(1);
 
             var connection = new Mock<IRasConnection>();
@@ -143,27 +124,22 @@ namespace DotRas.Tests.Internal.Services.Connections
             callbackFactory.Setup(o => o.Create(It.IsAny<WaitOrTimerCallback>(), It.IsAny<object>())).Returns(registeredCallback.Object);
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            target.Subscribe(new RasNotificationContext
-            {
-                Connection = connection.Object,
-                OnDisconnectedCallback = e => { }
-            });
+            target.Subscribe(new RasNotificationContext { Connection = connection.Object, OnDisconnectedCallback = e => { } });
 
             callbackHandler.Verify(o => o.Initialize(), Times.Once);
             api.Verify(o => o.RasConnectionNotification(INVALID_HANDLE_VALUE, It.IsAny<ISafeHandleWrapper>(), RASCN.Connection), Times.Once);
             api.Verify(o => o.RasConnectionNotification(handle, It.IsAny<ISafeHandleWrapper>(), RASCN.Disconnection), Times.Once);
 
-            Assert.True(target.IsActive);
+            Assert.That(target.IsActive, Is.True);
 
             target.Reset();
 
             registeredCallback.Verify(o => o.Dispose(), Times.Exactly(2));
-            Assert.False(target.IsActive);
+            Assert.That(target.IsActive, Is.False);
         }
 
         [Test]
-        public void DisposeMustCleanUpSubscriptions()
-        {
+        public void DisposeMustCleanUpSubscriptions() {
             var handle = new IntPtr(1);
 
             var connection = new Mock<IRasConnection>();
@@ -179,11 +155,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             callbackFactory.Setup(o => o.Create(It.IsAny<WaitOrTimerCallback>(), It.IsAny<object>())).Returns(registeredCallback.Object);
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            target.Subscribe(new RasNotificationContext
-            {
-                Connection = connection.Object,
-                OnDisconnectedCallback = e => { }
-            });
+            target.Subscribe(new RasNotificationContext { Connection = connection.Object, OnDisconnectedCallback = e => { } });
 
             target.Dispose();
 
@@ -191,8 +163,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenApiResultCodeIsNonZero()
-        {
+        public void ThrowsAnExceptionWhenApiResultCodeIsNonZero() {
             var registeredCallback = new Mock<IRegisteredCallback>();
 
             var api = new Mock<IRasApi32>();
@@ -206,15 +177,13 @@ namespace DotRas.Tests.Internal.Services.Connections
             callbackFactory.Setup(o => o.Create(It.IsAny<WaitOrTimerCallback>(), It.IsAny<object>())).Returns(registeredCallback.Object);
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            Assert.Throws<TestException>(() =>
-            {
+            Assert.Throws<TestException>(() => {
                 target.Subscribe(new RasNotificationContext());
             });
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenRegisteredCallbackIsNull()
-        {
+        public void ThrowsAnExceptionWhenRegisteredCallbackIsNull() {
             var api = new Mock<IRasApi32>();
             api.Setup(o => o.RasConnectionNotification(It.IsAny<IntPtr>(), It.IsAny<ISafeHandleWrapper>(), It.IsAny<RASCN>())).Returns(1);
 
@@ -226,8 +195,7 @@ namespace DotRas.Tests.Internal.Services.Connections
             callbackFactory.Setup(o => o.Create(It.IsAny<WaitOrTimerCallback>(), It.IsAny<object>())).Returns((IRegisteredCallback)null);
 
             var target = new RasConnectionNotificationService(api.Object, callbackHandler.Object, exceptionPolicy.Object, callbackFactory.Object);
-            Assert.Throws<InvalidOperationException>(() =>
-            {
+            Assert.Throws<InvalidOperationException>(() => {
                 target.Subscribe(new RasNotificationContext());
             });
         }

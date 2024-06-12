@@ -1,12 +1,10 @@
 ﻿using System;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Provides a base class for an object which is disposable. This class must be inherited.
     /// </summary>
-    public abstract class DisposableObject : IDisposable
-    {
+    public abstract class DisposableObject : IDisposable {
         private bool disposed;
 
         /// <summary>
@@ -17,23 +15,18 @@ namespace DotRas
         /// <summary>
         /// Finalizes the object.
         /// </summary>
-        ~DisposableObject()
-        {
+        ~DisposableObject() {
             Dispose(false);
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            if (disposed)
-            {
+        public void Dispose() {
+            if (disposed) {
                 return;
             }
 
-            lock (SyncRoot)
-            {
-                if (disposed)
-                {
+            lock (SyncRoot) {
+                if (disposed) {
                     return;
                 }
 
@@ -46,10 +39,8 @@ namespace DotRas
         /// Performs application-defined tasks associated with freeing, releasing, or releasing unmanaged resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources, false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 disposed = true;
             }
         }
@@ -57,10 +48,8 @@ namespace DotRas
         /// <summary>
         /// Ensures the object has not already been disposed.
         /// </summary>
-        protected void GuardMustNotBeDisposed()
-        {
-            if (disposed)
-            {
+        protected void GuardMustNotBeDisposed() {
+            if (disposed) {
                 throw new ObjectDisposedException(GetType().FullName);
             }
         }

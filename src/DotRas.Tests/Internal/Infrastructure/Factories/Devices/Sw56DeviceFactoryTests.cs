@@ -2,19 +2,18 @@
 using DotRas.Internal.Infrastructure.Factories.Devices;
 using NUnit.Framework;
 
-namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices
-{
+namespace DotRas.Tests.Internal.Infrastructure.Factories.Devices {
     [TestFixture]
-    public class Sw56DeviceFactoryTests
-    {
+    public class Sw56DeviceFactoryTests {
         [Test]
-        public void ReturnADeviceInstance()
-        {
+        public void ReturnADeviceInstance() {
             var target = new Sw56DeviceFactory();
             var result = target.Create("Test");
 
-            Assert.AreEqual("Test", result.Name);
-            Assert.IsAssignableFrom<Sw56>(result);
+            Assert.Multiple(() => {
+                Assert.That(result.Name, Is.EqualTo("Test"));
+                Assert.That(result, Is.AssignableFrom<Sw56>());
+            });
         }
     }
 }

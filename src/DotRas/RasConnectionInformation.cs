@@ -1,12 +1,10 @@
 ﻿using System;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Provides information for a remote access service connection.
     /// </summary>
-    public class RasConnectionInformation
-    {
+    public class RasConnectionInformation {
         #region Fields and Properties
 
         /// <summary>
@@ -44,8 +42,7 @@ namespace DotRas
         /// <param name="phoneBookPath">The full path (including filename) to the phone book containing the entry for this connection.</param>
         /// <param name="entryId">The <see cref="Guid"/> that represents the phone book entry.</param>
         /// <param name="correlationId">The correlation id.</param>
-        public RasConnectionInformation(IntPtr handle, string entryName, string phoneBookPath, Guid entryId, Guid correlationId)
-        {
+        public RasConnectionInformation(IntPtr handle, string entryName, string phoneBookPath, Guid entryId, Guid correlationId) {
             Handle = handle;
             EntryName = entryName;
             PhoneBookPath = phoneBookPath;

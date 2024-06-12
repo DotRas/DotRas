@@ -1,42 +1,36 @@
-﻿using System;
-using DotRas.Diagnostics;
+﻿using DotRas.Diagnostics;
 using DotRas.Diagnostics.Events;
 using DotRas.Tests.Stubs;
 using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests.Diagnostics
-{
+namespace DotRas.Tests.Diagnostics {
     [TestFixture]
-    public class ConventionBasedEventFormatterFactoryTests
-    {
+    public class ConventionBasedEventFormatterFactoryTests {
         [Test]
-        public void ThrowsAnExceptionWhenTheAttributeDoesNotExist()
-        {
+        public void ThrowsAnExceptionWhenTheAttributeDoesNotExist() {
             var target = new ConventionBasedEventFormatterFactory();
             Assert.Throws<FormatterNotFoundException>(() => target.Create<TraceEvent>());
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheFormatterIsTheWrongType()
-        {
+        public void ThrowsAnExceptionWhenTheFormatterIsTheWrongType() {
             var target = new ConventionBasedEventFormatterFactory();
             Assert.Throws<InvalidOperationException>(() => target.Create<BadTraceEvent>());
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheFormatterCannotBeCreated()
-        {
+        public void ThrowsAnExceptionWhenTheFormatterCannotBeCreated() {
             var target = new ConventionBasedEventFormatterFactory();
             Assert.Throws<FormatterNotFoundException>(() => target.Create<BadTraceEventWithBadFormatter>());
         }
 
         [Test]
-        public void ReturnsTheFormatterAsExpected()
-        {
+        public void ReturnsTheFormatterAsExpected() {
             var target = new ConventionBasedEventFormatterFactory();
 
             var formatter = target.Create<GoodTraceEventWithGoodFormatter>();
-            Assert.IsInstanceOf<GoodFormatter>(formatter);
+            Assert.That(formatter, Is.InstanceOf<GoodFormatter>());
         }
     }
 }

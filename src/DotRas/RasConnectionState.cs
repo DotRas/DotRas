@@ -1,13 +1,11 @@
 ﻿using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas
-{
+namespace DotRas {
     /// <summary>
     /// Defines the different states available for a remote access service (RAS) connection.
     /// </summary>
     /// <remarks>WARNING! Do not write code that depends on the order or occurrence of a particular connection state, because this can vary between platforms.</remarks>
-    public enum RasConnectionState
-    {
+    public enum RasConnectionState {
         /// <summary>
         /// The communications port is about to be opened.
         /// </summary>

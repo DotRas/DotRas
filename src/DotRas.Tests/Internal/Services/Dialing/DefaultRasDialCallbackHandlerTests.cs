@@ -1,19 +1,17 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using DotRas.Internal.Abstractions.Policies;
+﻿using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Services.Dialing;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace DotRas.Tests.Internal.Services.Dialing
-{
+namespace DotRas.Tests.Internal.Services.Dialing {
     [TestFixture]
-    public class DefaultRasDialCallbackHandlerTests
-    {
+    public class DefaultRasDialCallbackHandlerTests {
         private Mock<IRasHangUp> rasHangUp;
         private Mock<IRasEnumConnections> rasEnumConnections;
         private Mock<IExceptionPolicy> exceptionPolicy;
@@ -21,8 +19,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         private TaskCompletionSource<RasConnection> completionSource;
 
         [SetUp]
-        public void Init()
-        {
+        public void Init() {
             rasHangUp = new Mock<IRasHangUp>();
             rasEnumConnections = new Mock<IRasEnumConnections>();
             exceptionPolicy = new Mock<IExceptionPolicy>();
@@ -31,101 +28,88 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHangUpApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
+        public void ThrowsAnExceptionWhenTheHangUpApiIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => {
                 _ = new DefaultRasDialCallbackHandler(null, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             });
-        }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheRasEnumConnectionsApiIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
+        public void ThrowsAnExceptionWhenTheRasEnumConnectionsApiIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => {
                 _ = new DefaultRasDialCallbackHandler(rasHangUp.Object, null, exceptionPolicy.Object, waitHandle.Object);
             });
-        }
 
         [Test]
-        public void ThrowsAnExceptionWhenExceptionPolicyIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
+        public void ThrowsAnExceptionWhenExceptionPolicyIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => {
                 _ = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, null, waitHandle.Object);
             });
-        }
 
         [Test]
-        public void ThrowsAnExceptionWhenHandleIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
+        public void ThrowsAnExceptionWhenHandleIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => {
                 _ = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, null);
             });
-        }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheCompletionSourceIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheCompletionSourceIsNull() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             Assert.Throws<ArgumentNullException>(() => target.Initialize(null, e => { }, () => { }, CancellationToken.None));
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheOnStateChangedCallbackIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheOnStateChangedCallbackIsNull() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             Assert.Throws<ArgumentNullException>(() => target.Initialize(completionSource, null, () => { }, CancellationToken.None));
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheOnCompletedCallbackIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheOnCompletedCallbackIsNull() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             Assert.Throws<ArgumentNullException>(() => target.Initialize(completionSource, e => { }, null, CancellationToken.None));
         }
 
-
         [Test]
-        public void MustSupportMultipleInitializeForReuseOfHandler()
-        {
+        public void MustSupportMultipleInitializeForReuseOfHandler() {
             var cancellationToken = new CancellationToken(true);
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
 
-            target.Initialize(completionSource, (e) => { }, () => { }, cancellationToken);            
-            Assert.IsTrue(target.Initialized);
+            target.Initialize(completionSource, (e) => { }, () => { }, cancellationToken);
+            Assert.That(target.Initialized, Is.True);
 
             target.Initialize(completionSource, (e) => { }, () => { }, cancellationToken);
-            Assert.IsTrue(target.Initialized);
+            Assert.That(target.Initialized, Is.True);
         }
 
         [Test]
-        public void RaisesTheCallbackAction()
-        {
+        public void RaisesTheCallbackAction() {
             var handle = new IntPtr(1);
             waitHandle.Setup(o => o.Value).Returns(handle);
 
             var called = false;
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
-            target.Initialize(completionSource, (e) =>
-            {
-                Assert.AreEqual(RasConnectionState.OpenPort, e.State);
-                called = true;
-            }, () => { }, CancellationToken.None);
+            target.Initialize(
+                completionSource,
+                (e) => {
+                    Assert.That(e.State, Is.EqualTo(RasConnectionState.OpenPort));
+                    called = true;
+                },
+                () => { },
+                CancellationToken.None
+            );
 
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 0, 0);
 
-            Assert.IsTrue(result);
-            Assert.IsTrue(called);
+            Assert.Multiple(() => {
+                Assert.That(result, Is.True);
+                Assert.That(called, Is.True);
+            });
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheDwErrorCodeIsNonZero()
-        {
+        public void ThrowsAnExceptionWhenTheDwErrorCodeIsNonZero() {
             var handle = new IntPtr(1);
             exceptionPolicy.Setup(o => o.Create(632)).Returns(new Exception("An exception occurred!")).Verifiable();
 
@@ -135,28 +119,27 @@ namespace DotRas.Tests.Internal.Services.Dialing
             target.Initialize(completionSource, (e) => { }, () => { }, CancellationToken.None);
 
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.OpenPort, 632, 0);
-            
-            Assert.IsFalse(result);
-            Assert.IsTrue(target.HasEncounteredErrors);
+
+            Assert.Multiple(() => {
+                Assert.That(result, Is.False);
+                Assert.That(target.HasEncounteredErrors, Is.True);
+            });
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenOnCallbackIsNotInitialized()
-        {
+        public void ThrowsAnExceptionWhenOnCallbackIsNotInitialized() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             Assert.Throws<InvalidOperationException>(() => target.OnCallback(new IntPtr(1), 1, new IntPtr(1), 0, RasConnectionState.OpenPort, 0, 0));
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsNull()
-        {
+        public void ThrowsAnExceptionWhenTheHandleIsNull() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             Assert.Throws<ArgumentNullException>(() => target.SetHandle(IntPtr.Zero));
         }
 
         [Test]
-        public void SetsTheHandle()
-        {
+        public void SetsTheHandle() {
             var handle = new IntPtr(1);
 
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
@@ -166,8 +149,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
-        public void ThrowsAnExceptionWhenTheHandleIsAlreadySet()
-        {
+        public void ThrowsAnExceptionWhenTheHandleIsAlreadySet() {
             var handle = new IntPtr(1);
             waitHandle.Setup(o => o.IsSet).Returns(true);
 
@@ -176,8 +158,7 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
-        public void ReturnsAnExceptionWhenTheFactoryDoesNotReturnAConnection()
-        {
+        public void ReturnsAnExceptionWhenTheFactoryDoesNotReturnAConnection() {
             var handle = new IntPtr(1);
             waitHandle.Setup(o => o.Value).Returns(handle);
 
@@ -186,22 +167,20 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
-            Assert.IsFalse(result);
-            Assert.IsTrue(target.HasEncounteredErrors);
+            Assert.Multiple(() => {
+                Assert.That(result, Is.False);
+                Assert.That(target.HasEncounteredErrors, Is.True);
+            });
         }
 
         [Test]
-        public void ReturnsTheConnectionWhenConnected()
-        {
+        public void ReturnsTheConnectionWhenConnected() {
             var handle = new IntPtr(1);
 
             var connection = new Mock<RasConnection>();
             connection.Setup(o => o.Handle).Returns(handle);
 
-            rasEnumConnections.Setup(o => o.EnumerateConnections()).Returns(new[]
-            {
-                connection.Object
-            });
+            rasEnumConnections.Setup(o => o.EnumerateConnections()).Returns(new[] { connection.Object });
 
             waitHandle.Setup(o => o.Value).Returns(handle);
 
@@ -210,14 +189,15 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
             var result = target.OnCallback(new IntPtr(1), 0, new IntPtr(1), 0, RasConnectionState.Connected, 0, 0);
 
-            Assert.IsFalse(result);
-            Assert.IsFalse(target.HasEncounteredErrors);
-            Assert.IsTrue(target.Completed);
+            Assert.Multiple(() => {
+                Assert.That(result, Is.False);
+                Assert.That(target.HasEncounteredErrors, Is.False);
+                Assert.That(target.Completed, Is.True);
+            });
         }
 
         [Test]
-        public void DisposesTheHandleDuringDispose()
-        {
+        public void DisposesTheHandleDuringDispose() {
             var target = new DefaultRasDialCallbackHandler(rasHangUp.Object, rasEnumConnections.Object, exceptionPolicy.Object, waitHandle.Object);
             target.Dispose();
 

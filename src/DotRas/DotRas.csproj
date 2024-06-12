@@ -31,6 +31,7 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Description>Provides remote access service (RAS) components for .NET languages like C#, VB.NET, and C++ CLR projects.</Description>
     <PackageProjectUrl>https://github.com/DotRas/DotRas</PackageProjectUrl>
+    <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -44,9 +45,17 @@
     <DefineConstants>$(HostIdentifier.ToUpper())</DefineConstants>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\Winnster.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\Public.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpier.Core" Version="0.28.2" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.28.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">

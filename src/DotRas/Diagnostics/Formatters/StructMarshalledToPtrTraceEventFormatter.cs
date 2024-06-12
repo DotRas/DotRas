@@ -1,19 +1,15 @@
-﻿using System;
+﻿using DotRas.Diagnostics.Events;
+using System;
 using System.Text;
-using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics.Formatters
-{
+namespace DotRas.Diagnostics.Formatters {
     /// <summary>
     /// Provides a formatter for a <see cref="StructMarshalledToPtrTraceEvent"/> event.
     /// </summary>
-    public class StructMarshalledToPtrTraceEventFormatter : IEventFormatter<StructMarshalledToPtrTraceEvent>
-    {
+    public class StructMarshalledToPtrTraceEventFormatter : IEventFormatter<StructMarshalledToPtrTraceEvent> {
         /// <inheritdoc />
-        public string Format(StructMarshalledToPtrTraceEvent eventData)
-        {
-            if (eventData == null)
-            {
+        public string Format(StructMarshalledToPtrTraceEvent eventData) {
+            if (eventData == null) {
                 throw new ArgumentNullException(nameof(eventData));
             }
 
@@ -24,11 +20,9 @@ namespace DotRas.Diagnostics.Formatters
             sb.AppendLine().Append($"\tResult: {eventData.Result}");
             sb.AppendLine().Append($"\tDuration: {eventData.Duration}");
 
-            if (eventData.Fields.Count > 0)
-            {
+            if (eventData.Fields.Count > 0) {
                 sb.AppendLine().Append("\tFields:");
-                foreach (var field in eventData.Fields)
-                {
+                foreach (var field in eventData.Fields) {
                     sb.AppendLine().Append($"\t\t{field.Key}: [{field.Value ?? "(null)"}]");
                 }
             }

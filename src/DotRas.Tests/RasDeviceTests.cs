@@ -1,21 +1,18 @@
-﻿using System;
-using DotRas.Internal;
+﻿using DotRas.Internal;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Tests.Stubs;
 using Moq;
 using NUnit.Framework;
+using System;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasDeviceTests
-    {
+    public class RasDeviceTests {
         private Mock<IServiceProvider> container;
         private Mock<IRasEnumDevices> rasEnumDevices;
 
         [SetUp]
-        public void Setup()
-        {
+        public void Setup() {
             rasEnumDevices = new Mock<IRasEnumDevices>();
 
             container = new Mock<IServiceProvider>();
@@ -23,41 +20,34 @@ namespace DotRas.Tests
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            ServiceLocator.Reset();
-        }
+        public void TearDown() => ServiceLocator.Reset();
 
         [Test]
-        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsNull()
-        {
+        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsNull() {
             var target = new TestDevice(null);
-            Assert.AreEqual(null, target.Name);
+            Assert.That(target.Name, Is.EqualTo(null));
         }
 
         [Test]
-        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsWhitespace()
-        {
+        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsWhitespace() {
             var target = new TestDevice("            ");
-            Assert.AreEqual("            ", target.Name);
+            Assert.That(target.Name, Is.EqualTo("            "));
         }
 
         [Test]
-        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsEmpty()
-        {
+        public void ShouldNotThrowAnExceptionWhenTheDeviceNameIsEmpty() {
             var target = new TestDevice(string.Empty);
-            Assert.AreEqual(string.Empty, target.Name);
+            Assert.That(target.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
-        public void EnumeratesTheDevicesCorrectly()
-        {
+        public void EnumeratesTheDevicesCorrectly() {
             rasEnumDevices.Setup(o => o.EnumerateDevices()).Returns(new RasDevice[0]);
 
             container.Setup(o => o.GetService(typeof(IRasEnumDevices))).Returns(rasEnumDevices.Object);
             var result = RasDevice.EnumerateDevices();
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             container.Verify(o => o.GetService(typeof(IRasEnumDevices)));
             rasEnumDevices.Verify(o => o.EnumerateDevices());
         }

@@ -1,25 +1,19 @@
-﻿using System;
-using DotRas.Internal.Abstractions.Primitives;
+﻿using DotRas.Internal.Abstractions.Primitives;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Services.Connections;
 using Moq;
 using NUnit.Framework;
+using System;
 using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas.Tests.Internal.Services.Connections
-{
+namespace DotRas.Tests.Internal.Services.Connections {
     [TestFixture]
-    public class RasConnectionNotificationCallbackHandlerTests
-    {
+    public class RasConnectionNotificationCallbackHandlerTests {
         [Test]
-        public void ThrowsAnExceptionWhenEnumConnectionsServiceIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationCallbackHandler(null));
-        }
+        public void ThrowsAnExceptionWhenEnumConnectionsServiceIsNull() => Assert.Throws<ArgumentNullException>(() => new RasConnectionNotificationCallbackHandler(null));
 
         [Test]
-        public void MustInitializeTheCurrentState()
-        {
+        public void MustInitializeTheCurrentState() {
             var rasEnumConnections = new Mock<IRasEnumConnections>();
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
@@ -29,8 +23,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void DoesNotThrowAnExceptionWhenInitializedMoreThanOnce()
-        {
+        public void DoesNotThrowAnExceptionWhenInitializedMoreThanOnce() {
             var rasEnumConnections = new Mock<IRasEnumConnections>();
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
@@ -42,8 +35,7 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void DoesNotThrowAnErrorWhenTheObjIsNull()
-        {
+        public void DoesNotThrowAnErrorWhenTheObjIsNull() {
             var rasEnumConnections = new Mock<IRasEnumConnections>();
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
@@ -53,60 +45,56 @@ namespace DotRas.Tests.Internal.Services.Connections
         }
 
         [Test]
-        public void ExecutesTheCallbackWhenAConnectionHasDisconnected()
-        {
+        public void ExecutesTheCallbackWhenAConnectionHasDisconnected() {
             var executed = false;
             var connection = new Mock<RasConnection>();
             var registeredCallback = new Mock<IRegisteredCallback>();
 
             var rasEnumConnections = new Mock<IRasEnumConnections>();
-            rasEnumConnections.SetupSequence(o => o.EnumerateConnections())
-                .Returns(new[] { connection.Object })
-                .Returns(new RasConnection[0]);
+            rasEnumConnections.SetupSequence(o => o.EnumerateConnections()).Returns(new[] { connection.Object }).Returns(new RasConnection[0]);
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
             target.Initialize();
 
-            target.OnCallback(new RasConnectionNotificationStateObject
-            {
-                Callback = (e) =>
-                {
-                    executed = true;
+            target.OnCallback(
+                new RasConnectionNotificationStateObject {
+                    Callback = (e) => {
+                        executed = true;
+                    },
+                    NotificationType = RASCN.Disconnection,
+                    RegisteredCallback = registeredCallback.Object
                 },
-                NotificationType = RASCN.Disconnection,
-                RegisteredCallback = registeredCallback.Object
-            }, false);
+                false
+            );
 
-            Assert.True(executed);
+            Assert.That(executed, Is.True);
             rasEnumConnections.Verify(o => o.EnumerateConnections(), Times.Exactly(2));
         }
 
         [Test]
-        public void ExecutesTheCallbackWhenAConnectionHasConnected()
-        {
+        public void ExecutesTheCallbackWhenAConnectionHasConnected() {
             var executed = false;
             var connection = new Mock<RasConnection>();
             var registeredCallback = new Mock<IRegisteredCallback>();
 
             var rasEnumConnections = new Mock<IRasEnumConnections>();
-            rasEnumConnections.SetupSequence(o => o.EnumerateConnections())
-                .Returns(new RasConnection[0])
-                .Returns(new[] { connection.Object });
+            rasEnumConnections.SetupSequence(o => o.EnumerateConnections()).Returns(new RasConnection[0]).Returns(new[] { connection.Object });
 
             var target = new RasConnectionNotificationCallbackHandler(rasEnumConnections.Object);
             target.Initialize();
 
-            target.OnCallback(new RasConnectionNotificationStateObject
-            {
-                Callback = (e) =>
-                {
-                    executed = true;
+            target.OnCallback(
+                new RasConnectionNotificationStateObject {
+                    Callback = (e) => {
+                        executed = true;
+                    },
+                    NotificationType = RASCN.Connection,
+                    RegisteredCallback = registeredCallback.Object
                 },
-                NotificationType = RASCN.Connection,
-                RegisteredCallback = registeredCallback.Object
-            }, false);
+                false
+            );
 
-            Assert.True(executed);
+            Assert.That(executed, Is.True);
             rasEnumConnections.Verify(o => o.EnumerateConnections(), Times.Exactly(2));
         }
     }

@@ -2,18 +2,14 @@
 
 namespace WatchConnectionsForChanges;
 
-class Program
-{
+internal class Program {
     private readonly RasConnectionWatcher watcher;
 
-    static void Main()
-    {
-        try
-        {
+    private static void Main() {
+        try {
             new Program().Run();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Console.WriteLine(ex);
         }
 
@@ -21,8 +17,7 @@ class Program
         Console.ReadKey(true);
     }
 
-    public Program()
-    {
+    public Program() {
         watcher = new RasConnectionWatcher();
 
         watcher.Connected += OnConnectionConnected;
@@ -34,23 +29,16 @@ class Program
     /// </summary>
     /// <param name="sender">This is the object which raised the event.</param>
     /// <param name="e">This object carries the event data.</param>
-    private void OnConnectionConnected(object sender, RasConnectionEventArgs e)
-    {
-        Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
-    }
+    private void OnConnectionConnected(object sender, RasConnectionEventArgs e) => Console.WriteLine($"Connected: {e.ConnectionInformation.EntryName}");
 
     /// <summary>
     /// This method gets called when the operating system notifies DotRas that an existing connection has disconnected.
     /// </summary>
     /// <param name="sender">This is the object which raised the event.</param>
     /// <param name="e">This object carries the event data.</param>
-    private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e)
-    {
-        Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
-    }
+    private void OnConnectionDisconnected(object sender, RasConnectionEventArgs e) => Console.WriteLine($"Disconnected: {e.ConnectionInformation.EntryName}");
 
-    private void Run()
-    {
+    private void Run() {
         // Start watching for connection changes.
         watcher.Start();
 

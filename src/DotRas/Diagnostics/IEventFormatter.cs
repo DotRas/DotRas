@@ -1,14 +1,12 @@
 ﻿using DotRas.Diagnostics.Events;
 
-namespace DotRas.Diagnostics
-{
+namespace DotRas.Diagnostics {
     /// <summary>
     /// Identifies a formatter for a trace event.
     /// </summary>
     /// <typeparam name="T">The type of event being formatted.</typeparam>
     public interface IEventFormatter<in T>
-        where T : TraceEvent
-    {
+        where T : TraceEvent {
         /// <summary>
         /// Formats the event data.
         /// </summary>

@@ -1,53 +1,55 @@
 ﻿using NUnit.Framework;
 using static DotRas.Internal.Interop.Ras;
 
-namespace DotRas.Tests
-{
+namespace DotRas.Tests {
     [TestFixture]
-    public class RasConnectionOptionsTests
-    {
+    public class RasConnectionOptionsTests {
         [Test]
-        public void MustReturnTrueForAllUsers()
-        {
+        public void MustReturnTrueForAllUsers() {
             var target = new RasConnectionOptions(RASCF.AllUsers);
 
-            Assert.True(target.AvailableToAllUsers);
-            Assert.False(target.UsingDefaultCredentials);
-            Assert.False(target.IsOwnerKnown);
-            Assert.False(target.IsOwnerCurrentUser);
+            Assert.Multiple(() => {
+                Assert.That(target.AvailableToAllUsers, Is.True);
+                Assert.That(target.UsingDefaultCredentials, Is.False);
+                Assert.That(target.IsOwnerKnown, Is.False);
+                Assert.That(target.IsOwnerCurrentUser, Is.False);
+            });
         }
 
         [Test]
-        public void MustReturnTrueForGlobalCreds()
-        {
+        public void MustReturnTrueForGlobalCreds() {
             var target = new RasConnectionOptions(RASCF.GlobalCreds);
 
-            Assert.False(target.AvailableToAllUsers);
-            Assert.True(target.UsingDefaultCredentials);
-            Assert.False(target.IsOwnerKnown);
-            Assert.False(target.IsOwnerCurrentUser);
+            Assert.Multiple(() => {
+                Assert.That(target.AvailableToAllUsers, Is.False);
+                Assert.That(target.UsingDefaultCredentials, Is.True);
+                Assert.That(target.IsOwnerKnown, Is.False);
+                Assert.That(target.IsOwnerCurrentUser, Is.False);
+            });
         }
 
         [Test]
-        public void MustReturnTrueForOwnerKnown()
-        {
+        public void MustReturnTrueForOwnerKnown() {
             var target = new RasConnectionOptions(RASCF.OwnerKnown);
 
-            Assert.False(target.AvailableToAllUsers);
-            Assert.False(target.UsingDefaultCredentials);
-            Assert.True(target.IsOwnerKnown);
-            Assert.False(target.IsOwnerCurrentUser);
+            Assert.Multiple(() => {
+                Assert.That(target.AvailableToAllUsers, Is.False);
+                Assert.That(target.UsingDefaultCredentials, Is.False);
+                Assert.That(target.IsOwnerKnown, Is.True);
+                Assert.That(target.IsOwnerCurrentUser, Is.False);
+            });
         }
 
         [Test]
-        public void MustReturnTrueForOwnerMatch()
-        {
+        public void MustReturnTrueForOwnerMatch() {
             var target = new RasConnectionOptions(RASCF.OwnerMatch);
 
-            Assert.False(target.AvailableToAllUsers);
-            Assert.False(target.UsingDefaultCredentials);
-            Assert.False(target.IsOwnerKnown);
-            Assert.True(target.IsOwnerCurrentUser);
+            Assert.Multiple(() => {
+                Assert.That(target.AvailableToAllUsers, Is.False);
+                Assert.That(target.UsingDefaultCredentials, Is.False);
+                Assert.That(target.IsOwnerKnown, Is.False);
+                Assert.That(target.IsOwnerCurrentUser, Is.True);
+            });
         }
     }
 }
