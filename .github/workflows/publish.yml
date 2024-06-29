@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [win10]
+        node: [win10,win11]
 
     steps:
     - name: Checkout
