@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -36,12 +35,12 @@ namespace DotRas
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperatingSystemNotSupportedException"/> class.
-        /// </summary>
-        protected OperatingSystemNotSupportedException(SerializationInfo info, StreamingContext context) 
+#if !NET7_0_OR_GREATER
+        /// <inheritdoc />
+        protected OperatingSystemNotSupportedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {
         }
+#endif
     }
 }

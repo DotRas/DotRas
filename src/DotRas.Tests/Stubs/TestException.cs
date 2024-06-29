@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas.Tests.Stubs
 {
@@ -21,9 +20,11 @@ namespace DotRas.Tests.Stubs
         {
         }
 
-        protected TestException(SerializationInfo info, StreamingContext context) 
+#if !NET7_0_OR_GREATER
+        protected TestException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {
         }
+#endif
     }
 }

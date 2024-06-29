@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -46,10 +45,12 @@ namespace DotRas
         {
         }
 
+#if !NET7_0_OR_GREATER
         /// <inheritdoc />
-        protected EapException(SerializationInfo info, StreamingContext context)
+        protected EapException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {
         }
+#endif
     }
 }

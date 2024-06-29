@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas.Diagnostics
 {
@@ -35,10 +34,12 @@ namespace DotRas.Diagnostics
         {
         }
 
+#if !NET7_0_OR_GREATER
         /// <inheritdoc />
-        protected FormatterNotFoundException(SerializationInfo info, StreamingContext context)
+        protected FormatterNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {
         }
+#endif
     }
 }
