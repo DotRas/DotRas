@@ -4,7 +4,7 @@
             "name": "Launch ConsoleRunner",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "dotnet: build",
             "program": "${workspaceFolder}/src/ConsoleRunner/bin/Debug/net8.0-windows/ConsoleRunner.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
@@ -12,7 +12,7 @@
               "ENV": "Development"
             },
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "externalTerminal"
         }
     ]
 }
