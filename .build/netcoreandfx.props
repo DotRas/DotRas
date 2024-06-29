@@ -15,9 +15,16 @@
   <PropertyGroup>
     <!-- 
       Defines the default host identifier when none has been provided. 
-      Possible values are: win10 
+      Possible values are: win10,win11
     -->
-    <HostIdentifier Condition=" '$(HostIdentifier)' == ''">win10</HostIdentifier>
+    <HostIdentifier Condition=" '$(HostIdentifier)' == ''">win11</HostIdentifier>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(HostIdentifier)' == 'win10' ">
+    <DefineConstants>WIN10;WIN10_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(HostIdentifier)' == 'win11' ">
+    <DefineConstants>WIN11;WIN10_OR_GREATER;WIN11_OR_GREATER</DefineConstants>
+  </PropertyGroup>
 </Project>

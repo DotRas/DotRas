@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DotRas
 {
@@ -35,10 +34,12 @@ namespace DotRas
         {
         }
 
+#if !NET7_0_OR_GREATER
         /// <inheritdoc />
-        protected InvalidHandleException(SerializationInfo info, StreamingContext context)
+        protected InvalidHandleException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {
         }
+#endif
     }
 }
