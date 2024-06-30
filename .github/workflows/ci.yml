@@ -29,7 +29,7 @@ jobs:
     - name: Run build
       run: dotnet build --configuration Release /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:Version="${{ env.VERSION }}" /p:PackageVersion="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
       env:
-        VERSION_SUFFIX: -preview+${{ steps.short-sha.outputs.sha }}
+        VERSION_SUFFIX: -preview.${{ github.run_number }}
         HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Run test
@@ -54,12 +54,6 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v4
     
-    - name: Publish to NuGet
-      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
-      env:
-        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
-        PUBLISH_URL: https://api.nuget.org/v3/index.json
-
     - name: Publish to GitHub
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
