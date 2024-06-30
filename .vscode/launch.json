@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Launch ConsoleRunner",
+            "name": "C# ConsoleRunner",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "dotnet: build",
