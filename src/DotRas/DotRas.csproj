@@ -20,6 +20,12 @@
         <Title>DotRas for Windows 10</Title>
       </PropertyGroup>
     </When>
+    <When Condition=" '$(HostIdentifier)' == 'win11' ">
+      <PropertyGroup>
+        <PackageId>DotRas.for.Win11</PackageId>
+        <Title>DotRas for Windows 11</Title>
+      </PropertyGroup>
+    </When>
   </Choose>
 
   <PropertyGroup>

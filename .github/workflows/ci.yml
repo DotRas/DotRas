@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [win10]
+        node: [win10,win11]
 
     steps:
     - name: Checkout
@@ -29,7 +29,7 @@ jobs:
     - name: Run build
       run: dotnet build --configuration Release /p:HostIdentifier="${{ env.HOST_IDENTIFIER }}" /p:Version="${{ env.VERSION }}" /p:PackageVersion="${{ env.VERSION }}${{ env.VERSION_SUFFIX }}"
       env:
-        VERSION_SUFFIX: -preview-${{ steps.short-sha.outputs.sha }}
+        VERSION_SUFFIX: -preview+${{ steps.short-sha.outputs.sha }}
         HOST_IDENTIFIER: ${{ matrix.node }}
 
     - name: Run test
@@ -40,7 +40,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: nuget-packages
+        name: ${{ matrix.node }}-packages
         path: |
           **/*.nupkg
 
@@ -53,10 +53,14 @@ jobs:
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v4
-      with:
-        name: nuget-packages
     
-    - name: Publish packages
+    - name: Publish to NuGet
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
+      env:
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        PUBLISH_URL: https://api.nuget.org/v3/index.json
+
+    - name: Publish to GitHub
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
         NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
