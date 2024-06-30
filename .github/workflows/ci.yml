@@ -44,8 +44,23 @@ jobs:
         path: |
           **/*.nupkg
 
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+    
+    - name: Publish to NuGet
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
+      env:
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        PUBLISH_URL: https://api.nuget.org/v3/index.json
+
     - name: Publish to GitHub
-      if: github.ref == 'refs/heads/main'
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
         NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
