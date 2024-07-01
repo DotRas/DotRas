@@ -49,7 +49,8 @@ namespace DotRas.Diagnostics.Formatters
             };
 
             e.Args.Add("Test", "Value");
-
+            e.OutArgs.Add("Out", "Result");
+            
             var result = target.Format(e);
 
             Assert.NotNull(result);
