@@ -20,15 +20,15 @@ namespace DotRas.Diagnostics.Formatters
             var sb = new StringBuilder();
 
             sb.Append("Callback received from RasDial. See the following for more details:");
-            sb.AppendLine().Append($"\tOccurred On: {eventData.OccurredOn}");
-            sb.AppendLine().Append($"\tResult: {eventData.Result}");
+            sb.Append($"\n\tOccurred On: {eventData.OccurredOn}");
+            sb.Append($"\n\tResult: {eventData.Result}");
 
             if (eventData.Args.Count > 0)
             {
-                sb.AppendLine().Append("\tArguments:");
+                sb.Append("\n\tArguments:");
                 foreach (var arg in eventData.Args)
                 {
-                    sb.AppendLine().Append($"\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
+                    sb.Append($"\n\t\t{arg.Key}: [{arg.Value ?? "(null)"}]");
                 }
             }
 

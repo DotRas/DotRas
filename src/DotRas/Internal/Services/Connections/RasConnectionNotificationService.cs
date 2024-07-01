@@ -33,10 +33,7 @@ namespace DotRas.Internal.Services.Connections
         {
             get
             {
-                lock (SyncRoot)
-                {
-                    return notifications.Count > 0;
-                }
+                return notifications.Count > 0;
             }
         }       
         
@@ -49,8 +46,10 @@ namespace DotRas.Internal.Services.Connections
 
             GuardMustNotBeDisposed();
 
-            lock (SyncRoot)
+            try
             {
+                SyncRoot.Wait();
+
                 callbackHandler.Initialize();
 
                 // Connection events always needs an invalid handle.
@@ -58,6 +57,10 @@ namespace DotRas.Internal.Services.Connections
 
                 var handle = DetermineHandleForSubscribe(context);
                 RegisterCallback(handle, context.OnDisconnectedCallback, RASCN.Disconnection);
+            }
+            finally
+            {
+                SyncRoot.Release();
             }
         }
 
@@ -117,14 +120,20 @@ namespace DotRas.Internal.Services.Connections
 
         private void Unsubscribe()
         {
-            lock (SyncRoot)
+            try
             {
+                SyncRoot.Wait();
+
                 foreach (var subscription in notifications)
                 {
                     subscription.Value.RegisteredCallback.Dispose();
                 }
 
                 notifications.Clear();
+            }
+            finally
+            {
+                SyncRoot.Release();
             }
         }
     }

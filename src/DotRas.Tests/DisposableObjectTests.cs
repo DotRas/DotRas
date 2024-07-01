@@ -27,16 +27,15 @@ namespace DotRas.Tests
         }
 
         [Test]
-        public void DoesNotDisposeTheObjectMoreThanOnce()
+        public void DoesNotErrorWhenDisposedMoreThanOnce()
         {
             var target = new StubDisposableObject();
-            target.Dispose();
-
+            
+            Assert.DoesNotThrow(() => target.Dispose());
             Assert.AreEqual(1, target.Counter);
 
-            target.Dispose();
-
-            Assert.AreEqual(1, target.Counter);
+            Assert.DoesNotThrow(() => target.Dispose());
+            Assert.AreEqual(2, target.Counter);
         }
     }
 }

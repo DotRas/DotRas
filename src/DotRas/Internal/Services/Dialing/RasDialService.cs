@@ -50,17 +50,23 @@ namespace DotRas.Internal.Services.Dialing
             GuardMustNotBeDisposed();
             GuardMustNotAlreadyBeBusy();
 
-            lock (SyncRoot)
+            try
             {
-                GuardMustNotAlreadyBeBusy();
+                SyncRoot.Wait(context.CancellationToken);
 
                 CompletionSource = CreateCompletionSource();
-                SetUpCancellationSource(context);
+
+                CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
+                CancellationSource.Token.Register(() => OnCancellationRequestedCallback(context));
 
                 InitializeCallbackHandler(context);
                 BeginDial(context);
 
                 return CompletionSource.Task;
+            }
+            finally
+            {
+                SyncRoot.Release();
             }
         }
 
@@ -74,15 +80,6 @@ namespace DotRas.Internal.Services.Dialing
             callbackHandler.Initialize(CompletionSource, context.OnStateChangedCallback, () => OnDialCompletedCallback(context), CancellationSource.Token);
         }
 
-        private void SetUpCancellationSource(RasDialContext context)
-        {
-            CancellationSource?.Dispose();
-            CancellationSource = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
-
-            // Ensures that the connection can be cancelled even if the callback is stuck.
-            CancellationSource.Token.Register(() => OnCancellationRequestedCallback(context));
-        }
-
         protected void OnCancellationRequestedCallback(RasDialContext context)
         {
             if (!IsBusy)
@@ -90,10 +87,19 @@ namespace DotRas.Internal.Services.Dialing
                 return;
             }
 
-            HangUpIfNecessary(context);
-            OnDialCompletedCallback(context);
+            try
+            {
+                SyncRoot.Wait();
 
-            CancelCompletionSourceIfNecessary();
+                HangUpIfNecessary(context);
+                OnDialCompletedCallback(context);
+
+                CancelCompletionSourceIfNecessary();
+            }
+            finally
+            {
+                SyncRoot.Release();
+            }
         }
 
         protected virtual void CancelCompletionSourceIfNecessary()
@@ -120,6 +126,13 @@ namespace DotRas.Internal.Services.Dialing
 
                 try
                 {
+                    // Ensure the cancellation token has not already been cancelled prior to beginning the attempt.
+                    if (CancellationSource.IsCancellationRequested)
+                    {
+                        CompletionSource.SetCanceled();
+                        return;
+                    }
+
                     var ret = api.RasDial(ref rasDialExtensions, context.PhoneBookPath, ref rasDialParams, NotifierType.RasDialFunc2, callback, out handle);
                     if (ret != SUCCESS)
                     {

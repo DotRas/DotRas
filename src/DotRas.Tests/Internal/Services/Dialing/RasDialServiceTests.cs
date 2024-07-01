@@ -96,6 +96,45 @@ namespace DotRas.Tests.Internal.Services.Dialing
         }
 
         [Test]
+        public void DoesNotDialAndCancelsTheTaskWhenCancellationTokenIsCancelledBeforeDialing()
+        {
+            var handle = new IntPtr(1);
+            api.Setup(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, It.IsAny<string>(),
+                ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny)).Returns(new RasDialCallback(
+                (ref RASDIALEXTENSIONS rasDialExtensions, string lpszPhoneBook, ref RASDIALPARAMS rasDialParams,
+                    Ras.NotifierType notifierType, RasDialFunc2 o5, out IntPtr o6) =>
+                {
+                    o6 = handle;
+                    return SUCCESS;
+                }));
+
+            using var cts = new CancellationTokenSource();
+
+            var context = new RasDialContext
+            {
+                PhoneBookPath = @"C:\Test.pbk",
+                EntryName = "Entry",
+                Credentials = new NetworkCredential("User", "Password"),
+                CancellationToken = cts.Token
+            };
+
+            target.OnInitializeCallback = () =>
+            {
+                cts.Cancel();
+            };
+
+            var t = target.DialAsync(context);
+
+            Assert.ThrowsAsync<TaskCanceledException>(async () => await t);
+            Assert.True(t.IsCanceled);
+
+            api.Verify(o => o.RasDial(ref It.Ref<RASDIALEXTENSIONS>.IsAny, It.IsAny<string>(),
+                ref It.Ref<RASDIALPARAMS>.IsAny, Ras.NotifierType.RasDialFunc2, It.IsAny<RasDialFunc2>(),
+                out It.Ref<IntPtr>.IsAny), Times.Never);
+        }
+
+        [Test]
         public void HangsUpTheConnectionWhenCancelled()
         {
             var handle = new IntPtr(1);

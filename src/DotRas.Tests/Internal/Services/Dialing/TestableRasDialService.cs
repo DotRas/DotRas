@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DotRas.Internal.Abstractions.Policies;
 using DotRas.Internal.Abstractions.Services;
 using DotRas.Internal.Interop;
@@ -9,6 +10,8 @@ namespace DotRas.Tests.Internal.Services.Dialing
     internal class TestableRasDialService : RasDialService
     {
         public bool CancelledAttempt { get; private set; }
+
+        public Action OnInitializeCallback { get; set; }
 
         public TestableRasDialService(IRasApi32 api, IRasHangUp hangUpService,
             IRasDialExtensionsBuilder extensionsBuilder, IRasDialParamsBuilder paramsBuilder,
@@ -29,7 +32,10 @@ namespace DotRas.Tests.Internal.Services.Dialing
 
         protected override TaskCompletionSource<RasConnection> CreateCompletionSource()
         {
-            return CompletionSource ?? base.CreateCompletionSource();
+            var result = CompletionSource ?? base.CreateCompletionSource();
+            OnInitializeCallback?.Invoke();
+
+            return result;
         }
 
         protected override void CancelAttemptIfBusy()
