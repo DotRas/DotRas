@@ -64,23 +64,28 @@ partial class Program : IDisposable
 
     private async Task RunCoreAsync()
     {
-        Watcher.Start();
-
-        while (ShouldContinueExecution())
+        try
         {
-            using var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token);
+            Watcher.Start();
 
-            try
+            while (ShouldContinueExecution())
             {
-                await RunOnceAsync(tcs.Token);
-            }
-            finally
-            {
-                await WaitForALittleWhileAsync(false, tcs.Token);
+                using var tcs = CancellationTokenSource.CreateLinkedTokenSource(CancellationSource.Token);
+                
+                try
+                {
+                    await RunOnceAsync(tcs.Token);
+                }
+                finally
+                {
+                    await WaitForALittleWhileAsync(false, tcs.Token);
+                }
             }
         }
-
-        Watcher.Stop();
+        finally
+        {
+            Watcher.Stop();
+        }
     }
 
     protected async Task RunOnceAsync(CancellationToken runningToken)
@@ -92,6 +97,10 @@ partial class Program : IDisposable
             await WaitForALittleWhileAsync(true, runningToken);
 
             await DisconnectAsync(runningToken);
+        }
+        catch (OperationCanceledException) // Ensure the exception gets propogated
+        {
+            throw;
         }
         catch (Exception ex)
         {

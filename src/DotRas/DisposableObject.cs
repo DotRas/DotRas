@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace DotRas
 {
@@ -12,7 +13,7 @@ namespace DotRas
         /// <summary>
         /// Gets an object used for thread synchronization.
         /// </summary>
-        protected object SyncRoot { get; } = new object();
+        protected SemaphoreSlim SyncRoot { get; } = new SemaphoreSlim(1);
 
         /// <summary>
         /// Finalizes the object.
@@ -25,21 +26,8 @@ namespace DotRas
         /// <inheritdoc />
         public void Dispose()
         {
-            if (disposed)
-            {
-                return;
-            }
-
-            lock (SyncRoot)
-            {
-                if (disposed)
-                {
-                    return;
-                }
-
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -50,8 +38,10 @@ namespace DotRas
         {
             if (disposing)
             {
-                disposed = true;
+                SyncRoot.Dispose();
             }
+
+            disposed = true;
         }
 
         /// <summary>
