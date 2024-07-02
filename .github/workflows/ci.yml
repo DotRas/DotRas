@@ -44,7 +44,25 @@ jobs:
         path: |
           **/*.nupkg
 
-  publish:
+  publish_github:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    needs: build
+
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+            
+    - name: Publish to GitHub
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
+      env:
+        NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
+
+  publish_nuget:
+    name: Publish to NuGet.org
     runs-on: ubuntu-latest
     needs: build
 
@@ -54,14 +72,8 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v4
     
-    - name: Publish to NuGet
+    - name: Publish
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
         NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
         PUBLISH_URL: https://api.nuget.org/v3/index.json
-        
-    - name: Publish to GitHub
-      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
-      env:
-        NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PUBLISH_URL: https://nuget.pkg.github.com/dotras/index.json
