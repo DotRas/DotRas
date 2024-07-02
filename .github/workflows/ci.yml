@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [win10,win11]
+        node: [win10]
 
     steps:
     - name: Checkout
@@ -54,6 +54,12 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v4
     
+    - name: Publish to NuGet
+      run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
+      env:
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        PUBLISH_URL: https://api.nuget.org/v3/index.json
+        
     - name: Publish to GitHub
       run: dotnet nuget push **/*.nupkg -k ${NUGET_TOKEN} -s ${PUBLISH_URL} --skip-duplicate --no-symbols
       env:
